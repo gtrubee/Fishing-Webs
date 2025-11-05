@@ -6,21 +6,67 @@ const minigameCtx = minigameCanvas.getContext('2d');
 const fishButton = document.getElementById('fish-button');
 const statusDiv = document.getElementById('status');
 
-sceneCanvas.width = 800;
-sceneCanvas.height = 500;
+sceneCanvas.width = window.innerWidth;
+sceneCanvas.height = window.innerHeight;
 minigameCanvas.width = 300;
 minigameCanvas.height = 500;
 
 let fishing = false;
 let minigameActive = false;
 
+// Fish types with different difficulties
+const fishTypes = {
+    chub: {
+        name: 'Chub',
+        color: '#FF6B35',
+        difficulty: 'Easy',
+        barSize: 120,
+        fishSpeed: 0.01875,
+        fishRandomness: 0.375,
+        fishChangeInterval: 133,
+        progressGainRate: 0.5,
+        progressDecayRate: 0.3,
+        minWeight: 3,
+        maxWeight: 18
+    },
+    salmon: {
+        name: 'Salmon',
+        color: '#FF6B35',
+        difficulty: 'Average',
+        barSize: 120,
+        fishSpeed: 0.03,
+        fishRandomness: 0.75,
+        fishChangeInterval: 100,
+        progressGainRate: 0.5,
+        progressDecayRate: 0.3,
+        minWeight: 8,
+        maxWeight: 30
+    },
+    sturgeon: {
+        name: 'Sturgeon',
+        color: '#FF6B35',
+        difficulty: 'Hard',
+        barSize: 120,
+        fishSpeed: 0.0375,
+        fishRandomness: 1.5,
+        fishChangeInterval: 67,
+        progressGainRate: 0.5,
+        progressDecayRate: 0.3,
+        minWeight: 30,
+        maxWeight: 100
+    }
+};
+
+let currentFish = null;
+let currentFishWeight = 0;
+
 // Minigame variables
 let barY = 350;
 let barHeight = 120;
 let barSpeed = 0;
-let barGravity = 0.08;
+let barGravity = 0.15;
 let barJumpPower = -0.3;
-let maxBarSpeed = 4;
+let maxBarSpeed = 5;
 
 let fishY = 100;
 let fishSpeed = 0;
@@ -28,8 +74,8 @@ let fishTargetY = 100;
 let fishChangeTimer = 0;
 
 let progress = 0;
-let progressDecayRate = 0.3;
-let progressGainRate = 0.5;
+let progressDecayRate = 0.2;
+let progressGainRate = 0.4;
 const maxProgress = 100;
 const winThreshold = 100;
 
@@ -38,25 +84,57 @@ let animationFrameId = null;
 
 // Draw the main scene (fisherman on dock with lake)
 function drawScene() {
-    // Sky (gradient)
+    // Sky (gradient) - Night time
     const skyGradient = sceneCtx.createLinearGradient(0, 0, 0, sceneCanvas.height * 0.6);
-    skyGradient.addColorStop(0, '#87CEEB');
-    skyGradient.addColorStop(1, '#B0E2FF');
+    skyGradient.addColorStop(0, '#0B1026');
+    skyGradient.addColorStop(1, '#1a2947');
     sceneCtx.fillStyle = skyGradient;
     sceneCtx.fillRect(0, 0, sceneCanvas.width, sceneCanvas.height * 0.6);
+    
+    // Stars
+    sceneCtx.fillStyle = '#FFFFFF';
+    for (let i = 0; i < 50; i++) {
+        const x = (i * 137.5) % sceneCanvas.width;
+        const y = (i * 73.3) % (sceneCanvas.height * 0.6);
+        const size = (i % 3) + 1;
+        sceneCtx.beginPath();
+        sceneCtx.arc(x, y, size, 0, Math.PI * 2);
+        sceneCtx.fill();
+    }
+    
+    // Moon - Crescent
+    const moonX = sceneCanvas.width * 0.8;
+    const moonY = sceneCanvas.height * 0.15;
+    const moonRadius = 40;
+    
+    // Full moon circle
+    sceneCtx.fillStyle = '#F0E68C';
+    sceneCtx.beginPath();
+    sceneCtx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+    sceneCtx.fill();
+    
+    // Shadow circle to create crescent
+    sceneCtx.fillStyle = '#0B1026';
+    sceneCtx.beginPath();
+    sceneCtx.arc(moonX + 15, moonY - 5, moonRadius, 0, Math.PI * 2);
+    sceneCtx.fill();
 
     // Water (gradient)
     const waterGradient = sceneCtx.createLinearGradient(0, sceneCanvas.height * 0.6, 0, sceneCanvas.height);
-    waterGradient.addColorStop(0, '#4682B4');
-    waterGradient.addColorStop(1, '#1E3A5F');
+    waterGradient.addColorStop(0, '#1a2947');
+    waterGradient.addColorStop(1, '#0d1b3a');
     sceneCtx.fillStyle = waterGradient;
     sceneCtx.fillRect(0, sceneCanvas.height * 0.6, sceneCanvas.width, sceneCanvas.height * 0.4);
 
-    // Water ripples
+    // Water ripples - extended to cover full water area
     sceneCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
     sceneCtx.lineWidth = 2;
-    for (let i = 0; i < 5; i++) {
+    const waterHeight = sceneCanvas.height * 0.4;
+    const numRipples = Math.floor(waterHeight / 20) + 5;
+    
+    for (let i = 0; i < numRipples; i++) {
         const y = sceneCanvas.height * 0.6 + i * 20 + (Date.now() / 500 % 20);
+        if (y > sceneCanvas.height) continue;
         sceneCtx.beginPath();
         sceneCtx.moveTo(0, y);
         for (let x = 0; x < sceneCanvas.width; x += 20) {
@@ -162,19 +240,49 @@ function startMinigame() {
     fishing = true;
     minigameActive = true;
     fishButton.disabled = true;
+    
+    // Reset and show status message
+    statusDiv.style.opacity = '1';
+    statusDiv.style.transition = 'none';
+    
+    // Randomly select a fish type
+    const fishKeys = Object.keys(fishTypes);
+    const randomFish = fishKeys[Math.floor(Math.random() * fishKeys.length)];
+    currentFish = fishTypes[randomFish];
+    
+    // Generate random weight for this fish
+    currentFishWeight = Math.floor(Math.random() * (currentFish.maxWeight - currentFish.minWeight + 1)) + currentFish.minWeight;
+    
+    // Calculate weight factor (0 to 1, where 1 is maximum weight)
+    const weightFactor = (currentFishWeight - currentFish.minWeight) / (currentFish.maxWeight - currentFish.minWeight);
+    
+    // Adjust difficulty based on weight
+    // Heavier fish are faster, more erratic, and change direction more often
+    const weightAdjustedSpeed = currentFish.fishSpeed * (1 + weightFactor * 0.3); // Up to 30% faster
+    const weightAdjustedRandomness = currentFish.fishRandomness * (1 + weightFactor * 0.4); // Up to 40% more erratic
+    const weightAdjustedInterval = currentFish.fishChangeInterval * (1 - weightFactor * 0.25); // Up to 25% more frequent changes
+    
     statusDiv.textContent = 'Keep the fish in the green bar!';
     
     sceneCanvas.style.display = 'none';
     minigameCanvas.style.display = 'block';
     
-    // Reset minigame variables
+    // Reset minigame variables with fish-specific difficulty (adjusted by weight)
     barY = 350;
+    barHeight = currentFish.barSize;
     barSpeed = 0;
     fishY = minigameCanvas.height - 50;
     fishSpeed = 0;
     fishTargetY = minigameCanvas.height - 50;
     fishChangeTimer = 0;
     progress = 0;
+    progressGainRate = currentFish.progressGainRate;
+    progressDecayRate = currentFish.progressDecayRate;
+    
+    // Store weight-adjusted values for use in game loop
+    currentFish.adjustedSpeed = weightAdjustedSpeed;
+    currentFish.adjustedRandomness = weightAdjustedRandomness;
+    currentFish.adjustedInterval = weightAdjustedInterval;
     mouseDown = false;
     
     gameLoop();
@@ -207,14 +315,14 @@ function gameLoop() {
     
     // Update fish position
     fishChangeTimer++;
-    if (fishChangeTimer > 60) {
+    if (fishChangeTimer > currentFish.adjustedInterval) {
         fishTargetY = Math.random() * (minigameCanvas.height - 40);
         fishChangeTimer = 0;
     }
     
-    // Move fish towards target with some randomness
+    // Move fish towards target with weight-adjusted speed and randomness
     const fishDiff = fishTargetY - fishY;
-    fishSpeed = fishDiff * 0.05 + (Math.random() - 0.5) * 2;
+    fishSpeed = fishDiff * currentFish.adjustedSpeed + (Math.random() - 0.5) * currentFish.adjustedRandomness;
     fishY += fishSpeed;
     
     // Keep fish in bounds
@@ -250,12 +358,12 @@ function gameLoop() {
 
 // Draw the minigame
 function drawMinigame(fishInBar) {
-    // Background
-    minigameCtx.fillStyle = '#1a1a1a';
+    // Background - match night water color
+    minigameCtx.fillStyle = '#0d1b3a';
     minigameCtx.fillRect(0, 0, minigameCanvas.width, minigameCanvas.height);
     
     // Track background
-    minigameCtx.fillStyle = '#333';
+    minigameCtx.fillStyle = '#1a2947';
     minigameCtx.fillRect(20, 0, 100, minigameCanvas.height);
     
     // Green bar
@@ -268,7 +376,7 @@ function drawMinigame(fishInBar) {
     minigameCtx.strokeRect(20, barY, 100, barHeight);
     
     // Fish icon
-    minigameCtx.fillStyle = '#FF6B35';
+    minigameCtx.fillStyle = currentFish.color;
     minigameCtx.beginPath();
     minigameCtx.arc(70, fishY, 15, 0, Math.PI * 2);
     minigameCtx.fill();
@@ -280,7 +388,7 @@ function drawMinigame(fishInBar) {
     minigameCtx.fill();
     
     // Fish tail
-    minigameCtx.fillStyle = '#FF6B35';
+    minigameCtx.fillStyle = currentFish.color;
     minigameCtx.beginPath();
     minigameCtx.moveTo(55, fishY);
     minigameCtx.lineTo(45, fishY - 10);
@@ -332,11 +440,21 @@ function endMinigame(success) {
     minigameCanvas.style.display = 'none';
     fishButton.disabled = false;
     
+    // Show message and make it visible
+    statusDiv.style.opacity = '1';
+    statusDiv.style.transition = 'none';
+    
     if (success) {
-        statusDiv.textContent = '🐟 You caught a fish! Great job!';
+        statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! Great job!`;
     } else {
-        statusDiv.textContent = '❌ The fish got away... Try again!';
+        statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
     }
+    
+    // Fade out after 5 seconds
+    setTimeout(() => {
+        statusDiv.style.transition = 'opacity 1s ease-out';
+        statusDiv.style.opacity = '0';
+    }, 5000);
 }
 
 // Event listeners
@@ -385,3 +503,10 @@ function animateScene() {
     requestAnimationFrame(animateScene);
 }
 animateScene();
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    sceneCanvas.width = window.innerWidth;
+    sceneCanvas.height = window.innerHeight;
+    drawScene();
+});
