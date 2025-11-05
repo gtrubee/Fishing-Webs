@@ -21,26 +21,28 @@ const fishTypes = {
         color: '#FF6B35',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.0140625,
-        fishRandomness: 0.28125,
-        fishChangeInterval: 133,
+        fishSpeed: 0.008,
+        fishRandomness: 0.15,
+        fishChangeInterval: 40,
         progressGainRate: 0.5,
         progressDecayRate: 0.4,
         minWeight: 3,
-        maxWeight: 18
+        maxWeight: 18,
+        spawnWeight: 60
     },
     salmon: {
         name: 'Salmon',
         color: '#FF6B35',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.0225,
-        fishRandomness: 0.5625,
-        fishChangeInterval: 100,
+        fishSpeed: 0.012,
+        fishRandomness: 0.25,
+        fishChangeInterval: 50,
         progressGainRate: 0.5,
         progressDecayRate: 0.4,
         minWeight: 8,
-        maxWeight: 30
+        maxWeight: 30,
+        spawnWeight: 30
     },
     sturgeon: {
         name: 'Sturgeon',
@@ -53,7 +55,8 @@ const fishTypes = {
         progressGainRate: 0.5,
         progressDecayRate: 0.4,
         minWeight: 30,
-        maxWeight: 100
+        maxWeight: 100,
+        spawnWeight: 10
     }
 };
 
@@ -312,10 +315,21 @@ function startMinigame() {
     statusDiv.style.opacity = '1';
     statusDiv.style.transition = 'none';
     
-    // Randomly select a fish type
+    // Randomly select a fish type based on spawn weights
     const fishKeys = Object.keys(fishTypes);
-    const randomFish = fishKeys[Math.floor(Math.random() * fishKeys.length)];
-    currentFish = fishTypes[randomFish];
+    const totalWeight = fishKeys.reduce((sum, key) => sum + fishTypes[key].spawnWeight, 0);
+    let random = Math.random() * totalWeight;
+    
+    let selectedFish = fishKeys[0];
+    for (const key of fishKeys) {
+        random -= fishTypes[key].spawnWeight;
+        if (random <= 0) {
+            selectedFish = key;
+            break;
+        }
+    }
+    
+    currentFish = fishTypes[selectedFish];
     console.log('Current fish:', currentFish);
     
     // Generate random weight for this fish
