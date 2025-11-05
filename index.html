@@ -8,10 +8,60 @@
 </head>
 <body>
     <div id="game-container">
-        <canvas id="scene-canvas"></canvas>
-        <button id="fish-button">Cast Your Line!</button>
-        <canvas id="minigame-canvas" style="display: none;"></canvas>
-        <div id="status">Click the button to start fishing!</div>
+        <!-- Fishing Page -->
+        <div id="fishing-page">
+            <canvas id="scene-canvas"></canvas>
+            <button id="fish-button">Cast Your Line!</button>
+            <canvas id="minigame-canvas" style="display: none;"></canvas>
+            <div id="status">Click the button to start fishing!</div>
+            <div id="backpack-icon">
+                🎒
+                <span id="fish-count">0/20</span>
+            </div>
+            <button id="shop-button">🏪 Shop</button>
+            <div id="money-display">💰 $<span id="money-amount">0</span></div>
+        </div>
+
+        <!-- Shop Page -->
+        <div id="shop-page" style="display: none;">
+            <canvas id="shop-canvas"></canvas>
+            <button id="back-to-fishing">← Back to Fishing</button>
+            <div id="shop-interface">
+                <h1>Fish Shop</h1>
+                <div id="shop-money">💰 $<span id="shop-money-amount">0</span></div>
+                <div id="shop-sections">
+                    <div id="sell-section">
+                        <h2>Sell Your Fish</h2>
+                        <button id="sell-all-button" class="sell-all-button">Sell All Fish</button>
+                        <div id="sell-inventory-grid"></div>
+                    </div>
+                    <div id="buy-section">
+                        <h2>Buy Upgrades</h2>
+                        <div class="shop-item">
+                            <div class="shop-item-info">
+                                <div class="shop-item-icon">📦</div>
+                                <div>
+                                    <div class="shop-item-name">Inventory Slot</div>
+                                    <div class="shop-item-desc">Add 1 more inventory slot</div>
+                                </div>
+                            </div>
+                            <button id="buy-slot-button" class="buy-button">Buy for $100</button>
+                        </div>
+                        <h2>Fishing Rods</h2>
+                        <div id="rods-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Popup (shared) -->
+        <div id="inventory-popup" style="display: none;">
+            <div id="inventory-header">
+                <h2>Inventory</h2>
+                <button id="close-inventory">✕</button>
+            </div>
+            <div id="inventory-grid"></div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

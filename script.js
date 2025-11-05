@@ -20,7 +20,7 @@ const fishTypes = {
         name: 'Chub',
         color: '#FF6B35',
         difficulty: 'Easy',
-        barSize: 120,
+        barSize: 80,
         fishSpeed: 0.01875,
         fishRandomness: 0.375,
         fishChangeInterval: 133,
@@ -33,7 +33,7 @@ const fishTypes = {
         name: 'Salmon',
         color: '#FF6B35',
         difficulty: 'Average',
-        barSize: 120,
+        barSize: 80,
         fishSpeed: 0.03,
         fishRandomness: 0.75,
         fishChangeInterval: 100,
@@ -46,7 +46,7 @@ const fishTypes = {
         name: 'Sturgeon',
         color: '#FF6B35',
         difficulty: 'Hard',
-        barSize: 120,
+        barSize: 80,
         fishSpeed: 0.0375,
         fishRandomness: 1.5,
         fishChangeInterval: 67,
@@ -60,9 +60,35 @@ const fishTypes = {
 let currentFish = null;
 let currentFishWeight = 0;
 
+// Inventory and shop system
+let maxInventorySlots = 20;
+const absoluteMaxInventorySlots = 100;
+let inventory = [];
+let money = 0;
+const inventorySlotPrice = 100;
+let currentPage = 'fishing'; // 'fishing' or 'shop'
+
+// Fish selling prices (per pound)
+const fishPrices = {
+    'Chub': 2,
+    'Salmon': 5,
+    'Sturgeon': 10
+};
+
+// Fishing rods
+const fishingRods = [
+    { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true },
+    { name: 'Bamboo Rod', barSizeBonus: 20, price: 5000, owned: false },
+    { name: 'Rubber Rod', barSizeBonus: 40, price: 10000, owned: false },
+    { name: 'Iron Rod', barSizeBonus: 60, price: 100000, owned: false },
+    { name: 'Titanium Rod', barSizeBonus: 80, price: 1000000, owned: false }
+];
+
+let currentRodIndex = 0;
+
 // Minigame variables
 let barY = 350;
-let barHeight = 120;
+let barHeight = 80;
 let barSpeed = 0;
 let barGravity = 0.15;
 let barJumpPower = -0.3;
@@ -237,6 +263,7 @@ function drawScene() {
 
 // Start the minigame
 function startMinigame() {
+    console.log('startMinigame called');
     fishing = true;
     minigameActive = true;
     fishButton.disabled = true;
@@ -249,6 +276,7 @@ function startMinigame() {
     const fishKeys = Object.keys(fishTypes);
     const randomFish = fishKeys[Math.floor(Math.random() * fishKeys.length)];
     currentFish = fishTypes[randomFish];
+    console.log('Current fish:', currentFish);
     
     // Generate random weight for this fish
     currentFishWeight = Math.floor(Math.random() * (currentFish.maxWeight - currentFish.minWeight + 1)) + currentFish.minWeight;
@@ -264,18 +292,20 @@ function startMinigame() {
     
     statusDiv.textContent = 'Keep the fish in the green bar!';
     
+    console.log('Hiding scene canvas, showing minigame canvas');
     sceneCanvas.style.display = 'none';
     minigameCanvas.style.display = 'block';
+    console.log('Canvas display states - scene:', sceneCanvas.style.display, 'minigame:', minigameCanvas.style.display);
     
     // Reset minigame variables with fish-specific difficulty (adjusted by weight)
-    barY = 350;
-    barHeight = currentFish.barSize;
+    barHeight = currentFish.barSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0);
+    barY = minigameCanvas.height - 50 - barHeight / 2;
     barSpeed = 0;
     fishY = minigameCanvas.height - 50;
     fishSpeed = 0;
     fishTargetY = minigameCanvas.height - 50;
     fishChangeTimer = 0;
-    progress = 0;
+    progress = 1;
     progressGainRate = currentFish.progressGainRate;
     progressDecayRate = currentFish.progressDecayRate;
     
@@ -445,7 +475,17 @@ function endMinigame(success) {
     statusDiv.style.transition = 'none';
     
     if (success) {
-        statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! Great job!`;
+        // Add fish to inventory
+        if (inventory.length < maxInventorySlots) {
+            inventory.push({
+                type: currentFish.name,
+                weight: currentFishWeight
+            });
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! (${inventory.length}/${maxInventorySlots})`;
+            updateInventoryDisplay();
+        } else {
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! But your inventory is full!`;
+        }
     } else {
         statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
     }
@@ -460,6 +500,17 @@ function endMinigame(success) {
 // Event listeners
 fishButton.addEventListener('click', () => {
     if (!fishing) {
+        // Check if inventory is full
+        if (inventory.length >= maxInventorySlots) {
+            statusDiv.style.opacity = '1';
+            statusDiv.style.transition = 'none';
+            statusDiv.textContent = '❌ Your inventory is full! Sell some fish at the shop.';
+            setTimeout(() => {
+                statusDiv.style.transition = 'opacity 1s ease-out';
+                statusDiv.style.opacity = '0';
+            }, 3000);
+            return;
+        }
         startMinigame();
     }
 });
@@ -474,6 +525,21 @@ document.addEventListener('mousedown', (e) => {
 document.addEventListener('mouseup', (e) => {
     if (minigameActive) {
         mouseDown = false;
+    }
+});
+
+// Keyboard controls (spacebar)
+document.addEventListener('keydown', (e) => {
+    if (minigameActive && e.code === 'Space') {
+        mouseDown = true;
+        e.preventDefault(); // Prevent page scrolling
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    if (minigameActive && e.code === 'Space') {
+        mouseDown = false;
+        e.preventDefault();
     }
 });
 
@@ -495,10 +561,393 @@ document.addEventListener('touchend', (e) => {
 // Draw initial scene
 drawScene();
 
+// Get fish color based on type
+function getFishColor(fishType) {
+    switch(fishType) {
+        case 'Chub':
+            return '#808080'; // Gray
+        case 'Salmon':
+            return '#FF6B6B'; // Red
+        case 'Sturgeon':
+            return '#8B4513'; // Brown
+        default:
+            return '#FF6B35'; // Orange fallback
+    }
+}
+
+// Update inventory display
+function updateInventoryDisplay() {
+    const fishCountDiv = document.getElementById('fish-count');
+    fishCountDiv.textContent = `${inventory.length}/${maxInventorySlots}`;
+    
+    const inventoryGrid = document.getElementById('inventory-grid');
+    inventoryGrid.innerHTML = '';
+    
+    // Create 20 slots
+    for (let i = 0; i < maxInventorySlots; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'inventory-slot';
+        
+        if (i < inventory.length) {
+            const fish = inventory[i];
+            slot.classList.add('filled');
+            
+            // Fish icon with color
+            const fishIcon = document.createElement('div');
+            fishIcon.className = 'fish-icon';
+            fishIcon.textContent = '🐟';
+            fishIcon.style.filter = `hue-rotate(${getFishHueRotation(fish.type)}deg)`;
+            fishIcon.style.color = getFishColor(fish.type);
+            
+            // Fish name
+            const fishName = document.createElement('div');
+            fishName.className = 'fish-name';
+            fishName.textContent = fish.type;
+            
+            // Fish weight
+            const fishWeight = document.createElement('div');
+            fishWeight.className = 'fish-weight';
+            fishWeight.textContent = `${fish.weight} lbs`;
+            
+            slot.appendChild(fishIcon);
+            slot.appendChild(fishName);
+            slot.appendChild(fishWeight);
+        }
+        
+        inventoryGrid.appendChild(slot);
+    }
+}
+
+function getFishHueRotation(fishType) {
+    // Adjust hue rotation for fish emoji color
+    switch(fishType) {
+        case 'Chub':
+            return 0; // Gray
+        case 'Salmon':
+            return 0; // Red (natural)
+        case 'Sturgeon':
+            return 30; // Brown
+        default:
+            return 0;
+    }
+}
+
+// Backpack icon click handler
+document.getElementById('backpack-icon').addEventListener('click', () => {
+    const popup = document.getElementById('inventory-popup');
+    popup.style.display = 'block';
+    updateInventoryDisplay();
+});
+
+// Close inventory popup
+document.getElementById('close-inventory').addEventListener('click', () => {
+    document.getElementById('inventory-popup').style.display = 'none';
+});
+
+// Shop navigation
+const shopCanvas = document.getElementById('shop-canvas');
+const shopCtx = shopCanvas.getContext('2d');
+shopCanvas.width = window.innerWidth;
+shopCanvas.height = window.innerHeight;
+
+document.getElementById('shop-button').addEventListener('click', () => {
+    currentPage = 'shop';
+    document.getElementById('fishing-page').style.display = 'none';
+    document.getElementById('shop-page').style.display = 'block';
+    drawShop();
+    updateShopDisplay();
+});
+
+document.getElementById('back-to-fishing').addEventListener('click', () => {
+    currentPage = 'fishing';
+    document.getElementById('shop-page').style.display = 'none';
+    document.getElementById('fishing-page').style.display = 'block';
+});
+
+// Draw shop scene
+function drawShop() {
+    // Background - Night time sky
+    const skyGradient = shopCtx.createLinearGradient(0, 0, 0, shopCanvas.height);
+    skyGradient.addColorStop(0, '#0B1026');
+    skyGradient.addColorStop(1, '#1a2947');
+    shopCtx.fillStyle = skyGradient;
+    shopCtx.fillRect(0, 0, shopCanvas.width, shopCanvas.height);
+    
+    // Stars
+    shopCtx.fillStyle = '#FFFFFF';
+    for (let i = 0; i < 50; i++) {
+        const x = (i * 137.5) % shopCanvas.width;
+        const y = (i * 73.3) % (shopCanvas.height * 0.7);
+        const size = (i % 3) + 1;
+        shopCtx.beginPath();
+        shopCtx.arc(x, y, size, 0, Math.PI * 2);
+        shopCtx.fill();
+    }
+    
+    // Moon
+    const moonX = shopCanvas.width * 0.2;
+    const moonY = shopCanvas.height * 0.15;
+    const moonRadius = 40;
+    
+    // Full moon circle
+    shopCtx.fillStyle = '#F0E68C';
+    shopCtx.beginPath();
+    shopCtx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+    shopCtx.fill();
+    
+    // Shadow circle to create crescent
+    shopCtx.fillStyle = '#0B1026';
+    shopCtx.beginPath();
+    shopCtx.arc(moonX + 15, moonY - 5, moonRadius, 0, Math.PI * 2);
+    shopCtx.fill();
+    
+    // Ground - darker for night
+    shopCtx.fillStyle = '#2F4F2F';
+    shopCtx.fillRect(0, shopCanvas.height * 0.7, shopCanvas.width, shopCanvas.height * 0.3);
+    
+    // Shop building
+    const shopWidth = 400;
+    const shopHeight = 300;
+    const shopX = shopCanvas.width / 2 - shopWidth / 2;
+    const shopY = shopCanvas.height * 0.7 - shopHeight;
+    
+    // Building main
+    shopCtx.fillStyle = '#D2691E';
+    shopCtx.fillRect(shopX, shopY, shopWidth, shopHeight);
+    
+    // Roof
+    shopCtx.fillStyle = '#8B4513';
+    shopCtx.beginPath();
+    shopCtx.moveTo(shopX - 30, shopY);
+    shopCtx.lineTo(shopX + shopWidth / 2, shopY - 80);
+    shopCtx.lineTo(shopX + shopWidth + 30, shopY);
+    shopCtx.closePath();
+    shopCtx.fill();
+    
+    // Door
+    shopCtx.fillStyle = '#654321';
+    shopCtx.fillRect(shopX + shopWidth / 2 - 50, shopY + shopHeight - 120, 100, 120);
+    
+    // Door knob
+    shopCtx.fillStyle = '#FFD700';
+    shopCtx.beginPath();
+    shopCtx.arc(shopX + shopWidth / 2 + 30, shopY + shopHeight - 60, 8, 0, Math.PI * 2);
+    shopCtx.fill();
+    
+    // Windows
+    shopCtx.fillStyle = '#87CEEB';
+    shopCtx.fillRect(shopX + 50, shopY + 80, 80, 80);
+    shopCtx.fillRect(shopX + shopWidth - 130, shopY + 80, 80, 80);
+    
+    // Window frames
+    shopCtx.strokeStyle = '#654321';
+    shopCtx.lineWidth = 4;
+    shopCtx.strokeRect(shopX + 50, shopY + 80, 80, 80);
+    shopCtx.strokeRect(shopX + shopWidth - 130, shopY + 80, 80, 80);
+    
+    // Sign
+    shopCtx.fillStyle = '#F5DEB3';
+    shopCtx.fillRect(shopX + shopWidth / 2 - 80, shopY - 30, 160, 50);
+    shopCtx.strokeStyle = '#8B4513';
+    shopCtx.lineWidth = 3;
+    shopCtx.strokeRect(shopX + shopWidth / 2 - 80, shopY - 30, 160, 50);
+    
+    // Sign text
+    shopCtx.fillStyle = '#8B4513';
+    shopCtx.font = 'bold 24px Arial';
+    shopCtx.textAlign = 'center';
+    shopCtx.fillText('FISH SHOP', shopX + shopWidth / 2, shopY - 5);
+}
+
+// Update shop display
+function updateShopDisplay() {
+    updateMoneyDisplay();
+    updateSellInventory();
+    updateBuyButton();
+}
+
+function updateMoneyDisplay() {
+    document.getElementById('money-amount').textContent = money;
+    document.getElementById('shop-money-amount').textContent = money;
+}
+
+function updateSellInventory() {
+    const sellGrid = document.getElementById('sell-inventory-grid');
+    sellGrid.innerHTML = '';
+    
+    if (inventory.length === 0) {
+        sellGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No fish to sell</p>';
+        return;
+    }
+    
+    inventory.forEach((fish, index) => {
+        const slot = document.createElement('div');
+        slot.className = 'sell-slot';
+        
+        const fishIcon = document.createElement('div');
+        fishIcon.className = 'fish-icon';
+        fishIcon.textContent = '🐟';
+        fishIcon.style.color = getFishColor(fish.type);
+        
+        const fishName = document.createElement('div');
+        fishName.className = 'fish-name';
+        fishName.textContent = fish.type;
+        
+        const fishWeight = document.createElement('div');
+        fishWeight.className = 'fish-weight';
+        fishWeight.textContent = `${fish.weight} lbs`;
+        
+        const price = fishPrices[fish.type] * fish.weight;
+        const priceTag = document.createElement('div');
+        priceTag.className = 'sell-price';
+        priceTag.textContent = `$${price}`;
+        
+        slot.appendChild(fishIcon);
+        slot.appendChild(fishName);
+        slot.appendChild(fishWeight);
+        slot.appendChild(priceTag);
+        
+        slot.addEventListener('click', () => sellFish(index));
+        
+        sellGrid.appendChild(slot);
+    });
+}
+
+function sellFish(index) {
+    const fish = inventory[index];
+    const price = fishPrices[fish.type] * fish.weight;
+    money += price;
+    inventory.splice(index, 1);
+    updateShopDisplay();
+    updateInventoryDisplay();
+}
+
+function sellAllFish() {
+    let totalEarned = 0;
+    inventory.forEach(fish => {
+        const price = fishPrices[fish.type] * fish.weight;
+        totalEarned += price;
+    });
+    money += totalEarned;
+    inventory = [];
+    updateShopDisplay();
+    updateInventoryDisplay();
+}
+
+function updateBuyButton() {
+    const buyButton = document.getElementById('buy-slot-button');
+    const canAfford = money >= inventorySlotPrice;
+    const notAtMax = maxInventorySlots < absoluteMaxInventorySlots;
+    
+    buyButton.disabled = !canAfford || !notAtMax;
+    
+    if (!notAtMax) {
+        buyButton.textContent = 'Max Capacity Reached';
+    } else {
+        buyButton.textContent = `Buy for $${inventorySlotPrice}`;
+    }
+    
+    // Update sell all button
+    const sellAllButton = document.getElementById('sell-all-button');
+    sellAllButton.disabled = inventory.length === 0;
+    
+    // Update fishing rods
+    updateRodsDisplay();
+}
+
+function updateRodsDisplay() {
+    const rodsContainer = document.getElementById('rods-container');
+    rodsContainer.innerHTML = '';
+    
+    fishingRods.forEach((rod, index) => {
+        const rodItem = document.createElement('div');
+        rodItem.className = 'shop-item';
+        
+        const rodInfo = document.createElement('div');
+        rodInfo.className = 'shop-item-info';
+        
+        const rodIcon = document.createElement('div');
+        rodIcon.className = 'shop-item-icon';
+        rodIcon.textContent = '🎣';
+        
+        const rodDetails = document.createElement('div');
+        const rodName = document.createElement('div');
+        rodName.className = 'shop-item-name';
+        rodName.textContent = rod.name;
+        if (index === currentRodIndex) {
+            rodName.textContent += ' (Equipped)';
+            rodName.style.color = '#4CAF50';
+        }
+        
+        const rodDesc = document.createElement('div');
+        rodDesc.className = 'shop-item-desc';
+        rodDesc.textContent = `+${rod.barSizeBonus} bar size`;
+        
+        rodDetails.appendChild(rodName);
+        rodDetails.appendChild(rodDesc);
+        
+        rodInfo.appendChild(rodIcon);
+        rodInfo.appendChild(rodDetails);
+        
+        rodItem.appendChild(rodInfo);
+        
+        if (!rod.owned) {
+            const buyButton = document.createElement('button');
+            buyButton.className = 'buy-button';
+            buyButton.textContent = `Buy for $${rod.price}`;
+            buyButton.disabled = money < rod.price;
+            buyButton.addEventListener('click', () => buyRod(index));
+            rodItem.appendChild(buyButton);
+        } else if (index !== currentRodIndex) {
+            const equipButton = document.createElement('button');
+            equipButton.className = 'buy-button';
+            equipButton.textContent = 'Equip';
+            equipButton.addEventListener('click', () => equipRod(index));
+            rodItem.appendChild(equipButton);
+        }
+        
+        rodsContainer.appendChild(rodItem);
+    });
+}
+
+function buyRod(index) {
+    const rod = fishingRods[index];
+    if (money >= rod.price && !rod.owned) {
+        money -= rod.price;
+        rod.owned = true;
+        currentRodIndex = index;
+        updateShopDisplay();
+    }
+}
+
+function equipRod(index) {
+    if (fishingRods[index].owned) {
+        currentRodIndex = index;
+        updateShopDisplay();
+    }
+}
+
+document.getElementById('buy-slot-button').addEventListener('click', () => {
+    if (money >= inventorySlotPrice && maxInventorySlots < absoluteMaxInventorySlots) {
+        money -= inventorySlotPrice;
+        maxInventorySlots++;
+        updateShopDisplay();
+        updateInventoryDisplay();
+    }
+});
+
+document.getElementById('sell-all-button').addEventListener('click', () => {
+    if (inventory.length > 0) {
+        sellAllFish();
+    }
+});
+
 // Animate the scene
 function animateScene() {
-    if (!minigameActive) {
+    if (!minigameActive && currentPage === 'fishing') {
         drawScene();
+    } else if (currentPage === 'shop') {
+        drawShop();
     }
     requestAnimationFrame(animateScene);
 }
@@ -508,5 +957,11 @@ animateScene();
 window.addEventListener('resize', () => {
     sceneCanvas.width = window.innerWidth;
     sceneCanvas.height = window.innerHeight;
-    drawScene();
+    shopCanvas.width = window.innerWidth;
+    shopCanvas.height = window.innerHeight;
+    if (currentPage === 'fishing') {
+        drawScene();
+    } else {
+        drawShop();
+    }
 });
