@@ -70,9 +70,9 @@ let currentPage = 'fishing'; // 'fishing' or 'shop'
 
 // Fish selling prices (per pound)
 const fishPrices = {
-    'Chub': 2,
-    'Salmon': 5,
-    'Sturgeon': 10
+    'Chub': 4,
+    'Salmon': 7,
+    'Sturgeon': 15
 };
 
 // Fishing rods
@@ -85,6 +85,46 @@ const fishingRods = [
 ];
 
 let currentRodIndex = 0;
+
+// Load game data from localStorage
+function loadGameData() {
+    const savedData = localStorage.getItem('fishingGameSave');
+    if (savedData) {
+        try {
+            const data = JSON.parse(savedData);
+            inventory = data.inventory || [];
+            money = data.money || 0;
+            maxInventorySlots = data.maxInventorySlots || 20;
+            currentRodIndex = data.currentRodIndex || 0;
+            
+            // Restore owned rods
+            if (data.ownedRods) {
+                data.ownedRods.forEach((owned, index) => {
+                    if (fishingRods[index]) {
+                        fishingRods[index].owned = owned;
+                    }
+                });
+            }
+            
+            console.log('Game data loaded successfully');
+        } catch (e) {
+            console.error('Error loading game data:', e);
+        }
+    }
+}
+
+// Save game data to localStorage
+function saveGameData() {
+    const data = {
+        inventory: inventory,
+        money: money,
+        maxInventorySlots: maxInventorySlots,
+        currentRodIndex: currentRodIndex,
+        ownedRods: fishingRods.map(rod => rod.owned)
+    };
+    localStorage.setItem('fishingGameSave', JSON.stringify(data));
+    console.log('Game data saved');
+}
 
 // Minigame variables
 let barY = 350;
@@ -483,6 +523,7 @@ function endMinigame(success) {
             });
             statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
+            saveGameData();
         } else {
             statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! But your inventory is full!`;
         }
@@ -820,6 +861,7 @@ function sellFish(index) {
     inventory.splice(index, 1);
     updateShopDisplay();
     updateInventoryDisplay();
+    saveGameData();
 }
 
 function sellAllFish() {
@@ -832,6 +874,7 @@ function sellAllFish() {
     inventory = [];
     updateShopDisplay();
     updateInventoryDisplay();
+    saveGameData();
 }
 
 function updateBuyButton() {
@@ -917,6 +960,7 @@ function buyRod(index) {
         rod.owned = true;
         currentRodIndex = index;
         updateShopDisplay();
+        saveGameData();
     }
 }
 
@@ -924,6 +968,7 @@ function equipRod(index) {
     if (fishingRods[index].owned) {
         currentRodIndex = index;
         updateShopDisplay();
+        saveGameData();
     }
 }
 
@@ -933,6 +978,7 @@ document.getElementById('buy-slot-button').addEventListener('click', () => {
         maxInventorySlots++;
         updateShopDisplay();
         updateInventoryDisplay();
+        saveGameData();
     }
 });
 
@@ -965,3 +1011,9 @@ window.addEventListener('resize', () => {
         drawShop();
     }
 });
+
+// Load saved data when page loads
+loadGameData();
+updateInventoryDisplay();
+updateMoneyDisplay();
+drawScene();
