@@ -16,6 +16,34 @@ let minigameActive = false;
 
 // Fish types with different difficulties
 const fishTypes = {
+    bluegill: {
+        name: 'Bluegill',
+        color: '#4682B4',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.007,
+        fishRandomness: 0.12,
+        fishChangeInterval: 38,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 1,
+        maxWeight: 8,
+        spawnWeight: 65
+    },
+    goldfish: {
+        name: 'Goldfish',
+        color: '#FFD700',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.0075,
+        fishRandomness: 0.14,
+        fishChangeInterval: 39,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 1,
+        maxWeight: 5,
+        spawnWeight: 10
+    },
     chub: {
         name: 'Chub',
         color: '#FF6B35',
@@ -24,11 +52,165 @@ const fishTypes = {
         fishSpeed: 0.008,
         fishRandomness: 0.15,
         fishChangeInterval: 40,
-        progressGainRate: 0.5,
-        progressDecayRate: 0.4,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
         minWeight: 3,
         maxWeight: 18,
         spawnWeight: 60
+    },
+    perch: {
+        name: 'Perch',
+        color: '#FFD700',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.009,
+        fishRandomness: 0.18,
+        fishChangeInterval: 45,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 2,
+        maxWeight: 12,
+        spawnWeight: 55
+    },
+    rockBass: {
+        name: 'Rock Bass',
+        color: '#8B6914',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.0085,
+        fishRandomness: 0.16,
+        fishChangeInterval: 43,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 2,
+        maxWeight: 10,
+        spawnWeight: 52
+    },
+    trout: {
+        name: 'Trout',
+        color: '#8B7355',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.01,
+        fishRandomness: 0.2,
+        fishChangeInterval: 42,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 4,
+        maxWeight: 20,
+        spawnWeight: 50
+    },
+    bullhead: {
+        name: 'Bullhead',
+        color: '#654321',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.0095,
+        fishRandomness: 0.19,
+        fishChangeInterval: 44,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 3,
+        maxWeight: 14,
+        spawnWeight: 48
+    },
+    herring: {
+        name: 'Herring',
+        color: '#C0C0C0',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.0105,
+        fishRandomness: 0.21,
+        fishChangeInterval: 41,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 2,
+        maxWeight: 9,
+        spawnWeight: 46
+    },
+    crappie: {
+        name: 'Crappie',
+        color: '#B8B8B8',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.0108,
+        fishRandomness: 0.23,
+        fishChangeInterval: 49,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 3,
+        maxWeight: 16,
+        spawnWeight: 42
+    },
+    crucianCarp: {
+        name: 'Crucian Carp',
+        color: '#CD853F',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.011,
+        fishRandomness: 0.22,
+        fishChangeInterval: 48,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 5,
+        maxWeight: 15,
+        spawnWeight: 40
+    },
+    ranchuGoldfish: {
+        name: 'Ranchu Goldfish',
+        color: '#FF8C00',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.0105,
+        fishRandomness: 0.23,
+        fishChangeInterval: 47,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 2,
+        maxWeight: 8,
+        spawnWeight: 8
+    },
+    koi: {
+        name: 'Koi',
+        color: '#FF6347',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.011,
+        fishRandomness: 0.24,
+        fishChangeInterval: 49,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 5,
+        maxWeight: 30,
+        spawnWeight: 5
+    },
+    whitefish: {
+        name: 'Whitefish',
+        color: '#F5F5DC',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.0115,
+        fishRandomness: 0.24,
+        fishChangeInterval: 51,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 4,
+        maxWeight: 18,
+        spawnWeight: 38
+    },
+    smallmouthBass: {
+        name: 'Smallmouth Bass',
+        color: '#8B4726',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.012,
+        fishRandomness: 0.26,
+        fishChangeInterval: 53,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 5,
+        maxWeight: 22,
+        spawnWeight: 35
     },
     salmon: {
         name: 'Salmon',
@@ -38,25 +220,179 @@ const fishTypes = {
         fishSpeed: 0.012,
         fishRandomness: 0.25,
         fishChangeInterval: 50,
-        progressGainRate: 0.5,
-        progressDecayRate: 0.4,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
         minWeight: 8,
         maxWeight: 30,
+        spawnWeight: 33
+    },
+    largemouthBass: {
+        name: 'Largemouth Bass',
+        color: '#3D5E3D',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.0125,
+        fishRandomness: 0.27,
+        fishChangeInterval: 54,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 6,
+        maxWeight: 25,
+        spawnWeight: 32
+    },
+    rainbowTrout: {
+        name: 'Rainbow Trout',
+        color: '#FF1493',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.013,
+        fishRandomness: 0.28,
+        fishChangeInterval: 52,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 6,
+        maxWeight: 25,
         spawnWeight: 30
+    },
+    walleye: {
+        name: 'Walleye',
+        color: '#DAA520',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.014,
+        fishRandomness: 0.3,
+        fishChangeInterval: 55,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 10,
+        maxWeight: 35,
+        spawnWeight: 28
+    },
+    cherrySalmon: {
+        name: 'Cherry Salmon',
+        color: '#DC143C',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.016,
+        fishRandomness: 0.5,
+        fishChangeInterval: 58,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 10,
+        maxWeight: 28,
+        spawnWeight: 22
+    },
+    catfish: {
+        name: 'Catfish',
+        color: '#696969',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.018,
+        fishRandomness: 0.6,
+        fishChangeInterval: 59,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 12,
+        maxWeight: 50,
+        spawnWeight: 20
+    },
+    cohoSalmon: {
+        name: 'Coho Salmon',
+        color: '#FF4500',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.019,
+        fishRandomness: 0.65,
+        fishChangeInterval: 61,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 15,
+        maxWeight: 35,
+        spawnWeight: 18
+    },
+    carp: {
+        name: 'Carp',
+        color: '#8B4513',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.02,
+        fishRandomness: 0.7,
+        fishChangeInterval: 60,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 15,
+        maxWeight: 60,
+        spawnWeight: 16
+    },
+    pike: {
+        name: 'Pike',
+        color: '#228B22',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.022,
+        fishRandomness: 0.8,
+        fishChangeInterval: 63,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 18,
+        maxWeight: 55,
+        spawnWeight: 14
+    },
+    gar: {
+        name: 'Gar',
+        color: '#556B2F',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.025,
+        fishRandomness: 0.9,
+        fishChangeInterval: 65,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 20,
+        maxWeight: 70,
+        spawnWeight: 12
+    },
+    kingSalmon: {
+        name: 'King Salmon',
+        color: '#B22222',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.026,
+        fishRandomness: 1.0,
+        fishChangeInterval: 66,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 25,
+        maxWeight: 80,
+        spawnWeight: 10
     },
     sturgeon: {
         name: 'Sturgeon',
-        color: '#FF6B35',
+        color: '#2F4F4F',
         difficulty: 'Hard',
         barSize: 80,
         fishSpeed: 0.028125,
         fishRandomness: 1.125,
         fishChangeInterval: 67,
-        progressGainRate: 0.5,
-        progressDecayRate: 0.4,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
         minWeight: 30,
         maxWeight: 100,
-        spawnWeight: 10
+        spawnWeight: 8
+    },
+    muskellunge: {
+        name: 'Muskellunge',
+        color: '#2F4F2F',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.03,
+        fishRandomness: 1.25,
+        fishChangeInterval: 68,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 35,
+        maxWeight: 110,
+        spawnWeight: 5
     }
 };
 
@@ -73,9 +409,33 @@ let currentPage = 'fishing'; // 'fishing' or 'shop'
 
 // Fish selling prices (per pound)
 const fishPrices = {
+    'Bluegill': 2,
+    'Herring': 3,
+    'Perch': 3,
+    'Rock Bass': 3,
+    'Bullhead': 4,
     'Chub': 4,
+    'Trout': 5,
+    'Whitefish': 5,
+    'Crappie': 6,
+    'Crucian Carp': 6,
     'Salmon': 7,
-    'Sturgeon': 15
+    'Smallmouth Bass': 8,
+    'Largemouth Bass': 8,
+    'Rainbow Trout': 8,
+    'Cherry Salmon': 9,
+    'Walleye': 10,
+    'Catfish': 11,
+    'Carp': 12,
+    'Coho Salmon': 13,
+    'Pike': 14,
+    'Gar': 14,
+    'Sturgeon': 15,
+    'King Salmon': 16,
+    'Muskellunge': 18,
+    'Goldfish': 20,
+    'Ranchu Goldfish': 25,
+    'Koi': 30
 };
 
 // Fishing rods
@@ -359,7 +719,7 @@ function startMinigame() {
     fishSpeed = 0;
     fishTargetY = minigameCanvas.height - 50;
     fishChangeTimer = 0;
-    progress = 1;
+    progress = 15;
     progressGainRate = currentFish.progressGainRate;
     progressDecayRate = currentFish.progressDecayRate;
     
@@ -448,16 +808,16 @@ function drawMinigame(fishInBar) {
     
     // Track background
     minigameCtx.fillStyle = '#1a2947';
-    minigameCtx.fillRect(20, 0, 100, minigameCanvas.height);
+    minigameCtx.fillRect(35, 0, 70, minigameCanvas.height);
     
     // Green bar
-    minigameCtx.fillStyle = fishInBar ? '#00FF00' : '#00AA00';
-    minigameCtx.fillRect(20, barY, 100, barHeight);
+    minigameCtx.fillStyle = fishInBar ? '#4CAF50' : '#2E7D32';
+    minigameCtx.fillRect(35, barY, 70, barHeight);
     
     // Bar border
     minigameCtx.strokeStyle = '#FFFFFF';
     minigameCtx.lineWidth = 3;
-    minigameCtx.strokeRect(20, barY, 100, barHeight);
+    minigameCtx.strokeRect(35, barY, 70, barHeight);
     
     // Fish icon
     minigameCtx.fillStyle = currentFish.color;
@@ -484,11 +844,43 @@ function drawMinigame(fishInBar) {
     minigameCtx.fillStyle = '#555';
     minigameCtx.fillRect(150, 50, 120, 400);
     
-    // Progress fill
+    // Progress fill with smooth color transitions
     const progressHeight = (progress / maxProgress) * 400;
     const gradient = minigameCtx.createLinearGradient(0, 450 - progressHeight, 0, 450);
-    gradient.addColorStop(0, '#FFD700');
-    gradient.addColorStop(1, '#FFA500');
+    
+    // Smooth color transition based on progress percentage
+    let color1, color2;
+    
+    if (progress < 20) {
+        // Red for 0-20%
+        color1 = '#FF6B6B';
+        color2 = '#C62828';
+    } else if (progress < 70) {
+        // Transition from red to yellow for 20-70%
+        const factor = (progress - 20) / 50;
+        const r1 = 255;
+        const g1 = Math.floor(107 + factor * (215 - 107));
+        const b1 = Math.floor(107 - factor * 107);
+        const r2 = Math.floor(198 + factor * (255 - 198));
+        const g2 = Math.floor(40 + factor * (165 - 40));
+        const b2 = Math.floor(40 - factor * 40);
+        color1 = `rgb(${r1}, ${g1}, ${b1})`;
+        color2 = `rgb(${r2}, ${g2}, ${b2})`;
+    } else {
+        // Transition from yellow to green for 70-100%
+        const factor = (progress - 70) / 30;
+        const r1 = Math.floor(255 - factor * (255 - 102));
+        const g1 = Math.floor(215 + factor * (187 - 215));
+        const b1 = Math.floor(0 + factor * 106);
+        const r2 = Math.floor(255 - factor * (255 - 46));
+        const g2 = Math.floor(165 - factor * (165 - 125));
+        const b2 = Math.floor(0 + factor * 50);
+        color1 = `rgb(${r1}, ${g1}, ${b1})`;
+        color2 = `rgb(${r2}, ${g2}, ${b2})`;
+    }
+    
+    gradient.addColorStop(0, color1);
+    gradient.addColorStop(1, color2);
     minigameCtx.fillStyle = gradient;
     minigameCtx.fillRect(150, 450 - progressHeight, 120, progressHeight);
     
