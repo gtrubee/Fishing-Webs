@@ -25,7 +25,7 @@ const fishTypes = {
         color: '#4682B4',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.007,
+        fishSpeed: 0.005,
         fishRandomness: 0.12,
         fishChangeInterval: 38,
         progressGainRate: 0.3,
@@ -39,7 +39,7 @@ const fishTypes = {
         color: '#FFD700',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.0075,
+        fishSpeed: 0.005,
         fishRandomness: 0.14,
         fishChangeInterval: 39,
         progressGainRate: 0.3,
@@ -53,7 +53,7 @@ const fishTypes = {
         color: '#FF6B35',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.008,
+        fishSpeed: 0.0055,
         fishRandomness: 0.15,
         fishChangeInterval: 40,
         progressGainRate: 0.3,
@@ -67,7 +67,7 @@ const fishTypes = {
         color: '#FFD700',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.009,
+        fishSpeed: 0.006,
         fishRandomness: 0.18,
         fishChangeInterval: 45,
         progressGainRate: 0.3,
@@ -81,7 +81,7 @@ const fishTypes = {
         color: '#8B6914',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.0085,
+        fishSpeed: 0.006,
         fishRandomness: 0.16,
         fishChangeInterval: 43,
         progressGainRate: 0.3,
@@ -95,7 +95,7 @@ const fishTypes = {
         color: '#8B7355',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.01,
+        fishSpeed: 0.007,
         fishRandomness: 0.2,
         fishChangeInterval: 42,
         progressGainRate: 0.3,
@@ -109,7 +109,7 @@ const fishTypes = {
         color: '#654321',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.0095,
+        fishSpeed: 0.0065,
         fishRandomness: 0.19,
         fishChangeInterval: 44,
         progressGainRate: 0.3,
@@ -123,7 +123,7 @@ const fishTypes = {
         color: '#C0C0C0',
         difficulty: 'Easy',
         barSize: 80,
-        fishSpeed: 0.0105,
+        fishSpeed: 0.007,
         fishRandomness: 0.21,
         fishChangeInterval: 41,
         progressGainRate: 0.3,
@@ -137,7 +137,7 @@ const fishTypes = {
         color: '#B8B8B8',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.0108,
+        fishSpeed: 0.0075,
         fishRandomness: 0.23,
         fishChangeInterval: 49,
         progressGainRate: 0.3,
@@ -151,7 +151,7 @@ const fishTypes = {
         color: '#CD853F',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.011,
+        fishSpeed: 0.0075,
         fishRandomness: 0.22,
         fishChangeInterval: 48,
         progressGainRate: 0.3,
@@ -165,7 +165,7 @@ const fishTypes = {
         color: '#FF8C00',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.0105,
+        fishSpeed: 0.007,
         fishRandomness: 0.23,
         fishChangeInterval: 47,
         progressGainRate: 0.3,
@@ -179,7 +179,7 @@ const fishTypes = {
         color: '#FF6347',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.011,
+        fishSpeed: 0.0075,
         fishRandomness: 0.24,
         fishChangeInterval: 49,
         progressGainRate: 0.3,
@@ -193,7 +193,7 @@ const fishTypes = {
         color: '#F5F5DC',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.0115,
+        fishSpeed: 0.008,
         fishRandomness: 0.24,
         fishChangeInterval: 51,
         progressGainRate: 0.3,
@@ -207,7 +207,7 @@ const fishTypes = {
         color: '#8B4726',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.012,
+        fishSpeed: 0.008,
         fishRandomness: 0.26,
         fishChangeInterval: 53,
         progressGainRate: 0.3,
@@ -221,7 +221,7 @@ const fishTypes = {
         color: '#FF6B35',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.012,
+        fishSpeed: 0.008,
         fishRandomness: 0.25,
         fishChangeInterval: 50,
         progressGainRate: 0.3,
@@ -235,7 +235,7 @@ const fishTypes = {
         color: '#3D5E3D',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.0125,
+        fishSpeed: 0.0085,
         fishRandomness: 0.27,
         fishChangeInterval: 54,
         progressGainRate: 0.3,
@@ -249,7 +249,7 @@ const fishTypes = {
         color: '#FF1493',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.013,
+        fishSpeed: 0.009,
         fishRandomness: 0.28,
         fishChangeInterval: 52,
         progressGainRate: 0.3,
@@ -263,7 +263,7 @@ const fishTypes = {
         color: '#DAA520',
         difficulty: 'Average',
         barSize: 80,
-        fishSpeed: 0.014,
+        fishSpeed: 0.01,
         fishRandomness: 0.3,
         fishChangeInterval: 55,
         progressGainRate: 0.3,
@@ -277,7 +277,7 @@ const fishTypes = {
         color: '#DC143C',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.016,
+        fishSpeed: 0.011,
         fishRandomness: 0.5,
         fishChangeInterval: 58,
         progressGainRate: 0.3,
@@ -291,7 +291,7 @@ const fishTypes = {
         color: '#696969',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.018,
+        fishSpeed: 0.012,
         fishRandomness: 0.6,
         fishChangeInterval: 59,
         progressGainRate: 0.3,
@@ -305,7 +305,7 @@ const fishTypes = {
         color: '#FF4500',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.019,
+        fishSpeed: 0.013,
         fishRandomness: 0.65,
         fishChangeInterval: 61,
         progressGainRate: 0.3,
@@ -319,7 +319,7 @@ const fishTypes = {
         color: '#8B4513',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.02,
+        fishSpeed: 0.014,
         fishRandomness: 0.7,
         fishChangeInterval: 60,
         progressGainRate: 0.3,
@@ -333,7 +333,7 @@ const fishTypes = {
         color: '#228B22',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.022,
+        fishSpeed: 0.015,
         fishRandomness: 0.8,
         fishChangeInterval: 63,
         progressGainRate: 0.3,
@@ -347,7 +347,7 @@ const fishTypes = {
         color: '#556B2F',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.025,
+        fishSpeed: 0.017,
         fishRandomness: 0.9,
         fishChangeInterval: 65,
         progressGainRate: 0.3,
@@ -361,7 +361,7 @@ const fishTypes = {
         color: '#B22222',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.026,
+        fishSpeed: 0.018,
         fishRandomness: 1.0,
         fishChangeInterval: 66,
         progressGainRate: 0.3,
@@ -375,7 +375,7 @@ const fishTypes = {
         color: '#2F4F4F',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.028125,
+        fishSpeed: 0.02,
         fishRandomness: 1.125,
         fishChangeInterval: 67,
         progressGainRate: 0.3,
@@ -389,7 +389,7 @@ const fishTypes = {
         color: '#2F4F2F',
         difficulty: 'Hard',
         barSize: 80,
-        fishSpeed: 0.03,
+        fishSpeed: 0.021,
         fishRandomness: 1.25,
         fishChangeInterval: 68,
         progressGainRate: 0.3,
@@ -408,7 +408,20 @@ let maxInventorySlots = 20;
 const absoluteMaxInventorySlots = 100;
 let inventory = [];
 let money = 0;
-const inventorySlotPrice = 100;
+const baseInventorySlotPrice = 100;
+
+// Function to calculate current inventory slot price
+function getInventorySlotPrice() {
+    // Base price of $100 for slots up to 20
+    // After 20 slots, each additional slot costs $100 more
+    if (maxInventorySlots < 20) {
+        return baseInventorySlotPrice;
+    } else {
+        const slotsAbove20 = maxInventorySlots - 20;
+        return baseInventorySlotPrice + (slotsAbove20 * 100);
+    }
+}
+
 let currentPage = 'fishing'; // 'fishing' or 'shop'
 
 // Time tracking
@@ -2499,6 +2512,7 @@ function sellAllFish() {
 
 function updateBuyButton() {
     const buyButton = document.getElementById('buy-slot-button');
+    const inventorySlotPrice = getInventorySlotPrice();
     const canAfford = money >= inventorySlotPrice;
     const notAtMax = maxInventorySlots < absoluteMaxInventorySlots;
     
@@ -2840,6 +2854,7 @@ function equipRod(index) {
 }
 
 document.getElementById('buy-slot-button').addEventListener('click', () => {
+    const inventorySlotPrice = getInventorySlotPrice();
     if (money >= inventorySlotPrice && maxInventorySlots < absoluteMaxInventorySlots) {
         money -= inventorySlotPrice;
         maxInventorySlots++;
