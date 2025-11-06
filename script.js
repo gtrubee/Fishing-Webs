@@ -998,16 +998,19 @@ function gameLoop() {
     lastFrameTime = currentTime;
     
     // Update bar angle based on mouse input with momentum
-    const rotationAcceleration = 0.003; // Acceleration rate
-    const maxRotationSpeed = 0.08; // Maximum rotation speed
-    const rotationDrag = 0.85; // Deceleration factor (0-1, lower = more drag)
+    const rotationAcceleration = 0.0025; // Reduced for smoother acceleration
+    const maxRotationSpeed = 0.07; // Slightly reduced max speed for more control
+    const rotationDrag = 0.92; // Increased drag for smoother gliding (closer to 1 = less drag)
+    const inputDrag = 0.96; // Drag applied even when holding input for smoother feel
     
     if (leftMouseDown) {
         barAngularSpeed -= rotationAcceleration * deltaMultiplier; // Counter-clockwise
+        barAngularSpeed *= Math.pow(inputDrag, deltaMultiplier); // Apply smoothing during input
     } else if (rightMouseDown) {
         barAngularSpeed += rotationAcceleration * deltaMultiplier; // Clockwise
+        barAngularSpeed *= Math.pow(inputDrag, deltaMultiplier); // Apply smoothing during input
     } else {
-        // Apply drag when no input
+        // Apply stronger drag when no input for smooth deceleration
         barAngularSpeed *= Math.pow(rotationDrag, deltaMultiplier);
     }
     
