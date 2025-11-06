@@ -18,6 +18,7 @@
                 🎒
                 <span id="fish-count">0/20</span>
             </div>
+            <button id="bait-button">🪱 Bait</button>
             <button id="shop-button">🏪 Shop</button>
             <div id="money-display">💰 $<span id="money-amount">0</span></div>
         </div>
@@ -49,6 +50,8 @@
                         </div>
                         <h2>Fishing Rods</h2>
                         <div id="rods-container"></div>
+                        <h2>Bait</h2>
+                        <div id="bait-container"></div>
                     </div>
                 </div>
             </div>
@@ -61,6 +64,15 @@
                 <button id="close-inventory">✕</button>
             </div>
             <div id="inventory-grid"></div>
+        </div>
+
+        <!-- Bait Inventory Popup -->
+        <div id="bait-popup" style="display: none;">
+            <div id="bait-popup-header">
+                <h2>Bait Inventory</h2>
+                <button id="close-bait-popup">✕</button>
+            </div>
+            <div id="bait-popup-grid"></div>
         </div>
     </div>
     <script src="script.js"></script>

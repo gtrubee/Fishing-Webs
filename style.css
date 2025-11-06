@@ -146,6 +146,15 @@ button {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+#bait-button {
+    position: absolute;
+    top: 90px;
+    right: 20px;
+    font-size: 18px;
+    padding: 12px 24px;
+    z-index: 10;
+}
+
 #backpack-icon:hover {
     transform: scale(1.1);
 }
@@ -178,7 +187,22 @@ button {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
-#inventory-header {
+#bait-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(139, 195, 74, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    border: 4px solid #33691E;
+    width: 600px;
+    max-height: 500px;
+    z-index: 100;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+#inventory-header, #bait-popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -187,13 +211,21 @@ button {
     padding-bottom: 10px;
 }
 
-#inventory-header h2 {
+#bait-popup-header {
+    border-bottom: 3px solid #33691E;
+}
+
+#inventory-header h2, #bait-popup-header h2 {
     margin: 0;
     color: #8B4513;
     font-size: 28px;
 }
 
-#close-inventory {
+#bait-popup-header h2 {
+    color: #33691E;
+}
+
+#close-inventory, #close-bait-popup {
     background: #FF6B6B;
     border: 2px solid #8B4513;
     border-radius: 5px;
@@ -209,16 +241,78 @@ button {
     transition: background 0.2s;
 }
 
-#close-inventory:hover {
+#close-bait-popup {
+    border: 2px solid #33691E;
+}
+
+#close-inventory:hover, #close-bait-popup:hover {
     background: #FF5252;
 }
 
-#inventory-grid {
+#inventory-grid, #bait-popup-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     max-height: 400px;
     overflow-y: auto;
+}
+
+#bait-popup-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.bait-slot {
+    border: 3px solid #33691E;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.bait-slot:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 1);
+}
+
+.bait-slot.equipped {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.2);
+    border-width: 4px;
+}
+
+.bait-slot.empty {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bait-slot.empty:hover {
+    transform: none;
+}
+
+.bait-slot-icon {
+    font-size: 40px;
+}
+
+.bait-slot-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #33691E;
+}
+
+.bait-slot-count {
+    font-size: 16px;
+    color: #666;
+}
+
+.bait-slot-desc {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
 }
 
 .inventory-slot {

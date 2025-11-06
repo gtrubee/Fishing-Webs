@@ -438,6 +438,69 @@ const fishPrices = {
     'Koi': 30
 };
 
+// Bait system
+const baitTypes = {
+    worms: {
+        name: 'Worms',
+        price: 50,
+        description: 'Great for panfish',
+        boosts: ['bluegill', 'perch', 'rockBass', 'crappie', 'bullhead'],
+        multiplier: 8
+    },
+    grubs: {
+        name: 'Grubs',
+        price: 75,
+        description: 'Attracts small fish',
+        boosts: ['chub', 'herring', 'whitefish', 'goldfish'],
+        multiplier: 8
+    },
+    minnows: {
+        name: 'Minnows',
+        price: 150,
+        description: 'Perfect for bass',
+        boosts: ['smallmouthBass', 'largemouthBass', 'pike', 'walleye'],
+        multiplier: 8
+    },
+    crawfish: {
+        name: 'Crawfish',
+        price: 200,
+        description: 'Irresistible to catfish',
+        boosts: ['catfish', 'bullhead', 'carp'],
+        multiplier: 8
+    },
+    spinners: {
+        name: 'Spinners',
+        price: 250,
+        description: 'Best for trout',
+        boosts: ['trout', 'rainbowTrout', 'salmon', 'cherrySalmon', 'cohoSalmon', 'kingSalmon'],
+        multiplier: 8
+    },
+    leeches: {
+        name: 'Leeches',
+        price: 300,
+        description: 'Premium for walleye',
+        boosts: ['walleye', 'pike', 'muskellunge'],
+        multiplier: 8
+    },
+    doughBalls: {
+        name: 'Dough Balls',
+        price: 100,
+        description: 'Carp favorite',
+        boosts: ['carp', 'crucianCarp', 'koi'],
+        multiplier: 8
+    },
+    cutBait: {
+        name: 'Cut Bait',
+        price: 350,
+        description: 'For trophy fish',
+        boosts: ['sturgeon', 'gar', 'muskellunge', 'kingSalmon'],
+        multiplier: 8
+    }
+};
+
+let currentBait = null; // Currently equipped bait
+let baitInventory = {}; // Stores quantity of each bait type
+
 // Fishing rods
 const fishingRods = [
     { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true },
@@ -469,6 +532,10 @@ function loadGameData() {
                 });
             }
             
+            // Restore bait inventory and equipped bait
+            baitInventory = data.baitInventory || {};
+            currentBait = data.currentBait || null;
+            
             console.log('Game data loaded successfully');
         } catch (e) {
             console.error('Error loading game data:', e);
@@ -483,23 +550,22 @@ function saveGameData() {
         money: money,
         maxInventorySlots: maxInventorySlots,
         currentRodIndex: currentRodIndex,
-        ownedRods: fishingRods.map(rod => rod.owned)
+        ownedRods: fishingRods.map(rod => rod.owned),
+        baitInventory: baitInventory,
+        currentBait: currentBait
     };
     localStorage.setItem('fishingGameSave', JSON.stringify(data));
     console.log('Game data saved');
 }
 
-// Minigame variables
-let barY = 350;
-let barHeight = 80;
-let barSpeed = 0;
-let barGravity = 0.15;
-let barJumpPower = -0.3;
-let maxBarSpeed = 5;
+// Minigame variables - Circular ring design
+let barAngle = 0; // Angle position of the bar around the ring (in radians)
+let barAngleSize = Math.PI / 3; // Size of the bar arc (60 degrees)
+let barAngularSpeed = 0;
 
-let fishY = 100;
-let fishSpeed = 0;
-let fishTargetY = 100;
+let fishAngle = 0; // Angle position of the fish around the ring
+let fishAngularSpeed = 0;
+let fishTargetAngle = 0;
 let fishChangeTimer = 0;
 
 let progress = 0;
@@ -508,8 +574,13 @@ let progressGainRate = 0.4;
 const maxProgress = 100;
 const winThreshold = 100;
 
-let mouseDown = false;
+let leftMouseDown = false;
+let rightMouseDown = false;
 let animationFrameId = null;
+
+// Ring properties
+const ringRadius = 120;
+const ringThickness = 40;
 
 // Delta time variables for frame-rate independent movement
 let lastFrameTime = 0;
@@ -680,17 +751,42 @@ function startMinigame() {
     statusDiv.style.opacity = '1';
     statusDiv.style.transition = 'none';
     
-    // Randomly select a fish type based on spawn weights
+    // Randomly select a fish type based on spawn weights (modified by bait)
     const fishKeys = Object.keys(fishTypes);
-    const totalWeight = fishKeys.reduce((sum, key) => sum + fishTypes[key].spawnWeight, 0);
+    
+    // Calculate total weight with bait multipliers
+    const totalWeight = fishKeys.reduce((sum, key) => {
+        let weight = fishTypes[key].spawnWeight;
+        // If bait is equipped and this fish is boosted by it, multiply the spawn weight
+        if (currentBait && baitTypes[currentBait].boosts.includes(key)) {
+            weight *= baitTypes[currentBait].multiplier;
+        }
+        return sum + weight;
+    }, 0);
+    
     let random = Math.random() * totalWeight;
     
     let selectedFish = fishKeys[0];
     for (const key of fishKeys) {
-        random -= fishTypes[key].spawnWeight;
+        let weight = fishTypes[key].spawnWeight;
+        // Apply bait multiplier
+        if (currentBait && baitTypes[currentBait].boosts.includes(key)) {
+            weight *= baitTypes[currentBait].multiplier;
+        }
+        random -= weight;
         if (random <= 0) {
             selectedFish = key;
             break;
+        }
+    }
+    
+    // Consume bait if equipped
+    if (currentBait) {
+        baitInventory[currentBait]--;
+        if (baitInventory[currentBait] <= 0) {
+            delete baitInventory[currentBait];
+            currentBait = null;
+            updateShopDisplay();
         }
     }
     
@@ -709,20 +805,21 @@ function startMinigame() {
     const weightAdjustedRandomness = currentFish.fishRandomness * (1 + weightFactor * 0.4); // Up to 40% more erratic
     const weightAdjustedInterval = currentFish.fishChangeInterval * (1 - weightFactor * 0.25); // Up to 25% more frequent changes
     
-    statusDiv.textContent = 'Keep the fish in the green bar!';
+    statusDiv.textContent = 'Left click to move bar left, right click to move bar right!';
     
     console.log('Hiding scene canvas, showing minigame canvas');
     sceneCanvas.style.display = 'none';
     minigameCanvas.style.display = 'block';
     console.log('Canvas display states - scene:', sceneCanvas.style.display, 'minigame:', minigameCanvas.style.display);
     
-    // Reset minigame variables with fish-specific difficulty (adjusted by weight)
-    barHeight = currentFish.barSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0);
-    barY = minigameCanvas.height - 50 - barHeight / 2;
-    barSpeed = 0;
-    fishY = minigameCanvas.height - 50;
-    fishSpeed = 0;
-    fishTargetY = minigameCanvas.height - 50;
+    // Reset minigame variables for circular ring design
+    const barSizeInDegrees = (currentFish.barSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
+    barAngleSize = (barSizeInDegrees / 180) * Math.PI; // Convert to radians
+    barAngle = 0; // Start at top
+    barAngularSpeed = 0;
+    fishAngle = 0; // Start fish at top
+    fishAngularSpeed = 0;
+    fishTargetAngle = 0;
     fishChangeTimer = 0;
     progress = 15;
     progressGainRate = currentFish.progressGainRate;
@@ -732,7 +829,8 @@ function startMinigame() {
     currentFish.adjustedSpeed = weightAdjustedSpeed;
     currentFish.adjustedRandomness = weightAdjustedRandomness;
     currentFish.adjustedInterval = weightAdjustedInterval;
-    mouseDown = false;
+    leftMouseDown = false;
+    rightMouseDown = false;
     
     lastFrameTime = performance.now(); // Initialize timing
     
@@ -749,46 +847,66 @@ function gameLoop() {
     const deltaMultiplier = deltaTime / TARGET_FRAME_TIME;
     lastFrameTime = currentTime;
     
-    // Update bar position
-    if (mouseDown) {
-        barSpeed += barJumpPower * deltaMultiplier;
-    }
-    barSpeed += barGravity * deltaMultiplier;
+    // Update bar angle based on mouse input with momentum
+    const rotationAcceleration = 0.003; // Acceleration rate
+    const maxRotationSpeed = 0.08; // Maximum rotation speed
+    const rotationDrag = 0.85; // Deceleration factor (0-1, lower = more drag)
     
-    // Limit bar speed for smoother movement
-    barSpeed = Math.max(-maxBarSpeed, Math.min(maxBarSpeed, barSpeed));
-    
-    barY += barSpeed * deltaMultiplier;
-    
-    // Keep bar in bounds
-    if (barY < 0) {
-        barY = 0;
-        barSpeed = 0;
-    }
-    if (barY + barHeight > minigameCanvas.height) {
-        barY = minigameCanvas.height - barHeight;
-        barSpeed = 0;
+    if (leftMouseDown) {
+        barAngularSpeed -= rotationAcceleration * deltaMultiplier; // Counter-clockwise
+    } else if (rightMouseDown) {
+        barAngularSpeed += rotationAcceleration * deltaMultiplier; // Clockwise
+    } else {
+        // Apply drag when no input
+        barAngularSpeed *= Math.pow(rotationDrag, deltaMultiplier);
     }
     
-    // Update fish position
+    // Clamp speed
+    barAngularSpeed = Math.max(-maxRotationSpeed, Math.min(maxRotationSpeed, barAngularSpeed));
+    
+    barAngle += barAngularSpeed * deltaMultiplier;
+    
+    // Normalize angle to 0-2π range
+    if (barAngle < 0) barAngle += Math.PI * 2;
+    if (barAngle >= Math.PI * 2) barAngle -= Math.PI * 2;
+    
+    // Update fish position around the ring
     fishChangeTimer += deltaMultiplier;
     if (fishChangeTimer > currentFish.adjustedInterval) {
-        fishTargetY = Math.random() * (minigameCanvas.height - 40);
+        fishTargetAngle = Math.random() * Math.PI * 2;
         fishChangeTimer = 0;
     }
     
-    // Move fish towards target with weight-adjusted speed and randomness
-    const fishDiff = fishTargetY - fishY;
-    fishSpeed = (fishDiff * currentFish.adjustedSpeed + (Math.random() - 0.5) * currentFish.adjustedRandomness) * deltaMultiplier;
-    fishY += fishSpeed;
+    // Move fish towards target angle (original difficulty)
+    let angleDiff = fishTargetAngle - fishAngle;
+    // Take shortest path around circle
+    if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+    if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
     
-    // Keep fish in bounds
-    fishY = Math.max(20, Math.min(minigameCanvas.height - 20, fishY));
+    fishAngularSpeed = (angleDiff * currentFish.adjustedSpeed + (Math.random() - 0.5) * currentFish.adjustedRandomness * 0.1) * deltaMultiplier;
+    fishAngle += fishAngularSpeed;
     
-    // Check if fish is in the bar
-    const fishInBar = fishY >= barY && fishY <= barY + barHeight;
+    // Normalize fish angle
+    if (fishAngle < 0) fishAngle += Math.PI * 2;
+    if (fishAngle >= Math.PI * 2) fishAngle -= Math.PI * 2;
     
-    if (fishInBar) {
+    // Check if fish is in the bar arc
+    let fishAngleInBar = false;
+    let barStartAngle = barAngle - barAngleSize / 2;
+    let barEndAngle = barAngle + barAngleSize / 2;
+    
+    // Normalize bar angles
+    if (barStartAngle < 0) barStartAngle += Math.PI * 2;
+    if (barEndAngle >= Math.PI * 2) barEndAngle -= Math.PI * 2;
+    
+    // Check if fish is within bar arc (handle wraparound)
+    if (barStartAngle < barEndAngle) {
+        fishAngleInBar = fishAngle >= barStartAngle && fishAngle <= barEndAngle;
+    } else {
+        fishAngleInBar = fishAngle >= barStartAngle || fishAngle <= barEndAngle;
+    }
+    
+    if (fishAngleInBar) {
         progress += progressGainRate * deltaMultiplier;
     } else {
         progress -= progressDecayRate * deltaMultiplier;
@@ -808,111 +926,100 @@ function gameLoop() {
     }
     
     // Draw minigame
-    drawMinigame(fishInBar);
+    drawMinigame(fishAngleInBar);
     
     animationFrameId = requestAnimationFrame(gameLoop);
 }
 
-// Draw the minigame
+// Draw the minigame - Circular ring design
 function drawMinigame(fishInBar) {
     // Background - match night water color
     minigameCtx.fillStyle = '#0d1b3a';
     minigameCtx.fillRect(0, 0, minigameCanvas.width, minigameCanvas.height);
     
-    // Track background
-    minigameCtx.fillStyle = '#1a2947';
-    minigameCtx.fillRect(35, 0, 70, minigameCanvas.height);
+    const centerX = minigameCanvas.width / 2;
+    const centerY = minigameCanvas.height / 2 - 30;
     
-    // Green bar
-    minigameCtx.fillStyle = fishInBar ? '#4CAF50' : '#2E7D32';
-    minigameCtx.fillRect(35, barY, 70, barHeight);
+    // Draw outer ring (white transparent)
+    minigameCtx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    minigameCtx.lineWidth = ringThickness;
+    minigameCtx.beginPath();
+    minigameCtx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
+    minigameCtx.stroke();
     
-    // Bar border
-    minigameCtx.strokeStyle = '#FFFFFF';
-    minigameCtx.lineWidth = 3;
-    minigameCtx.strokeRect(35, barY, 70, barHeight);
+    // Draw green bar arc
+    const barStartAngle = barAngle - barAngleSize / 2 - Math.PI / 2; // Adjust for canvas coordinate system
+    const barEndAngle = barAngle + barAngleSize / 2 - Math.PI / 2;
     
-    // Fish icon
+    minigameCtx.strokeStyle = fishInBar ? '#4CAF50' : '#2E7D32';
+    minigameCtx.lineWidth = ringThickness;
+    minigameCtx.beginPath();
+    minigameCtx.arc(centerX, centerY, ringRadius, barStartAngle, barEndAngle);
+    minigameCtx.stroke();
+    
+    // Draw fish on the ring
+    const fishX = centerX + Math.cos(fishAngle - Math.PI / 2) * ringRadius;
+    const fishY = centerY + Math.sin(fishAngle - Math.PI / 2) * ringRadius;
+    
+    // Fish icon (circular)
     minigameCtx.fillStyle = currentFish.color;
     minigameCtx.beginPath();
-    minigameCtx.arc(70, fishY, 15, 0, Math.PI * 2);
+    minigameCtx.arc(fishX, fishY, 15, 0, Math.PI * 2);
     minigameCtx.fill();
     
     // Fish eye
     minigameCtx.fillStyle = '#FFFFFF';
     minigameCtx.beginPath();
-    minigameCtx.arc(75, fishY - 3, 4, 0, Math.PI * 2);
+    minigameCtx.arc(fishX + 3, fishY - 3, 4, 0, Math.PI * 2);
     minigameCtx.fill();
     
-    // Fish tail
-    minigameCtx.fillStyle = currentFish.color;
-    minigameCtx.beginPath();
-    minigameCtx.moveTo(55, fishY);
-    minigameCtx.lineTo(45, fishY - 10);
-    minigameCtx.lineTo(45, fishY + 10);
-    minigameCtx.closePath();
-    minigameCtx.fill();
+    // Progress ring (outer ring around the fishing ring)
+    const progressRingRadius = ringRadius + ringThickness / 2 + 15;
+    const progressRingThickness = 10;
     
-    // Progress bar
-    minigameCtx.fillStyle = '#555';
-    minigameCtx.fillRect(150, 50, 120, 400);
-    
-    // Progress fill with smooth color transitions
-    const progressHeight = (progress / maxProgress) * 400;
-    const gradient = minigameCtx.createLinearGradient(0, 450 - progressHeight, 0, 450);
-    
-    // Smooth color transition based on progress percentage
-    let color1, color2;
-    
+    // Determine progress color
+    let progressColor;
     if (progress < 20) {
-        // Red for 0-20%
-        color1 = '#FF6B6B';
-        color2 = '#C62828';
+        progressColor = '#FF6B6B';
     } else if (progress < 70) {
-        // Transition from red to yellow for 20-70%
         const factor = (progress - 20) / 50;
-        const r1 = 255;
-        const g1 = Math.floor(107 + factor * (215 - 107));
-        const b1 = Math.floor(107 - factor * 107);
-        const r2 = Math.floor(198 + factor * (255 - 198));
-        const g2 = Math.floor(40 + factor * (165 - 40));
-        const b2 = Math.floor(40 - factor * 40);
-        color1 = `rgb(${r1}, ${g1}, ${b1})`;
-        color2 = `rgb(${r2}, ${g2}, ${b2})`;
+        const r = 255;
+        const g = Math.floor(107 + factor * (215 - 107));
+        const b = Math.floor(107 - factor * 107);
+        progressColor = `rgb(${r}, ${g}, ${b})`;
     } else {
-        // Transition from yellow to green for 70-100%
         const factor = (progress - 70) / 30;
-        const r1 = Math.floor(255 - factor * (255 - 102));
-        const g1 = Math.floor(215 + factor * (187 - 215));
-        const b1 = Math.floor(0 + factor * 106);
-        const r2 = Math.floor(255 - factor * (255 - 46));
-        const g2 = Math.floor(165 - factor * (165 - 125));
-        const b2 = Math.floor(0 + factor * 50);
-        color1 = `rgb(${r1}, ${g1}, ${b1})`;
-        color2 = `rgb(${r2}, ${g2}, ${b2})`;
+        const r = Math.floor(255 - factor * (255 - 102));
+        const g = Math.floor(215 + factor * (187 - 215));
+        const b = Math.floor(0 + factor * 106);
+        progressColor = `rgb(${r}, ${g}, ${b})`;
     }
     
-    gradient.addColorStop(0, color1);
-    gradient.addColorStop(1, color2);
-    minigameCtx.fillStyle = gradient;
-    minigameCtx.fillRect(150, 450 - progressHeight, 120, progressHeight);
+    // Draw progress ring background (grey)
+    minigameCtx.strokeStyle = 'rgba(85, 85, 85, 0.5)';
+    minigameCtx.lineWidth = progressRingThickness;
+    minigameCtx.beginPath();
+    minigameCtx.arc(centerX, centerY, progressRingRadius, 0, Math.PI * 2);
+    minigameCtx.stroke();
     
-    // Progress bar border
-    minigameCtx.strokeStyle = '#FFFFFF';
-    minigameCtx.lineWidth = 3;
-    minigameCtx.strokeRect(150, 50, 120, 400);
+    // Draw progress ring fill (colored based on progress)
+    const progressAngle = (progress / maxProgress) * Math.PI * 2;
+    minigameCtx.strokeStyle = progressColor;
+    minigameCtx.lineWidth = progressRingThickness;
+    minigameCtx.beginPath();
+    minigameCtx.arc(centerX, centerY, progressRingRadius, -Math.PI / 2, -Math.PI / 2 + progressAngle);
+    minigameCtx.stroke();
     
-    // Progress text
+    // Progress text in center
     minigameCtx.fillStyle = '#FFFFFF';
-    minigameCtx.font = 'bold 20px Arial';
+    minigameCtx.font = 'bold 24px Arial';
     minigameCtx.textAlign = 'center';
-    minigameCtx.fillText('PROGRESS', 210, 30);
-    minigameCtx.fillText(Math.floor(progress) + '%', 210, 470);
+    minigameCtx.fillText(Math.floor(progress) + '%', centerX, centerY + 10);
     
     // Instructions
     minigameCtx.fillStyle = '#FFFFFF';
     minigameCtx.font = '14px Arial';
-    minigameCtx.fillText('Click to move bar up!', minigameCanvas.width / 2, minigameCanvas.height - 10);
+    minigameCtx.fillText('Left click = Counter-clockwise | Right click = Clockwise', minigameCanvas.width / 2, minigameCanvas.height - 10);
 }
 
 // End the minigame
@@ -975,45 +1082,77 @@ fishButton.addEventListener('click', () => {
     }
 });
 
-// Mouse/click controls for the minigame
+// Mouse/click controls for the minigame - Circular ring design
 document.addEventListener('mousedown', (e) => {
     if (minigameActive) {
-        mouseDown = true;
+        if (e.button === 0) { // Left click
+            leftMouseDown = true;
+        } else if (e.button === 2) { // Right click
+            rightMouseDown = true;
+        }
+        e.preventDefault();
     }
 });
 
 document.addEventListener('mouseup', (e) => {
     if (minigameActive) {
-        mouseDown = false;
+        if (e.button === 0) { // Left click
+            leftMouseDown = false;
+        } else if (e.button === 2) { // Right click
+            rightMouseDown = false;
+        }
     }
 });
 
-// Keyboard controls (spacebar)
-document.addEventListener('keydown', (e) => {
-    if (minigameActive && e.code === 'Space') {
-        mouseDown = true;
-        e.preventDefault(); // Prevent page scrolling
-    }
-});
-
-document.addEventListener('keyup', (e) => {
-    if (minigameActive && e.code === 'Space') {
-        mouseDown = false;
+// Prevent context menu on right click during minigame
+document.addEventListener('contextmenu', (e) => {
+    if (minigameActive) {
         e.preventDefault();
     }
 });
 
-// Touch controls for mobile
+// Keyboard controls (A/D or Arrow keys)
+document.addEventListener('keydown', (e) => {
+    if (minigameActive) {
+        if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+            leftMouseDown = true;
+            e.preventDefault();
+        } else if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+            rightMouseDown = true;
+            e.preventDefault();
+        }
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    if (minigameActive) {
+        if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+            leftMouseDown = false;
+            e.preventDefault();
+        } else if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+            rightMouseDown = false;
+            e.preventDefault();
+        }
+    }
+});
+
+// Touch controls for mobile - left/right side of screen
 document.addEventListener('touchstart', (e) => {
     if (minigameActive) {
-        mouseDown = true;
+        const touch = e.touches[0];
+        if (touch.clientX < window.innerWidth / 2) {
+            leftMouseDown = true;
+        } else {
+            rightMouseDown = true;
+        }
         e.preventDefault();
     }
 });
 
 document.addEventListener('touchend', (e) => {
     if (minigameActive) {
-        mouseDown = false;
+        leftMouseDown = false;
+        rightMouseDown = false;
         e.preventDefault();
     }
 });
@@ -1036,9 +1175,81 @@ function getFishColor(fishType) {
 }
 
 // Update inventory display
+// Function to update the bait indicator on the fishing page
+function updateBaitIndicator() {
+    // Remove equipped bait if inventory is empty
+    if (currentBait && (!baitInventory[currentBait] || baitInventory[currentBait] <= 0)) {
+        currentBait = null;
+    }
+}
+
+// Function to update the bait popup
+function updateBaitPopup() {
+    const baitGrid = document.getElementById('bait-popup-grid');
+    baitGrid.innerHTML = '';
+    
+    Object.keys(baitTypes).forEach(baitKey => {
+        const bait = baitTypes[baitKey];
+        const count = baitInventory[baitKey] || 0;
+        const isEquipped = currentBait === baitKey;
+        
+        const baitSlot = document.createElement('div');
+        baitSlot.className = 'bait-slot';
+        
+        if (count === 0) {
+            baitSlot.classList.add('empty');
+        }
+        
+        if (isEquipped) {
+            baitSlot.classList.add('equipped');
+        }
+        
+        const icon = document.createElement('div');
+        icon.className = 'bait-slot-icon';
+        icon.textContent = '🪱';
+        
+        const name = document.createElement('div');
+        name.className = 'bait-slot-name';
+        name.textContent = bait.name;
+        if (isEquipped) {
+            name.textContent += ' ✓';
+        }
+        
+        const countDiv = document.createElement('div');
+        countDiv.className = 'bait-slot-count';
+        countDiv.textContent = count === 0 ? 'None owned' : `${count} remaining`;
+        
+        const desc = document.createElement('div');
+        desc.className = 'bait-slot-desc';
+        desc.textContent = bait.description;
+        
+        baitSlot.appendChild(icon);
+        baitSlot.appendChild(name);
+        baitSlot.appendChild(countDiv);
+        baitSlot.appendChild(desc);
+        
+        // Click to equip/unequip
+        if (count > 0) {
+            baitSlot.addEventListener('click', () => {
+                if (isEquipped) {
+                    unequipBait();
+                } else {
+                    equipBait(baitKey);
+                }
+                updateBaitPopup();
+            });
+        }
+        
+        baitGrid.appendChild(baitSlot);
+    });
+}
+
 function updateInventoryDisplay() {
     const fishCountDiv = document.getElementById('fish-count');
     fishCountDiv.textContent = `${inventory.length}/${maxInventorySlots}`;
+    
+    // Update bait display
+    updateBaitIndicator();
     
     const inventoryGrid = document.getElementById('inventory-grid');
     inventoryGrid.innerHTML = '';
@@ -1102,6 +1313,18 @@ document.getElementById('backpack-icon').addEventListener('click', () => {
 // Close inventory popup
 document.getElementById('close-inventory').addEventListener('click', () => {
     document.getElementById('inventory-popup').style.display = 'none';
+});
+
+// Bait inventory popup
+document.getElementById('bait-button').addEventListener('click', () => {
+    const popup = document.getElementById('bait-popup');
+    popup.style.display = 'block';
+    updateBaitPopup();
+});
+
+// Close bait popup
+document.getElementById('close-bait-popup').addEventListener('click', () => {
+    document.getElementById('bait-popup').style.display = 'none';
 });
 
 // Shop navigation
@@ -1315,6 +1538,9 @@ function updateBuyButton() {
     
     // Update fishing rods
     updateRodsDisplay();
+    
+    // Update bait display
+    updateBaitDisplay();
 }
 
 function updateRodsDisplay() {
@@ -1382,6 +1608,106 @@ function buyRod(index) {
         saveGameData();
     }
 }
+
+function updateBaitDisplay() {
+    const baitContainer = document.getElementById('bait-container');
+    baitContainer.innerHTML = '';
+    
+    Object.keys(baitTypes).forEach(baitKey => {
+        const bait = baitTypes[baitKey];
+        const baitItem = document.createElement('div');
+        baitItem.className = 'shop-item';
+        
+        const baitInfo = document.createElement('div');
+        baitInfo.className = 'shop-item-info';
+        
+        const baitIcon = document.createElement('div');
+        baitIcon.className = 'shop-item-icon';
+        baitIcon.textContent = '🪱';
+        
+        const baitDetails = document.createElement('div');
+        const baitName = document.createElement('div');
+        baitName.className = 'shop-item-name';
+        baitName.textContent = bait.name;
+        if (baitInventory[baitKey]) {
+            baitName.textContent += ` (${baitInventory[baitKey]})`;
+        }
+        if (currentBait === baitKey) {
+            baitName.textContent += ' ✓ Equipped';
+            baitName.style.color = '#4CAF50';
+        }
+        
+        const baitDesc = document.createElement('div');
+        baitDesc.className = 'shop-item-desc';
+        baitDesc.textContent = bait.description;
+        
+        baitDetails.appendChild(baitName);
+        baitDetails.appendChild(baitDesc);
+        
+        baitInfo.appendChild(baitIcon);
+        baitInfo.appendChild(baitDetails);
+        
+        baitItem.appendChild(baitInfo);
+        
+        // Buy button
+        const buyButton = document.createElement('button');
+        buyButton.className = 'buy-button';
+        buyButton.textContent = `Buy 5 for $${bait.price}`;
+        buyButton.disabled = money < bait.price;
+        buyButton.addEventListener('click', () => buyBait(baitKey));
+        baitItem.appendChild(buyButton);
+        
+        // Equip button if player has this bait
+        if (baitInventory[baitKey] && baitInventory[baitKey] > 0 && currentBait !== baitKey) {
+            const equipButton = document.createElement('button');
+            equipButton.className = 'buy-button';
+            equipButton.textContent = 'Equip';
+            equipButton.addEventListener('click', () => equipBait(baitKey));
+            baitItem.appendChild(equipButton);
+        }
+        
+        // Unequip button if this is the currently equipped bait
+        if (currentBait === baitKey) {
+            const unequipButton = document.createElement('button');
+            unequipButton.className = 'buy-button';
+            unequipButton.textContent = 'Unequip';
+            unequipButton.addEventListener('click', () => unequipBait());
+            baitItem.appendChild(unequipButton);
+        }
+        
+        baitContainer.appendChild(baitItem);
+    });
+}
+
+function buyBait(baitKey) {
+    const bait = baitTypes[baitKey];
+    if (money >= bait.price) {
+        money -= bait.price;
+        if (!baitInventory[baitKey]) {
+            baitInventory[baitKey] = 0;
+        }
+        baitInventory[baitKey] += 5; // Buy 5 at a time
+        updateShopDisplay();
+        saveGameData();
+    }
+}
+
+function equipBait(baitKey) {
+    if (baitInventory[baitKey] && baitInventory[baitKey] > 0) {
+        currentBait = baitKey;
+        updateShopDisplay();
+        updateBaitIndicator();
+        saveGameData();
+    }
+}
+
+function unequipBait() {
+    currentBait = null;
+    updateShopDisplay();
+    updateBaitIndicator();
+    saveGameData();
+}
+
 
 function equipRod(index) {
     if (fishingRods[index].owned) {
