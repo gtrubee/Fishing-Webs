@@ -1359,29 +1359,54 @@ function startMinigame() {
     // Randomly select a fish type based on spawn weights (modified by bait)
     const fishKeys = Object.keys(fishTypes);
     
-    // Calculate total weight with bait multipliers
-    const totalWeight = fishKeys.reduce((sum, key) => {
-        let weight = fishTypes[key].spawnWeight;
-        // If bait is equipped and this fish is boosted by it, multiply the spawn weight
-        if (currentBait && baitTypes[currentBait].boosts.includes(key)) {
-            weight *= baitTypes[currentBait].multiplier;
-        }
-        return sum + weight;
-    }, 0);
-    
-    let random = Math.random() * totalWeight;
-    
     let selectedFish = fishKeys[0];
-    for (const key of fishKeys) {
-        let weight = fishTypes[key].spawnWeight;
-        // Apply bait multiplier
-        if (currentBait && baitTypes[currentBait].boosts.includes(key)) {
-            weight *= baitTypes[currentBait].multiplier;
+    
+    // If bait is equipped, 90% chance to get a boosted fish type
+    if (currentBait && baitTypes[currentBait].boosts.length > 0) {
+        const boostedFish = baitTypes[currentBait].boosts;
+        
+        if (Math.random() < 0.9) {
+            // 90% chance: pick from boosted fish only
+            const totalBoostedWeight = boostedFish.reduce((sum, key) => {
+                return sum + fishTypes[key].spawnWeight;
+            }, 0);
+            
+            let random = Math.random() * totalBoostedWeight;
+            for (const key of boostedFish) {
+                random -= fishTypes[key].spawnWeight;
+                if (random <= 0) {
+                    selectedFish = key;
+                    break;
+                }
+            }
+        } else {
+            // 10% chance: normal weighted random from all fish
+            const totalWeight = fishKeys.reduce((sum, key) => {
+                return sum + fishTypes[key].spawnWeight;
+            }, 0);
+            
+            let random = Math.random() * totalWeight;
+            for (const key of fishKeys) {
+                random -= fishTypes[key].spawnWeight;
+                if (random <= 0) {
+                    selectedFish = key;
+                    break;
+                }
+            }
         }
-        random -= weight;
-        if (random <= 0) {
-            selectedFish = key;
-            break;
+    } else {
+        // No bait equipped: normal weighted random
+        const totalWeight = fishKeys.reduce((sum, key) => {
+            return sum + fishTypes[key].spawnWeight;
+        }, 0);
+        
+        let random = Math.random() * totalWeight;
+        for (const key of fishKeys) {
+            random -= fishTypes[key].spawnWeight;
+            if (random <= 0) {
+                selectedFish = key;
+                break;
+            }
         }
     }
     
