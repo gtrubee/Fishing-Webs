@@ -1136,10 +1136,12 @@ function drawScene() {
         }
     }
 
-    // Dock posts
+    // Dock posts - extend from bottom of dock to bottom of screen
     sceneCtx.fillStyle = '#654321';
-    sceneCtx.fillRect(sceneCanvas.width * 0.65, sceneCanvas.height * 0.625, 15, sceneCanvas.height * 0.375);
-    sceneCtx.fillRect(sceneCanvas.width * 0.85, sceneCanvas.height * 0.625, 15, sceneCanvas.height * 0.375);
+    const dockBottom = sceneCanvas.height * 0.55 + 70; // Bottom of the dock
+    const postHeight = sceneCanvas.height - dockBottom; // From dock bottom to screen bottom
+    sceneCtx.fillRect(sceneCanvas.width * 0.65, dockBottom, 15, postHeight);
+    sceneCtx.fillRect(sceneCanvas.width * 0.85, dockBottom, 15, postHeight);
 
     // Fisherman (stick figure) OR Snowman (winter)
     const fishermanX = sceneCanvas.width * 0.62; // Position at left edge of dock
