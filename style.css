@@ -100,6 +100,13 @@ button {
     font-size: 18px;
     padding: 12px 24px;
     z-index: 10;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+#shop-button:hover {
+    background: linear-gradient(to bottom, #FFE55C, #FFB84D);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 #back-to-fishing {
@@ -298,20 +305,32 @@ button {
 
 #bait-button {
     position: absolute;
-    top: 90px;
+    top: 100px;
     right: 20px;
     font-size: 18px;
     padding: 12px 24px;
     z-index: 10;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#bait-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 #trinket-button {
     position: absolute;
-    top: 150px;
+    top: 160px;
     right: 20px;
     font-size: 18px;
     padding: 12px 24px;
     z-index: 10;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#trinket-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 #backpack-icon:hover {
@@ -790,13 +809,13 @@ button {
 #museum-button {
     position: absolute;
     bottom: 30px;
-    left: 160px;
+    left: 180px;
     font-size: 18px;
     padding: 12px 24px;
     z-index: 10;
     background: linear-gradient(to bottom, #CD853F, #8B6914);
     color: white;
-    border: 2px solid #654321;
+    border: 3px solid #8B4513;
     border-radius: 8px;
     cursor: pointer;
 }

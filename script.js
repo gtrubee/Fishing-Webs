@@ -1281,10 +1281,22 @@ function drawScene() {
         sceneCtx.stroke();
     }
 
+    // Get fishing rod color based on current rod
+    function getRodColor(rodIndex) {
+        switch(rodIndex) {
+            case 0: return '#8B4513'; // Plastic Rod - brown
+            case 1: return '#D2B48C'; // Bamboo Rod - tan
+            case 2: return '#2F4F4F'; // Rubber Rod - dark slate gray
+            case 3: return '#778899'; // Iron Rod - light slate gray
+            case 4: return '#B0C4DE'; // Titanium Rod - light steel blue
+            default: return '#654321'; // Default brown
+        }
+    }
+
     // Fishing rod (adjusted position based on winter/normal)
     if (isWinterSeason()) {
         // Snowman holding rod with both hands - rod extends from lower hand toward water (left)
-        sceneCtx.strokeStyle = '#654321';
+        sceneCtx.strokeStyle = getRodColor(currentRodIndex);
         sceneCtx.lineWidth = 4;
         sceneCtx.beginPath();
         sceneCtx.moveTo(fishermanX - 20, fishermanY - 5);
@@ -1292,7 +1304,7 @@ function drawScene() {
         sceneCtx.stroke();
     } else {
         // Normal fisherman rod position
-        sceneCtx.strokeStyle = '#654321';
+        sceneCtx.strokeStyle = getRodColor(currentRodIndex);
         sceneCtx.lineWidth = 4;
         sceneCtx.beginPath();
         sceneCtx.moveTo(fishermanX + 40, fishermanY - 40);
