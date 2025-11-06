@@ -115,6 +115,21 @@ button {
     user-select: none;
 }
 
+#time-display, #shop-time {
+    position: absolute;
+    top: 75px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 3px solid #666;
+    z-index: 10;
+    user-select: none;
+}
+
 #shop-tabs {
     display: flex;
     gap: 10px;

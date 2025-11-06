@@ -407,6 +407,11 @@ let money = 0;
 const inventorySlotPrice = 100;
 let currentPage = 'fishing'; // 'fishing' or 'shop'
 
+// Time tracking
+let timePlayed = 0; // in seconds
+let gameStartTime = Date.now();
+let lastUpdateTime = Date.now();
+
 // Fish selling prices (per pound)
 const fishPrices = {
     'Bluegill': 2,
@@ -598,6 +603,9 @@ function loadGameData() {
             money = data.money || 0;
             maxInventorySlots = data.maxInventorySlots || 20;
             currentRodIndex = data.currentRodIndex || 0;
+            timePlayed = data.timePlayed || 0;
+            gameStartTime = Date.now();
+            lastUpdateTime = Date.now();
             
             // Restore owned rods
             if (data.ownedRods) {
@@ -646,7 +654,8 @@ function saveGameData() {
         trinketInventory: trinketInventory,
         equippedTrinkets: equippedTrinkets,
         maxTrinketSlots: maxTrinketSlots,
-        trinketSlotUpgrades: trinketSlotUpgrades.map(u => u.purchased)
+        trinketSlotUpgrades: trinketSlotUpgrades.map(u => u.purchased),
+        timePlayed: timePlayed
     };
     localStorage.setItem('fishingGameSave', JSON.stringify(data));
     console.log('Game data saved');
@@ -1760,6 +1769,19 @@ function updateMoneyDisplay() {
     document.getElementById('shop-money-amount').textContent = money;
 }
 
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function updateTimeDisplay() {
+    const formattedTime = formatTime(timePlayed);
+    document.getElementById('time-amount').textContent = formattedTime;
+    document.getElementById('shop-time-amount').textContent = formattedTime;
+}
+
 function updateSellInventory() {
     const sellGrid = document.getElementById('sell-inventory-grid');
     sellGrid.innerHTML = '';
@@ -2260,8 +2282,21 @@ window.addEventListener('resize', () => {
 loadGameData();
 updateInventoryDisplay();
 updateMoneyDisplay();
+updateTimeDisplay();
 drawScene();
 
 // Initialize shop tabs (show sell section by default)
 document.getElementById('sell-section').classList.add('active');
 document.getElementById('sell-tab').classList.add('active');
+
+// Update time played every second
+setInterval(() => {
+    const currentTime = Date.now();
+    const deltaSeconds = Math.floor((currentTime - lastUpdateTime) / 1000);
+    if (deltaSeconds >= 1) {
+        timePlayed += deltaSeconds;
+        lastUpdateTime = currentTime;
+        updateTimeDisplay();
+        saveGameData(); // Auto-save time
+    }
+}, 1000);
