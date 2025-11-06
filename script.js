@@ -1600,6 +1600,21 @@ document.getElementById('back-to-fishing').addEventListener('click', () => {
     document.getElementById('fishing-page').style.display = 'block';
 });
 
+// Shop tab switching
+document.getElementById('sell-tab').addEventListener('click', () => {
+    document.getElementById('sell-tab').classList.add('active');
+    document.getElementById('buy-tab').classList.remove('active');
+    document.getElementById('sell-section').classList.add('active');
+    document.getElementById('buy-section').classList.remove('active');
+});
+
+document.getElementById('buy-tab').addEventListener('click', () => {
+    document.getElementById('buy-tab').classList.add('active');
+    document.getElementById('sell-tab').classList.remove('active');
+    document.getElementById('buy-section').classList.add('active');
+    document.getElementById('sell-section').classList.remove('active');
+});
+
 // Draw shop scene
 function drawShop() {
     // Background - Night time sky
@@ -1934,24 +1949,6 @@ function updateBaitDisplay() {
         buyButton.addEventListener('click', () => buyBait(baitKey));
         baitItem.appendChild(buyButton);
         
-        // Equip button if player has this bait
-        if (baitInventory[baitKey] && baitInventory[baitKey] > 0 && currentBait !== baitKey) {
-            const equipButton = document.createElement('button');
-            equipButton.className = 'buy-button';
-            equipButton.textContent = 'Equip';
-            equipButton.addEventListener('click', () => equipBait(baitKey));
-            baitItem.appendChild(equipButton);
-        }
-        
-        // Unequip button if this is the currently equipped bait
-        if (currentBait === baitKey) {
-            const unequipButton = document.createElement('button');
-            unequipButton.className = 'buy-button';
-            unequipButton.textContent = 'Unequip';
-            unequipButton.addEventListener('click', () => unequipBait());
-            baitItem.appendChild(unequipButton);
-        }
-        
         baitContainer.appendChild(baitItem);
     });
 }
@@ -2087,19 +2084,6 @@ function updateTrinketDisplay() {
             buyButton.disabled = money < trinket.price;
             buyButton.addEventListener('click', () => buyTrinket(trinketKey));
             trinketItem.appendChild(buyButton);
-        } else if (!isEquipped) {
-            const equipButton = document.createElement('button');
-            equipButton.className = 'buy-button';
-            equipButton.textContent = 'Equip';
-            equipButton.disabled = equippedTrinkets.length >= maxTrinketSlots;
-            equipButton.addEventListener('click', () => equipTrinket(trinketKey));
-            trinketItem.appendChild(equipButton);
-        } else {
-            const unequipButton = document.createElement('button');
-            unequipButton.className = 'buy-button';
-            unequipButton.textContent = 'Unequip';
-            unequipButton.addEventListener('click', () => unequipTrinket(trinketKey));
-            trinketItem.appendChild(unequipButton);
         }
         
         trinketContainer.appendChild(trinketItem);
@@ -2207,3 +2191,7 @@ loadGameData();
 updateInventoryDisplay();
 updateMoneyDisplay();
 drawScene();
+
+// Initialize shop tabs (show sell section by default)
+document.getElementById('sell-section').classList.add('active');
+document.getElementById('sell-tab').classList.add('active');

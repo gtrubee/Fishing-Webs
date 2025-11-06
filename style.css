@@ -115,6 +115,36 @@ button {
     user-select: none;
 }
 
+#shop-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.shop-tab {
+    padding: 12px 30px !important;
+    font-size: 18px !important;
+    background: rgba(200, 200, 200, 0.5);
+    border: 3px solid #8B4513;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.shop-tab:hover {
+    background: rgba(220, 220, 220, 0.7);
+    transform: translateY(-2px);
+}
+
+.shop-tab.active {
+    background: linear-gradient(to bottom, #FFD700, #FFA500);
+    color: #8B4513;
+    transform: translateY(0);
+}
+
 #status {
     font-size: 22px;
     font-weight: bold;
@@ -474,6 +504,11 @@ button {
 
 #sell-section, #buy-section {
     flex: 1;
+    display: none;
+}
+
+#sell-section.active, #buy-section.active {
+    display: block;
 }
 
 #sell-section h2, #buy-section h2 {
@@ -531,42 +566,56 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
 }
 
 .shop-item-info {
     display: flex;
     align-items: center;
     gap: 15px;
+    flex: 1;
 }
 
 .shop-item-icon {
     font-size: 40px;
+    flex-shrink: 0;
+    width: 50px;
+    text-align: center;
 }
 
 .shop-item-name {
     font-size: 18px;
     font-weight: bold;
     color: #333;
+    margin: 0;
+    padding: 0;
 }
 
 .shop-item-desc {
     font-size: 14px;
     color: #666;
+    margin: 0;
+    padding: 0;
+    margin-top: 4px;
 }
 
 .buy-button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
     background: linear-gradient(to bottom, #4CAF50, #45a049);
     color: white;
     border: 2px solid #2d6e2f;
     position: static;
     transform: none;
+    min-width: 140px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .buy-button:hover {
     background: linear-gradient(to bottom, #45a049, #3d8b40);
-    transform: scale(1.05);
+    transform: scale(1.05) !important;
 }
 
 .buy-button:disabled {
@@ -574,7 +623,7 @@ button {
     border-color: #999999;
     color: #666666;
     cursor: not-allowed;
-    transform: none;
+    transform: none !important;
 }
 
 .sell-all-button {
