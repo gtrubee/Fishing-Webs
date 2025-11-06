@@ -1205,17 +1205,39 @@ function endMinigame(success) {
             perfectCatchBonus = ' ⭐ PERFECT CATCH! +30% weight!';
         }
         
+        // Determine fish rarity
+        let rarity = 'normal';
+        let rarityMultiplier = 1;
+        let rarityText = '';
+        
+        const rarityRoll = Math.random();
+        if (rarityRoll < 1/4000) { // 1/4000 chance for shiny
+            rarity = 'shiny';
+            rarityMultiplier = 4000;
+            rarityText = ' ✨ SHINY! 4000x value!';
+        } else if (rarityRoll < 1/1000) { // 1/1000 chance for golden
+            rarity = 'golden';
+            rarityMultiplier = 1000;
+            rarityText = ' 🌟 GOLDEN! 1000x value!';
+        } else if (rarityRoll < 1/100) { // 1/100 chance for mutated
+            rarity = 'mutated';
+            rarityMultiplier = 100;
+            rarityText = ' 🧬 MUTATED! 100x value!';
+        }
+        
         // Add fish to inventory
         if (inventory.length < maxInventorySlots) {
             inventory.push({
                 type: currentFish.name,
-                weight: finalWeight
+                weight: finalWeight,
+                rarity: rarity,
+                rarityMultiplier: rarityMultiplier
             });
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus} (${inventory.length}/${maxInventorySlots})`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
         } else {
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus} But your inventory is full!`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus}${rarityText} But your inventory is full!`;
         }
     } else {
         statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
@@ -1504,6 +1526,22 @@ function updateInventoryDisplay() {
             const fish = inventory[i];
             slot.classList.add('filled');
             
+            // Apply rarity styling
+            const rarity = fish.rarity || 'normal';
+            if (rarity === 'shiny') {
+                slot.style.background = 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700)';
+                slot.style.boxShadow = '0 0 15px #FFD700';
+                slot.style.borderColor = '#FFD700';
+            } else if (rarity === 'golden') {
+                slot.style.background = 'linear-gradient(135deg, #FFD700, #FFED4E)';
+                slot.style.boxShadow = '0 0 10px #FFD700';
+                slot.style.borderColor = '#FFD700';
+            } else if (rarity === 'mutated') {
+                slot.style.background = 'linear-gradient(135deg, #9C27B0, #E91E63)';
+                slot.style.boxShadow = '0 0 10px #9C27B0';
+                slot.style.borderColor = '#9C27B0';
+            }
+            
             // Fish icon with color
             const fishIcon = document.createElement('div');
             fishIcon.className = 'fish-icon';
@@ -1735,6 +1773,22 @@ function updateSellInventory() {
         const slot = document.createElement('div');
         slot.className = 'sell-slot';
         
+        // Apply rarity styling
+        const rarity = fish.rarity || 'normal';
+        if (rarity === 'shiny') {
+            slot.style.background = 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700)';
+            slot.style.boxShadow = '0 0 15px #FFD700';
+            slot.style.borderColor = '#FFD700';
+        } else if (rarity === 'golden') {
+            slot.style.background = 'linear-gradient(135deg, #FFD700, #FFED4E)';
+            slot.style.boxShadow = '0 0 10px #FFD700';
+            slot.style.borderColor = '#FFD700';
+        } else if (rarity === 'mutated') {
+            slot.style.background = 'linear-gradient(135deg, #9C27B0, #E91E63)';
+            slot.style.boxShadow = '0 0 10px #9C27B0';
+            slot.style.borderColor = '#9C27B0';
+        }
+        
         const fishIcon = document.createElement('div');
         fishIcon.className = 'fish-icon';
         fishIcon.textContent = '🐟';
@@ -1749,6 +1803,10 @@ function updateSellInventory() {
         fishWeight.textContent = `${fish.weight} lbs`;
         
         let price = fishPrices[fish.type] * fish.weight;
+        
+        // Apply rarity multiplier
+        const rarityMultiplier = fish.rarityMultiplier || 1;
+        price = Math.floor(price * rarityMultiplier);
         
         // Apply sell bonus from equipped trinkets
         const sellBonus = getTrinketBonus('sellBonus');
@@ -1775,6 +1833,10 @@ function sellFish(index) {
     const fish = inventory[index];
     let price = fishPrices[fish.type] * fish.weight;
     
+    // Apply rarity multiplier
+    const rarityMultiplier = fish.rarityMultiplier || 1;
+    price = Math.floor(price * rarityMultiplier);
+    
     // Apply sell bonus from equipped trinkets
     const sellBonus = getTrinketBonus('sellBonus');
     if (sellBonus > 0) {
@@ -1792,6 +1854,10 @@ function sellAllFish() {
     let totalEarned = 0;
     inventory.forEach(fish => {
         let price = fishPrices[fish.type] * fish.weight;
+        
+        // Apply rarity multiplier
+        const rarityMultiplier = fish.rarityMultiplier || 1;
+        price = Math.floor(price * rarityMultiplier);
         
         // Apply sell bonus from equipped trinkets
         const sellBonus = getTrinketBonus('sellBonus');
