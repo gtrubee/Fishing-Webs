@@ -1142,7 +1142,7 @@ function drawScene() {
     sceneCtx.fillRect(sceneCanvas.width * 0.85, sceneCanvas.height * 0.625, 15, sceneCanvas.height * 0.375);
 
     // Fisherman (stick figure) OR Snowman (winter)
-    const fishermanX = sceneCanvas.width * 0.75;
+    const fishermanX = sceneCanvas.width * 0.62; // Position at left edge of dock
     const fishermanY = sceneCanvas.height * 0.55;
 
     if (isWinterSeason()) {
