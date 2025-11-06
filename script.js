@@ -562,37 +562,37 @@ const baitTypes = {
         boosts: ['smallmouthBass', 'largemouthBass', 'pike', 'walleye'],
         multiplier: 8
     },
-    crawfish: {
-        name: 'Crawfish',
-        price: 200,
-        description: 'Irresistible to catfish',
-        boosts: ['catfish', 'bullhead', 'carp'],
-        multiplier: 8
-    },
     spinners: {
         name: 'Spinners',
-        price: 250,
+        price: 400,
         description: 'Best for trout',
         boosts: ['trout', 'rainbowTrout', 'salmon', 'cherrySalmon', 'cohoSalmon', 'kingSalmon'],
         multiplier: 8
     },
     leeches: {
         name: 'Leeches',
-        price: 300,
+        price: 450,
         description: 'Premium for walleye',
         boosts: ['walleye', 'pike', 'muskellunge'],
         multiplier: 8
     },
     doughBalls: {
         name: 'Dough Balls',
-        price: 100,
+        price: 600,
         description: 'Carp favorite',
         boosts: ['carp', 'crucianCarp', 'koi'],
         multiplier: 8
     },
+    crawfish: {
+        name: 'Crawfish',
+        price: 1000,
+        description: 'Irresistible to catfish',
+        boosts: ['catfish', 'bullhead', 'carp'],
+        multiplier: 8
+    },
     cutBait: {
         name: 'Cut Bait',
-        price: 350,
+        price: 1500,
         description: 'For trophy fish',
         boosts: ['sturgeon', 'gar', 'muskellunge', 'kingSalmon'],
         multiplier: 8
@@ -732,6 +732,13 @@ function loadGameData() {
             
             // Restore museum data
             museum = data.museum || {};
+            
+            // Migrate museum data to add perfectCatches if missing
+            Object.keys(museum).forEach(fishName => {
+                if (museum[fishName] && museum[fishName].perfectCatches === undefined) {
+                    museum[fishName].perfectCatches = 0;
+                }
+            });
             
             console.log('Game data loaded successfully');
         } catch (e) {
@@ -1759,10 +1766,14 @@ function endMinigame(success) {
                     discovered: true,
                     totalCaught: 0,
                     biggestWeight: 0,
+                    perfectCatches: 0,
                     showcaseFish: null
                 };
             }
             museum[currentFish.name].totalCaught++;
+            if (isPerfectCatch) {
+                museum[currentFish.name].perfectCatches++;
+            }
             if (finalWeight > museum[currentFish.name].biggestWeight) {
                 museum[currentFish.name].biggestWeight = finalWeight;
             }
@@ -3325,6 +3336,15 @@ function updateMuseumDisplay() {
                 <span class="museum-stat-value">${museumData.totalCaught}</span>
             `;
             statsDiv.appendChild(caughtRow);
+            
+            // Perfect catches
+            const perfectRow = document.createElement('div');
+            perfectRow.className = 'museum-stat-row';
+            perfectRow.innerHTML = `
+                <span class="museum-stat-label">Perfect Catches:</span>
+                <span class="museum-stat-value">${museumData.perfectCatches || 0} ⭐</span>
+            `;
+            statsDiv.appendChild(perfectRow);
             
             // Biggest catch
             const biggestRow = document.createElement('div');
