@@ -1844,7 +1844,7 @@ document.addEventListener('contextmenu', (e) => {
     }
 });
 
-// Keyboard controls (A/D or Arrow keys)
+// Keyboard controls (A/D or Arrow keys for minigame, Space for casting)
 document.addEventListener('keydown', (e) => {
     if (minigameActive) {
         if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
@@ -1853,6 +1853,22 @@ document.addEventListener('keydown', (e) => {
         } else if (e.code === 'KeyD' || e.code === 'ArrowRight') {
             rightMouseDown = true;
             e.preventDefault();
+        }
+    } else if (!minigameActive && currentPage === 'fishing' && e.code === 'Space') {
+        e.preventDefault(); // Prevent page scrolling
+        if (!fishing) {
+            // Check if inventory is full
+            if (inventory.length >= maxInventorySlots) {
+                statusDiv.style.opacity = '1';
+                statusDiv.style.transition = 'none';
+                statusDiv.textContent = '❌ Your inventory is full! Sell some fish at the shop.';
+                setTimeout(() => {
+                    statusDiv.style.transition = 'opacity 1s ease-out';
+                    statusDiv.style.opacity = '0';
+                }, 3000);
+                return;
+            }
+            startMinigame();
         }
     }
 });
