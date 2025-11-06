@@ -27,6 +27,7 @@
             </div>
             <button id="bait-button">🪱 Bait</button>
             <button id="trinket-button">💎 Trinkets</button>
+            <button id="museum-button">🏛️ Museum</button>
             <button id="shop-button">🏪 Shop</button>
             <div id="money-display">💰 $<span id="money-amount">0</span></div>
             <div id="time-display">⏱️ <span id="time-amount">0:00:00</span></div>
@@ -74,6 +75,20 @@
                         <div id="trinket-container"></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Museum Page -->
+        <div id="museum-page" style="display: none;">
+            <canvas id="museum-canvas"></canvas>
+            <button id="back-from-museum">← Back to Fishing</button>
+            <div id="museum-interface">
+                <h1>🏛️ Fish Museum</h1>
+                <div id="museum-stats">
+                    <div class="museum-stat">Species Discovered: <span id="species-count">0</span>/<span id="total-species">31</span></div>
+                    <div class="museum-stat">Total Fish Caught: <span id="total-caught">0</span></div>
+                </div>
+                <div id="museum-grid"></div>
             </div>
         </div>
 

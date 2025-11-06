@@ -466,6 +466,10 @@ let inventory = [];
 let money = 0;
 const baseInventorySlotPrice = 100;
 
+// Museum system - tracks fish catches
+let museum = {};
+// Structure: { 'fishTypeName': { discovered: true, totalCaught: number, biggestWeight: number } }
+
 // Function to calculate current inventory slot price
 function getInventorySlotPrice() {
     // Base price of $100 for slots up to 20
@@ -711,6 +715,9 @@ function loadGameData() {
                 });
             }
             
+            // Restore museum data
+            museum = data.museum || {};
+            
             console.log('Game data loaded successfully');
         } catch (e) {
             console.error('Error loading game data:', e);
@@ -732,7 +739,8 @@ function saveGameData() {
         equippedTrinkets: equippedTrinkets,
         maxTrinketSlots: maxTrinketSlots,
         trinketSlotUpgrades: trinketSlotUpgrades.map(u => u.purchased),
-        timePlayed: timePlayed
+        timePlayed: timePlayed,
+        museum: museum
     };
     localStorage.setItem('fishingGameSave', JSON.stringify(data));
     console.log('Game data saved');
@@ -1692,6 +1700,20 @@ function endMinigame(success) {
                 rarity: rarity,
                 rarityMultiplier: rarityMultiplier
             });
+            
+            // Update museum records
+            if (!museum[currentFish.name]) {
+                museum[currentFish.name] = {
+                    discovered: true,
+                    totalCaught: 0,
+                    biggestWeight: 0
+                };
+            }
+            museum[currentFish.name].totalCaught++;
+            if (finalWeight > museum[currentFish.name].biggestWeight) {
+                museum[currentFish.name].biggestWeight = finalWeight;
+            }
+            
             statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
@@ -2094,6 +2116,26 @@ document.getElementById('shop-button').addEventListener('click', () => {
 document.getElementById('back-to-fishing').addEventListener('click', () => {
     currentPage = 'fishing';
     document.getElementById('shop-page').style.display = 'none';
+    document.getElementById('fishing-page').style.display = 'block';
+});
+
+// Museum navigation
+const museumCanvas = document.getElementById('museum-canvas');
+const museumCtx = museumCanvas.getContext('2d');
+museumCanvas.width = window.innerWidth;
+museumCanvas.height = window.innerHeight;
+
+document.getElementById('museum-button').addEventListener('click', () => {
+    currentPage = 'museum';
+    document.getElementById('fishing-page').style.display = 'none';
+    document.getElementById('museum-page').style.display = 'block';
+    drawMuseum();
+    updateMuseumDisplay();
+});
+
+document.getElementById('back-from-museum').addEventListener('click', () => {
+    currentPage = 'fishing';
+    document.getElementById('museum-page').style.display = 'none';
     document.getElementById('fishing-page').style.display = 'block';
 });
 
@@ -3055,6 +3097,137 @@ function initSnow() {
     for (let i = 0; i < 150; i++) {
         snowflakes.push(new Snowflake());
     }
+}
+
+// Museum functions
+function drawMuseum() {
+    // Background - Museum interior
+    const bgGradient = museumCtx.createLinearGradient(0, 0, 0, museumCanvas.height);
+    bgGradient.addColorStop(0, '#8B7355');
+    bgGradient.addColorStop(1, '#6B5344');
+    museumCtx.fillStyle = bgGradient;
+    museumCtx.fillRect(0, 0, museumCanvas.width, museumCanvas.height);
+    
+    // Add some decorative elements - marble columns
+    museumCtx.fillStyle = '#D3C5B5';
+    museumCtx.fillRect(50, 0, 80, museumCanvas.height);
+    museumCtx.fillRect(museumCanvas.width - 130, 0, 80, museumCanvas.height);
+    
+    // Column shadows
+    museumCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    museumCtx.fillRect(120, 0, 10, museumCanvas.height);
+    museumCtx.fillRect(museumCanvas.width - 60, 0, 10, museumCanvas.height);
+    
+    // Marble texture (simple)
+    museumCtx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    for (let i = 0; i < 20; i++) {
+        const y = (i * 231.7) % museumCanvas.height;
+        museumCtx.fillRect(50, y, 80, 30);
+        museumCtx.fillRect(museumCanvas.width - 130, y, 80, 30);
+    }
+}
+
+function updateMuseumDisplay() {
+    const museumGrid = document.getElementById('museum-grid');
+    museumGrid.innerHTML = '';
+    
+    // Get all fish types
+    const allFishTypes = Object.values(fishTypes);
+    
+    // Calculate statistics
+    let totalSpecies = allFishTypes.length;
+    let discoveredCount = 0;
+    let totalCaught = 0;
+    
+    Object.values(museum).forEach(entry => {
+        if (entry.discovered) discoveredCount++;
+        totalCaught += entry.totalCaught;
+    });
+    
+    // Update stats display
+    document.getElementById('species-count').textContent = discoveredCount;
+    document.getElementById('total-species').textContent = totalSpecies;
+    document.getElementById('total-caught').textContent = totalCaught;
+    
+    // Create entries for all fish types
+    allFishTypes.forEach(fishType => {
+        const entry = document.createElement('div');
+        const museumData = museum[fishType.name];
+        const discovered = museumData && museumData.discovered;
+        
+        entry.className = 'museum-entry';
+        if (!discovered) {
+            entry.classList.add('undiscovered');
+        }
+        
+        // Header with fish name and icon
+        const header = document.createElement('div');
+        header.className = 'museum-entry-header';
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'museum-fish-name';
+        nameDiv.textContent = discovered ? fishType.name : '???';
+        
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'museum-fish-icon';
+        iconDiv.textContent = discovered ? '🐟' : '❓';
+        
+        header.appendChild(nameDiv);
+        header.appendChild(iconDiv);
+        entry.appendChild(header);
+        
+        // Stats section
+        const statsDiv = document.createElement('div');
+        statsDiv.className = 'museum-entry-stats';
+        
+        if (discovered) {
+            // Difficulty
+            const difficultyRow = document.createElement('div');
+            difficultyRow.className = 'museum-stat-row';
+            difficultyRow.innerHTML = `
+                <span class="museum-stat-label">Difficulty:</span>
+                <span class="museum-stat-value">${fishType.difficulty}</span>
+            `;
+            statsDiv.appendChild(difficultyRow);
+            
+            // Total caught
+            const caughtRow = document.createElement('div');
+            caughtRow.className = 'museum-stat-row';
+            caughtRow.innerHTML = `
+                <span class="museum-stat-label">Total Caught:</span>
+                <span class="museum-stat-value">${museumData.totalCaught}</span>
+            `;
+            statsDiv.appendChild(caughtRow);
+            
+            // Biggest catch
+            const biggestRow = document.createElement('div');
+            biggestRow.className = 'museum-stat-row';
+            biggestRow.innerHTML = `
+                <span class="museum-stat-label">Biggest Catch:</span>
+                <span class="museum-stat-value">${museumData.biggestWeight.toFixed(2)} lbs</span>
+            `;
+            statsDiv.appendChild(biggestRow);
+            
+            // Weight range
+            const rangeRow = document.createElement('div');
+            rangeRow.className = 'museum-stat-row';
+            rangeRow.innerHTML = `
+                <span class="museum-stat-label">Weight Range:</span>
+                <span class="museum-stat-value">${fishType.minWeight}-${fishType.maxWeight} lbs</span>
+            `;
+            statsDiv.appendChild(rangeRow);
+        } else {
+            const unknownText = document.createElement('div');
+            unknownText.style.textAlign = 'center';
+            unknownText.style.color = '#999';
+            unknownText.style.fontStyle = 'italic';
+            unknownText.textContent = 'Catch this fish to discover it!';
+            statsDiv.appendChild(unknownText);
+        }
+        
+        entry.appendChild(statsDiv);
+        museumGrid.appendChild(entry);
+    });
 }
 
 function isWinterSeason() {
