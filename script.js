@@ -1851,6 +1851,7 @@ function updateRodsDisplay() {
         rodIcon.textContent = '🎣';
         
         const rodDetails = document.createElement('div');
+        rodDetails.className = 'shop-item-details';
         const rodName = document.createElement('div');
         rodName.className = 'shop-item-name';
         rodName.textContent = rod.name;
@@ -1918,6 +1919,7 @@ function updateBaitDisplay() {
         baitIcon.textContent = '🪱';
         
         const baitDetails = document.createElement('div');
+        baitDetails.className = 'shop-item-details';
         const baitName = document.createElement('div');
         baitName.className = 'shop-item-name';
         baitName.textContent = bait.name;
@@ -2001,6 +2003,7 @@ function updateTrinketDisplay() {
             upgradeIcon.textContent = '💎';
             
             const upgradeDetails = document.createElement('div');
+            upgradeDetails.className = 'shop-item-details';
             const upgradeName = document.createElement('div');
             upgradeName.className = 'shop-item-name';
             upgradeName.textContent = `Trinket Slot Upgrade (${upgrade.slots} slots)`;
@@ -2057,6 +2060,7 @@ function updateTrinketDisplay() {
         trinketIcon.textContent = trinket.icon;
         
         const trinketDetails = document.createElement('div');
+        trinketDetails.className = 'shop-item-details';
         const trinketName = document.createElement('div');
         trinketName.className = 'shop-item-name';
         trinketName.textContent = trinket.name;
