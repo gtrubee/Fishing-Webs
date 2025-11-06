@@ -949,3 +949,66 @@ button {
     font-weight: bold;
 }
 
+.museum-display-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: linear-gradient(to bottom, #CD853F, #8B6914);
+    border: 2px solid #654321;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.museum-display-btn:hover {
+    background: linear-gradient(to bottom, #DEB887, #9B7714);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.museum-display-btn:active {
+    transform: scale(0.95);
+}
+
+.museum-showcase {
+    margin-top: 15px;
+    padding: 12px;
+    border: 3px solid #8B4513;
+    border-radius: 8px;
+    background: rgba(255, 215, 0, 0.1);
+    text-align: center;
+}
+
+.museum-showcase-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #654321;
+    margin-bottom: 8px;
+}
+
+.museum-showcase-weight {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2C5F2D;
+    margin-bottom: 5px;
+}
+
+.museum-showcase-rarity {
+    font-size: 14px;
+    font-weight: bold;
+    color: #8B4513;
+}
+
+.museum-no-showcase {
+    margin-top: 15px;
+    padding: 10px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    border-top: 2px dashed #ccc;
+}
+

@@ -1706,7 +1706,8 @@ function endMinigame(success) {
                 museum[currentFish.name] = {
                     discovered: true,
                     totalCaught: 0,
-                    biggestWeight: 0
+                    biggestWeight: 0,
+                    showcaseFish: null
                 };
             }
             museum[currentFish.name].totalCaught++;
@@ -1988,6 +1989,48 @@ function updateTrinketPopup() {
     });
 }
 
+function displayFishInMuseum(inventoryIndex) {
+    const fish = inventory[inventoryIndex];
+    if (!fish) return;
+    
+    // Initialize museum entry if it doesn't exist
+    if (!museum[fish.type]) {
+        museum[fish.type] = {
+            discovered: true,
+            totalCaught: 0,
+            biggestWeight: 0,
+            showcaseFish: null
+        };
+    }
+    
+    // Store the fish data in museum showcase
+    museum[fish.type].showcaseFish = {
+        weight: fish.weight,
+        rarity: fish.rarity || 'normal',
+        rarityMultiplier: fish.rarityMultiplier || 1
+    };
+    
+    // Remove fish from inventory
+    inventory.splice(inventoryIndex, 1);
+    
+    // Update displays
+    updateInventoryDisplay();
+    saveGameData();
+    
+    // Update museum display if it's currently open
+    if (currentPage === 'museum') {
+        updateMuseumDisplay();
+    }
+    
+    // Show confirmation message
+    const statusDiv = document.getElementById('status');
+    statusDiv.textContent = `🏛️ ${fish.type} is now displayed in the museum!`;
+    statusDiv.style.opacity = '1';
+    setTimeout(() => {
+        statusDiv.style.opacity = '0';
+    }, 3000);
+}
+
 function updateInventoryDisplay() {
     const fishCountDiv = document.getElementById('fish-count');
     fishCountDiv.textContent = `${inventory.length}/${maxInventorySlots}`;
@@ -2040,9 +2083,20 @@ function updateInventoryDisplay() {
             fishWeight.className = 'fish-weight';
             fishWeight.textContent = `${fish.weight} lbs`;
             
+            // Museum button
+            const museumBtn = document.createElement('button');
+            museumBtn.className = 'museum-display-btn';
+            museumBtn.textContent = '🏛️';
+            museumBtn.title = 'Display in Museum';
+            museumBtn.onclick = (e) => {
+                e.stopPropagation();
+                displayFishInMuseum(i);
+            };
+            
             slot.appendChild(fishIcon);
             slot.appendChild(fishName);
             slot.appendChild(fishWeight);
+            slot.appendChild(museumBtn);
         }
         
         inventoryGrid.appendChild(slot);
@@ -3160,6 +3214,27 @@ function updateMuseumDisplay() {
             entry.classList.add('undiscovered');
         }
         
+        // Apply special styling if there's a showcased fish with rarity
+        if (discovered && museumData.showcaseFish) {
+            const rarity = museumData.showcaseFish.rarity;
+            if (rarity === 'shiny') {
+                entry.style.background = 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700)';
+                entry.style.boxShadow = '0 0 20px #FFD700, 0 4px 12px rgba(0, 0, 0, 0.3)';
+                entry.style.borderColor = '#FFD700';
+                entry.style.borderWidth = '4px';
+            } else if (rarity === 'golden') {
+                entry.style.background = 'linear-gradient(135deg, #FFD700, #FFED4E, #FFD700)';
+                entry.style.boxShadow = '0 0 25px #FFD700, 0 4px 12px rgba(0, 0, 0, 0.3)';
+                entry.style.borderColor = '#FFD700';
+                entry.style.borderWidth = '4px';
+            } else if (rarity === 'mutated') {
+                entry.style.background = 'linear-gradient(135deg, #9C27B0, #E91E63, #9C27B0)';
+                entry.style.boxShadow = '0 0 20px #9C27B0, 0 4px 12px rgba(0, 0, 0, 0.3)';
+                entry.style.borderColor = '#9C27B0';
+                entry.style.borderWidth = '4px';
+            }
+        }
+        
         // Header with fish name and icon
         const header = document.createElement('div');
         header.className = 'museum-entry-header';
@@ -3216,6 +3291,55 @@ function updateMuseumDisplay() {
                 <span class="museum-stat-value">${fishType.minWeight}-${fishType.maxWeight} lbs</span>
             `;
             statsDiv.appendChild(rangeRow);
+            
+            // Showcase fish section
+            if (museumData.showcaseFish) {
+                const showcaseSection = document.createElement('div');
+                showcaseSection.className = 'museum-showcase';
+                
+                // Apply rarity styling
+                const rarity = museumData.showcaseFish.rarity;
+                if (rarity === 'shiny') {
+                    showcaseSection.style.background = 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700)';
+                    showcaseSection.style.boxShadow = '0 0 15px #FFD700';
+                } else if (rarity === 'golden') {
+                    showcaseSection.style.background = 'linear-gradient(135deg, #FFD700, #FFED4E)';
+                    showcaseSection.style.boxShadow = '0 0 10px #FFD700';
+                } else if (rarity === 'mutated') {
+                    showcaseSection.style.background = 'linear-gradient(135deg, #9C27B0, #E91E63)';
+                    showcaseSection.style.boxShadow = '0 0 10px #9C27B0';
+                }
+                
+                const showcaseTitle = document.createElement('div');
+                showcaseTitle.className = 'museum-showcase-title';
+                showcaseTitle.textContent = '⭐ Museum Display';
+                
+                const showcaseWeight = document.createElement('div');
+                showcaseWeight.className = 'museum-showcase-weight';
+                showcaseWeight.textContent = `${museumData.showcaseFish.weight.toFixed(2)} lbs`;
+                
+                const showcaseRarity = document.createElement('div');
+                showcaseRarity.className = 'museum-showcase-rarity';
+                if (rarity === 'shiny') {
+                    showcaseRarity.textContent = '✨ SHINY';
+                } else if (rarity === 'golden') {
+                    showcaseRarity.textContent = '🌟 GOLDEN';
+                } else if (rarity === 'mutated') {
+                    showcaseRarity.textContent = '🧬 MUTATED';
+                } else {
+                    showcaseRarity.textContent = 'Normal';
+                }
+                
+                showcaseSection.appendChild(showcaseTitle);
+                showcaseSection.appendChild(showcaseWeight);
+                showcaseSection.appendChild(showcaseRarity);
+                statsDiv.appendChild(showcaseSection);
+            } else {
+                const noShowcase = document.createElement('div');
+                noShowcase.className = 'museum-no-showcase';
+                noShowcase.textContent = 'No fish displayed yet';
+                statsDiv.appendChild(noShowcase);
+            }
         } else {
             const unknownText = document.createElement('div');
             unknownText.style.textAlign = 'center';
