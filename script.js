@@ -3,6 +3,8 @@ const sceneCanvas = document.getElementById('scene-canvas');
 const sceneCtx = sceneCanvas.getContext('2d');
 const minigameCanvas = document.getElementById('minigame-canvas');
 const minigameCtx = minigameCanvas.getContext('2d');
+const snowCanvas = document.getElementById('snow-canvas');
+const snowCtx = snowCanvas.getContext('2d');
 const fishButton = document.getElementById('fish-button');
 const statusDiv = document.getElementById('status');
 
@@ -10,6 +12,8 @@ sceneCanvas.width = window.innerWidth;
 sceneCanvas.height = window.innerHeight;
 minigameCanvas.width = 300;
 minigameCanvas.height = 500;
+snowCanvas.width = window.innerWidth;
+snowCanvas.height = window.innerHeight;
 
 let fishing = false;
 let minigameActive = false;
@@ -747,6 +751,230 @@ function drawScene() {
     sceneCtx.arc(moonX + 15, moonY - 5, moonRadius, 0, Math.PI * 2);
     sceneCtx.fill();
 
+    // Santa and sleigh above the moon (Nov 1 - Jan 31)
+    if (isSantaSeason()) {
+        const santaX = moonX - 80;
+        const santaY = moonY - 60;
+        
+        // Draw all 9 reindeer in formation (4 pairs + Rudolph)
+        const reindeerPositions = [
+            { x: -130, y: 0, name: 'Rudolph' },  // Front lead
+            { x: -115, y: -8, name: 'Dasher' },   // Row 2 top
+            { x: -115, y: 8, name: 'Dancer' },    // Row 2 bottom
+            { x: -95, y: -8, name: 'Prancer' },   // Row 3 top
+            { x: -95, y: 8, name: 'Vixen' },      // Row 3 bottom
+            { x: -75, y: -8, name: 'Comet' },     // Row 4 top
+            { x: -75, y: 8, name: 'Cupid' },      // Row 4 bottom
+            { x: -55, y: -8, name: 'Donner' },    // Row 5 top
+            { x: -55, y: 8, name: 'Blitzen' }     // Row 5 bottom
+        ];
+        
+        reindeerPositions.forEach((pos, index) => {
+            const reindeerX = santaX + pos.x;
+            const reindeerY = santaY + pos.y;
+            
+            // Reindeer body
+            sceneCtx.fillStyle = '#8B4513';
+            sceneCtx.fillRect(reindeerX - 6, reindeerY - 2, 10, 6);
+            
+            // Reindeer head
+            sceneCtx.beginPath();
+            sceneCtx.arc(reindeerX - 8, reindeerY - 3, 4, 0, Math.PI * 2);
+            sceneCtx.fill();
+            
+            // Legs
+            sceneCtx.strokeStyle = '#654321';
+            sceneCtx.lineWidth = 1.5;
+            sceneCtx.beginPath();
+            sceneCtx.moveTo(reindeerX - 4, reindeerY + 4);
+            sceneCtx.lineTo(reindeerX - 4, reindeerY + 8);
+            sceneCtx.stroke();
+            sceneCtx.beginPath();
+            sceneCtx.moveTo(reindeerX + 2, reindeerY + 4);
+            sceneCtx.lineTo(reindeerX + 2, reindeerY + 8);
+            sceneCtx.stroke();
+            
+            // Antlers
+            sceneCtx.lineWidth = 1.5;
+            sceneCtx.beginPath();
+            sceneCtx.moveTo(reindeerX - 9, reindeerY - 6);
+            sceneCtx.lineTo(reindeerX - 11, reindeerY - 10);
+            sceneCtx.stroke();
+            sceneCtx.beginPath();
+            sceneCtx.moveTo(reindeerX - 9, reindeerY - 6);
+            sceneCtx.lineTo(reindeerX - 7, reindeerY - 9);
+            sceneCtx.stroke();
+            sceneCtx.beginPath();
+            sceneCtx.moveTo(reindeerX - 7, reindeerY - 6);
+            sceneCtx.lineTo(reindeerX - 5, reindeerY - 10);
+            sceneCtx.stroke();
+            sceneCtx.beginPath();
+            sceneCtx.moveTo(reindeerX - 7, reindeerY - 6);
+            sceneCtx.lineTo(reindeerX - 6, reindeerY - 8);
+            sceneCtx.stroke();
+            
+            // Red nose only for Rudolph (first one)
+            if (index === 0) {
+                sceneCtx.fillStyle = '#FF0000';
+                sceneCtx.shadowColor = '#FF0000';
+                sceneCtx.shadowBlur = 6;
+                sceneCtx.beginPath();
+                sceneCtx.arc(reindeerX - 11, reindeerY - 3, 2.5, 0, Math.PI * 2);
+                sceneCtx.fill();
+                sceneCtx.shadowBlur = 0;
+            }
+            
+            // Eye
+            sceneCtx.fillStyle = '#000000';
+            sceneCtx.beginPath();
+            sceneCtx.arc(reindeerX - 9, reindeerY - 4, 1, 0, Math.PI * 2);
+            sceneCtx.fill();
+        });
+        
+        // Reins connecting reindeer to sleigh
+        sceneCtx.strokeStyle = '#654321';
+        sceneCtx.lineWidth = 1;
+        for (let i = 0; i < reindeerPositions.length; i++) {
+            const pos = reindeerPositions[i];
+            sceneCtx.beginPath();
+            sceneCtx.moveTo(santaX + pos.x + 4, santaY + pos.y);
+            sceneCtx.lineTo(santaX - 40, santaY + 10);
+            sceneCtx.stroke();
+        }
+        
+        // Sleigh body - more detailed
+        sceneCtx.fillStyle = '#8B0000';
+        sceneCtx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        sceneCtx.shadowBlur = 4;
+        sceneCtx.shadowOffsetY = 2;
+        
+        // Main sleigh body with curved shape
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(santaX - 40, santaY + 8);
+        sceneCtx.quadraticCurveTo(santaX - 45, santaY + 15, santaX - 40, santaY + 22);
+        sceneCtx.lineTo(santaX + 35, santaY + 22);
+        sceneCtx.quadraticCurveTo(santaX + 40, santaY + 15, santaX + 35, santaY + 8);
+        sceneCtx.closePath();
+        sceneCtx.fill();
+        
+        sceneCtx.shadowBlur = 0;
+        
+        // Gold trim on sleigh
+        sceneCtx.strokeStyle = '#FFD700';
+        sceneCtx.lineWidth = 2;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(santaX - 40, santaY + 10);
+        sceneCtx.lineTo(santaX + 35, santaY + 10);
+        sceneCtx.stroke();
+        
+        // Sleigh runners - curved
+        sceneCtx.strokeStyle = '#C0C0C0';
+        sceneCtx.lineWidth = 3;
+        sceneCtx.lineCap = 'round';
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(santaX - 45, santaY + 25);
+        sceneCtx.quadraticCurveTo(santaX - 30, santaY + 28, santaX - 20, santaY + 25);
+        sceneCtx.stroke();
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(santaX + 20, santaY + 25);
+        sceneCtx.quadraticCurveTo(santaX + 30, santaY + 28, santaX + 40, santaY + 25);
+        sceneCtx.stroke();
+        
+        // Gift bag in sleigh
+        sceneCtx.fillStyle = '#654321';
+        sceneCtx.fillRect(santaX + 8, santaY + 8, 20, 15);
+        sceneCtx.strokeStyle = '#FFD700';
+        sceneCtx.lineWidth = 2;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(santaX + 18, santaY + 8);
+        sceneCtx.lineTo(santaX + 18, santaY + 23);
+        sceneCtx.stroke();
+        
+        // Santa sitting in sleigh
+        sceneCtx.fillStyle = '#DC143C';
+        // Santa's body/coat
+        sceneCtx.fillRect(santaX - 12, santaY + 3, 18, 20);
+        
+        // Santa's legs
+        sceneCtx.fillRect(santaX - 8, santaY + 18, 6, 8);
+        sceneCtx.fillRect(santaX + 2, santaY + 18, 6, 8);
+        
+        // Black boots
+        sceneCtx.fillStyle = '#000000';
+        sceneCtx.fillRect(santaX - 8, santaY + 24, 6, 4);
+        sceneCtx.fillRect(santaX + 2, santaY + 24, 6, 4);
+        
+        // White fur trim on coat
+        sceneCtx.fillStyle = '#FFFFFF';
+        sceneCtx.fillRect(santaX - 12, santaY + 21, 18, 3);
+        sceneCtx.fillRect(santaX - 12, santaY + 3, 18, 2);
+        
+        // Santa's arms holding reins
+        sceneCtx.fillStyle = '#DC143C';
+        sceneCtx.fillRect(santaX - 16, santaY + 6, 8, 4);
+        
+        // Black gloves
+        sceneCtx.fillStyle = '#000000';
+        sceneCtx.beginPath();
+        sceneCtx.arc(santaX - 17, santaY + 8, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Santa's head
+        sceneCtx.fillStyle = '#FFD0B0';
+        sceneCtx.beginPath();
+        sceneCtx.arc(santaX - 3, santaY - 2, 9, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Santa's hat
+        sceneCtx.fillStyle = '#DC143C';
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(santaX - 11, santaY - 2);
+        sceneCtx.lineTo(santaX + 2, santaY - 18);
+        sceneCtx.lineTo(santaX + 5, santaY - 2);
+        sceneCtx.closePath();
+        sceneCtx.fill();
+        
+        // White fur on hat brim
+        sceneCtx.fillStyle = '#FFFFFF';
+        sceneCtx.fillRect(santaX - 11, santaY - 2, 16, 3);
+        
+        // Hat pom-pom
+        sceneCtx.beginPath();
+        sceneCtx.arc(santaX + 2, santaY - 18, 4, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Santa's beard
+        sceneCtx.beginPath();
+        sceneCtx.ellipse(santaX - 3, santaY + 2, 6, 5, 0, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Mustache
+        sceneCtx.beginPath();
+        sceneCtx.ellipse(santaX - 6, santaY - 1, 3, 2, 0, 0, Math.PI * 2);
+        sceneCtx.fill();
+        sceneCtx.beginPath();
+        sceneCtx.ellipse(santaX, santaY - 1, 3, 2, 0, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Rosy cheeks
+        sceneCtx.fillStyle = 'rgba(255, 105, 180, 0.4)';
+        sceneCtx.beginPath();
+        sceneCtx.arc(santaX - 8, santaY + 1, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        sceneCtx.beginPath();
+        sceneCtx.arc(santaX + 2, santaY + 1, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Eyes
+        sceneCtx.fillStyle = '#000000';
+        sceneCtx.beginPath();
+        sceneCtx.arc(santaX - 6, santaY - 3, 1.5, 0, Math.PI * 2);
+        sceneCtx.fill();
+        sceneCtx.beginPath();
+        sceneCtx.arc(santaX, santaY - 3, 1.5, 0, Math.PI * 2);
+        sceneCtx.fill();
+    }
+
     // Water (gradient)
     const waterGradient = sceneCtx.createLinearGradient(0, sceneCanvas.height * 0.6, 0, sceneCanvas.height);
     waterGradient.addColorStop(0, '#1a2947');
@@ -786,60 +1014,219 @@ function drawScene() {
         sceneCtx.stroke();
     }
 
+    // Snow cover on dock (winter only)
+    if (isWinterSeason()) {
+        sceneCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        sceneCtx.shadowColor = 'rgba(173, 216, 230, 0.6)';
+        sceneCtx.shadowBlur = 8;
+        sceneCtx.fillRect(sceneCanvas.width * 0.6, sceneCanvas.height * 0.55, sceneCanvas.width * 0.4, 70);
+        sceneCtx.shadowBlur = 0;
+        
+        // Snow texture (subtle variations)
+        sceneCtx.fillStyle = 'rgba(240, 248, 255, 0.4)';
+        for (let i = 0; i < 15; i++) {
+            const x = sceneCanvas.width * 0.6 + Math.random() * (sceneCanvas.width * 0.4);
+            const y = sceneCanvas.height * 0.55 + Math.random() * 70;
+            sceneCtx.beginPath();
+            sceneCtx.arc(x, y, Math.random() * 3 + 1, 0, Math.PI * 2);
+            sceneCtx.fill();
+        }
+    }
+
     // Dock posts
     sceneCtx.fillStyle = '#654321';
     sceneCtx.fillRect(sceneCanvas.width * 0.65, sceneCanvas.height * 0.625, 15, sceneCanvas.height * 0.375);
     sceneCtx.fillRect(sceneCanvas.width * 0.85, sceneCanvas.height * 0.625, 15, sceneCanvas.height * 0.375);
 
-    // Fisherman (stick figure)
+    // Fisherman (stick figure) OR Snowman (winter)
     const fishermanX = sceneCanvas.width * 0.75;
     const fishermanY = sceneCanvas.height * 0.55;
 
-    // Head
-    sceneCtx.fillStyle = '#FFD0B0';
-    sceneCtx.beginPath();
-    sceneCtx.arc(fishermanX, fishermanY - 60, 20, 0, Math.PI * 2);
-    sceneCtx.fill();
+    if (isWinterSeason()) {
+        // Draw snowman facing toward the water (left side)
+        sceneCtx.shadowColor = 'rgba(173, 216, 230, 0.6)';
+        sceneCtx.shadowBlur = 8;
+        
+        // Bottom snowball (body)
+        sceneCtx.fillStyle = '#FFFFFF';
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX, fishermanY + 15, 28, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Middle snowball
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX, fishermanY - 20, 22, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Head snowball
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX, fishermanY - 55, 18, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        sceneCtx.shadowBlur = 0;
+        
+        // Carrot nose (pointing left)
+        sceneCtx.fillStyle = '#FF6347';
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX - 18, fishermanY - 55);
+        sceneCtx.lineTo(fishermanX - 35, fishermanY - 53);
+        sceneCtx.lineTo(fishermanX - 18, fishermanY - 50);
+        sceneCtx.fill();
+        
+        // Coal eyes (looking left)
+        sceneCtx.fillStyle = '#000000';
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX - 12, fishermanY - 59, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX - 2, fishermanY - 60, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Coal smile
+        for (let i = 0; i < 5; i++) {
+            sceneCtx.beginPath();
+            const angle = (Math.PI / 6) * (i - 2);
+            const smileX = fishermanX + Math.sin(angle) * 10;
+            const smileY = fishermanY - 45 + Math.cos(angle) * 5;
+            sceneCtx.arc(smileX, smileY, 2, 0, Math.PI * 2);
+            sceneCtx.fill();
+        }
+        
+        // Coal buttons
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX, fishermanY - 28, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX, fishermanY - 18, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX, fishermanY - 8, 3, 0, Math.PI * 2);
+        sceneCtx.fill();
+        
+        // Top hat
+        sceneCtx.fillStyle = '#1a1a1a';
+        sceneCtx.fillRect(fishermanX - 22, fishermanY - 73, 44, 8);
+        sceneCtx.fillRect(fishermanX - 15, fishermanY - 100, 30, 27);
+        
+        // Hat band
+        sceneCtx.fillStyle = '#8B0000';
+        sceneCtx.fillRect(fishermanX - 15, fishermanY - 78, 30, 5);
+        
+        // Both stick arms holding fishing rod
+        sceneCtx.strokeStyle = '#654321';
+        sceneCtx.lineWidth = 4;
+        sceneCtx.lineCap = 'round';
+        
+        // Right arm (holding bottom of rod)
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX + 22, fishermanY - 15);
+        sceneCtx.lineTo(fishermanX - 20, fishermanY - 5);
+        sceneCtx.stroke();
+        
+        // Right hand fingers on rod
+        sceneCtx.lineWidth = 2;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX - 20, fishermanY - 5);
+        sceneCtx.lineTo(fishermanX - 22, fishermanY - 8);
+        sceneCtx.stroke();
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX - 20, fishermanY - 5);
+        sceneCtx.lineTo(fishermanX - 23, fishermanY - 3);
+        sceneCtx.stroke();
+        
+        // Left arm (holding middle of rod)
+        sceneCtx.lineWidth = 4;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX - 22, fishermanY - 20);
+        sceneCtx.lineTo(fishermanX - 50, fishermanY - 25);
+        sceneCtx.stroke();
+        
+        // Left hand fingers on rod
+        sceneCtx.lineWidth = 2;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX - 50, fishermanY - 25);
+        sceneCtx.lineTo(fishermanX - 52, fishermanY - 28);
+        sceneCtx.stroke();
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX - 50, fishermanY - 25);
+        sceneCtx.lineTo(fishermanX - 53, fishermanY - 23);
+        sceneCtx.stroke();
+        
+    } else {
+        // Normal fisherman (original code)
+        // Head
+        sceneCtx.fillStyle = '#FFD0B0';
+        sceneCtx.beginPath();
+        sceneCtx.arc(fishermanX, fishermanY - 60, 20, 0, Math.PI * 2);
+        sceneCtx.fill();
 
-    // Hat
-    sceneCtx.fillStyle = '#8B4513';
-    sceneCtx.fillRect(fishermanX - 25, fishermanY - 75, 50, 10);
-    sceneCtx.fillRect(fishermanX - 15, fishermanY - 95, 30, 20);
+        // Hat
+        sceneCtx.fillStyle = '#8B4513';
+        sceneCtx.fillRect(fishermanX - 25, fishermanY - 75, 50, 10);
+        sceneCtx.fillRect(fishermanX - 15, fishermanY - 95, 30, 20);
 
-    // Body
-    sceneCtx.strokeStyle = '#4169E1';
-    sceneCtx.lineWidth = 12;
-    sceneCtx.lineCap = 'round';
-    sceneCtx.beginPath();
-    sceneCtx.moveTo(fishermanX, fishermanY - 40);
-    sceneCtx.lineTo(fishermanX, fishermanY + 10);
-    sceneCtx.stroke();
+        // Body
+        sceneCtx.strokeStyle = '#4169E1';
+        sceneCtx.lineWidth = 12;
+        sceneCtx.lineCap = 'round';
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX, fishermanY - 40);
+        sceneCtx.lineTo(fishermanX, fishermanY + 10);
+        sceneCtx.stroke();
 
-    // Arms
-    sceneCtx.lineWidth = 8;
-    sceneCtx.beginPath();
-    sceneCtx.moveTo(fishermanX, fishermanY - 30);
-    sceneCtx.lineTo(fishermanX - 30, fishermanY - 10);
-    sceneCtx.stroke();
+        // Arms
+        sceneCtx.lineWidth = 8;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX, fishermanY - 30);
+        sceneCtx.lineTo(fishermanX - 30, fishermanY - 10);
+        sceneCtx.stroke();
 
-    sceneCtx.beginPath();
-    sceneCtx.moveTo(fishermanX, fishermanY - 30);
-    sceneCtx.lineTo(fishermanX + 40, fishermanY - 40);
-    sceneCtx.stroke();
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX, fishermanY - 30);
+        sceneCtx.lineTo(fishermanX + 40, fishermanY - 40);
+        sceneCtx.stroke();
+        
+        // Legs
+        sceneCtx.strokeStyle = '#2F4F4F';
+        sceneCtx.lineWidth = 8;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX, fishermanY + 10);
+        sceneCtx.lineTo(fishermanX - 15, fishermanY + 45);
+        sceneCtx.stroke();
 
-    // Fishing rod
-    sceneCtx.strokeStyle = '#654321';
-    sceneCtx.lineWidth = 4;
-    sceneCtx.beginPath();
-    sceneCtx.moveTo(fishermanX + 40, fishermanY - 40);
-    sceneCtx.lineTo(fishermanX + 100, fishermanY - 80);
-    sceneCtx.stroke();
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX, fishermanY + 10);
+        sceneCtx.lineTo(fishermanX + 15, fishermanY + 45);
+        sceneCtx.stroke();
+    }
 
-    // Fishing line
+    // Fishing rod (adjusted position based on winter/normal)
+    if (isWinterSeason()) {
+        // Snowman holding rod with both hands - rod extends from lower hand toward water (left)
+        sceneCtx.strokeStyle = '#654321';
+        sceneCtx.lineWidth = 4;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX - 20, fishermanY - 5);
+        sceneCtx.lineTo(fishermanX - 110, fishermanY - 30);
+        sceneCtx.stroke();
+    } else {
+        // Normal fisherman rod position
+        sceneCtx.strokeStyle = '#654321';
+        sceneCtx.lineWidth = 4;
+        sceneCtx.beginPath();
+        sceneCtx.moveTo(fishermanX + 40, fishermanY - 40);
+        sceneCtx.lineTo(fishermanX + 100, fishermanY - 80);
+        sceneCtx.stroke();
+    }
+
+    // Fishing line (adjusted based on season)
+    const lineStartX = isWinterSeason() ? fishermanX - 110 : fishermanX + 100;
+    const lineStartY = isWinterSeason() ? fishermanY - 30 : fishermanY - 80;
+    
     sceneCtx.strokeStyle = '#333';
     sceneCtx.lineWidth = 1;
     sceneCtx.beginPath();
-    sceneCtx.moveTo(fishermanX + 100, fishermanY - 80);
+    sceneCtx.moveTo(lineStartX, lineStartY);
     sceneCtx.lineTo(sceneCanvas.width * 0.4, sceneCanvas.height * 0.75);
     sceneCtx.stroke();
 
@@ -848,19 +1235,6 @@ function drawScene() {
     sceneCtx.beginPath();
     sceneCtx.arc(sceneCanvas.width * 0.4, sceneCanvas.height * 0.75 + Math.sin(Date.now() / 300) * 3, 8, 0, Math.PI * 2);
     sceneCtx.fill();
-
-    // Legs
-    sceneCtx.strokeStyle = '#2F4F4F';
-    sceneCtx.lineWidth = 8;
-    sceneCtx.beginPath();
-    sceneCtx.moveTo(fishermanX, fishermanY + 10);
-    sceneCtx.lineTo(fishermanX - 15, fishermanY + 45);
-    sceneCtx.stroke();
-
-    sceneCtx.beginPath();
-    sceneCtx.moveTo(fishermanX, fishermanY + 10);
-    sceneCtx.lineTo(fishermanX + 15, fishermanY + 45);
-    sceneCtx.stroke();
 }
 
 // Start the minigame
@@ -1702,6 +2076,230 @@ function drawShop() {
     shopCtx.arc(moonX + 15, moonY - 5, moonRadius, 0, Math.PI * 2);
     shopCtx.fill();
     
+    // Santa and sleigh on the right side (Nov 1 - Jan 31)
+    if (isSantaSeason()) {
+        const santaX = shopCanvas.width * 0.8;
+        const santaY = shopCanvas.height * 0.15 - 60;
+        
+        // Draw all 9 reindeer in formation (4 pairs + Rudolph)
+        const reindeerPositions = [
+            { x: -130, y: 0, name: 'Rudolph' },  // Front lead
+            { x: -115, y: -8, name: 'Dasher' },   // Row 2 top
+            { x: -115, y: 8, name: 'Dancer' },    // Row 2 bottom
+            { x: -95, y: -8, name: 'Prancer' },   // Row 3 top
+            { x: -95, y: 8, name: 'Vixen' },      // Row 3 bottom
+            { x: -75, y: -8, name: 'Comet' },     // Row 4 top
+            { x: -75, y: 8, name: 'Cupid' },      // Row 4 bottom
+            { x: -55, y: -8, name: 'Donner' },    // Row 5 top
+            { x: -55, y: 8, name: 'Blitzen' }     // Row 5 bottom
+        ];
+        
+        reindeerPositions.forEach((pos, index) => {
+            const reindeerX = santaX + pos.x;
+            const reindeerY = santaY + pos.y;
+            
+            // Reindeer body
+            shopCtx.fillStyle = '#8B4513';
+            shopCtx.fillRect(reindeerX - 6, reindeerY - 2, 10, 6);
+            
+            // Reindeer head
+            shopCtx.beginPath();
+            shopCtx.arc(reindeerX - 8, reindeerY - 3, 4, 0, Math.PI * 2);
+            shopCtx.fill();
+            
+            // Legs
+            shopCtx.strokeStyle = '#654321';
+            shopCtx.lineWidth = 1.5;
+            shopCtx.beginPath();
+            shopCtx.moveTo(reindeerX - 4, reindeerY + 4);
+            shopCtx.lineTo(reindeerX - 4, reindeerY + 8);
+            shopCtx.stroke();
+            shopCtx.beginPath();
+            shopCtx.moveTo(reindeerX + 2, reindeerY + 4);
+            shopCtx.lineTo(reindeerX + 2, reindeerY + 8);
+            shopCtx.stroke();
+            
+            // Antlers
+            shopCtx.lineWidth = 1.5;
+            shopCtx.beginPath();
+            shopCtx.moveTo(reindeerX - 9, reindeerY - 6);
+            shopCtx.lineTo(reindeerX - 11, reindeerY - 10);
+            shopCtx.stroke();
+            shopCtx.beginPath();
+            shopCtx.moveTo(reindeerX - 9, reindeerY - 6);
+            shopCtx.lineTo(reindeerX - 7, reindeerY - 9);
+            shopCtx.stroke();
+            shopCtx.beginPath();
+            shopCtx.moveTo(reindeerX - 7, reindeerY - 6);
+            shopCtx.lineTo(reindeerX - 5, reindeerY - 10);
+            shopCtx.stroke();
+            shopCtx.beginPath();
+            shopCtx.moveTo(reindeerX - 7, reindeerY - 6);
+            shopCtx.lineTo(reindeerX - 6, reindeerY - 8);
+            shopCtx.stroke();
+            
+            // Red nose only for Rudolph (first one)
+            if (index === 0) {
+                shopCtx.fillStyle = '#FF0000';
+                shopCtx.shadowColor = '#FF0000';
+                shopCtx.shadowBlur = 6;
+                shopCtx.beginPath();
+                shopCtx.arc(reindeerX - 11, reindeerY - 3, 2.5, 0, Math.PI * 2);
+                shopCtx.fill();
+                shopCtx.shadowBlur = 0;
+            }
+            
+            // Eye
+            shopCtx.fillStyle = '#000000';
+            shopCtx.beginPath();
+            shopCtx.arc(reindeerX - 9, reindeerY - 4, 1, 0, Math.PI * 2);
+            shopCtx.fill();
+        });
+        
+        // Reins connecting reindeer to sleigh
+        shopCtx.strokeStyle = '#654321';
+        shopCtx.lineWidth = 1;
+        for (let i = 0; i < reindeerPositions.length; i++) {
+            const pos = reindeerPositions[i];
+            shopCtx.beginPath();
+            shopCtx.moveTo(santaX + pos.x + 4, santaY + pos.y);
+            shopCtx.lineTo(santaX - 40, santaY + 10);
+            shopCtx.stroke();
+        }
+        
+        // Sleigh body - more detailed
+        shopCtx.fillStyle = '#8B0000';
+        shopCtx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        shopCtx.shadowBlur = 4;
+        shopCtx.shadowOffsetY = 2;
+        
+        // Main sleigh body with curved shape
+        shopCtx.beginPath();
+        shopCtx.moveTo(santaX - 40, santaY + 8);
+        shopCtx.quadraticCurveTo(santaX - 45, santaY + 15, santaX - 40, santaY + 22);
+        shopCtx.lineTo(santaX + 35, santaY + 22);
+        shopCtx.quadraticCurveTo(santaX + 40, santaY + 15, santaX + 35, santaY + 8);
+        shopCtx.closePath();
+        shopCtx.fill();
+        
+        shopCtx.shadowBlur = 0;
+        
+        // Gold trim on sleigh
+        shopCtx.strokeStyle = '#FFD700';
+        shopCtx.lineWidth = 2;
+        shopCtx.beginPath();
+        shopCtx.moveTo(santaX - 40, santaY + 10);
+        shopCtx.lineTo(santaX + 35, santaY + 10);
+        shopCtx.stroke();
+        
+        // Sleigh runners - curved
+        shopCtx.strokeStyle = '#C0C0C0';
+        shopCtx.lineWidth = 3;
+        shopCtx.lineCap = 'round';
+        shopCtx.beginPath();
+        shopCtx.moveTo(santaX - 45, santaY + 25);
+        shopCtx.quadraticCurveTo(santaX - 30, santaY + 28, santaX - 20, santaY + 25);
+        shopCtx.stroke();
+        shopCtx.beginPath();
+        shopCtx.moveTo(santaX + 20, santaY + 25);
+        shopCtx.quadraticCurveTo(santaX + 30, santaY + 28, santaX + 40, santaY + 25);
+        shopCtx.stroke();
+        
+        // Gift bag in sleigh
+        shopCtx.fillStyle = '#654321';
+        shopCtx.fillRect(santaX + 8, santaY + 8, 20, 15);
+        shopCtx.strokeStyle = '#FFD700';
+        shopCtx.lineWidth = 2;
+        shopCtx.beginPath();
+        shopCtx.moveTo(santaX + 18, santaY + 8);
+        shopCtx.lineTo(santaX + 18, santaY + 23);
+        shopCtx.stroke();
+        
+        // Santa sitting in sleigh
+        shopCtx.fillStyle = '#DC143C';
+        // Santa's body/coat
+        shopCtx.fillRect(santaX - 12, santaY + 3, 18, 20);
+        
+        // Santa's legs
+        shopCtx.fillRect(santaX - 8, santaY + 18, 6, 8);
+        shopCtx.fillRect(santaX + 2, santaY + 18, 6, 8);
+        
+        // Black boots
+        shopCtx.fillStyle = '#000000';
+        shopCtx.fillRect(santaX - 8, santaY + 24, 6, 4);
+        shopCtx.fillRect(santaX + 2, santaY + 24, 6, 4);
+        
+        // White fur trim on coat
+        shopCtx.fillStyle = '#FFFFFF';
+        shopCtx.fillRect(santaX - 12, santaY + 21, 18, 3);
+        shopCtx.fillRect(santaX - 12, santaY + 3, 18, 2);
+        
+        // Santa's arms holding reins
+        shopCtx.fillStyle = '#DC143C';
+        shopCtx.fillRect(santaX - 16, santaY + 6, 8, 4);
+        
+        // Black gloves
+        shopCtx.fillStyle = '#000000';
+        shopCtx.beginPath();
+        shopCtx.arc(santaX - 17, santaY + 8, 3, 0, Math.PI * 2);
+        shopCtx.fill();
+        
+        // Santa's head
+        shopCtx.fillStyle = '#FFD0B0';
+        shopCtx.beginPath();
+        shopCtx.arc(santaX - 3, santaY - 2, 9, 0, Math.PI * 2);
+        shopCtx.fill();
+        
+        // Santa's hat
+        shopCtx.fillStyle = '#DC143C';
+        shopCtx.beginPath();
+        shopCtx.moveTo(santaX - 11, santaY - 2);
+        shopCtx.lineTo(santaX + 2, santaY - 18);
+        shopCtx.lineTo(santaX + 5, santaY - 2);
+        shopCtx.closePath();
+        shopCtx.fill();
+        
+        // White fur on hat brim
+        shopCtx.fillStyle = '#FFFFFF';
+        shopCtx.fillRect(santaX - 11, santaY - 2, 16, 3);
+        
+        // Hat pom-pom
+        shopCtx.beginPath();
+        shopCtx.arc(santaX + 2, santaY - 18, 4, 0, Math.PI * 2);
+        shopCtx.fill();
+        
+        // Santa's beard
+        shopCtx.beginPath();
+        shopCtx.ellipse(santaX - 3, santaY + 2, 6, 5, 0, 0, Math.PI * 2);
+        shopCtx.fill();
+        
+        // Mustache
+        shopCtx.beginPath();
+        shopCtx.ellipse(santaX - 6, santaY - 1, 3, 2, 0, 0, Math.PI * 2);
+        shopCtx.fill();
+        shopCtx.beginPath();
+        shopCtx.ellipse(santaX, santaY - 1, 3, 2, 0, 0, Math.PI * 2);
+        shopCtx.fill();
+        
+        // Rosy cheeks
+        shopCtx.fillStyle = 'rgba(255, 105, 180, 0.4)';
+        shopCtx.beginPath();
+        shopCtx.arc(santaX - 8, santaY + 1, 3, 0, Math.PI * 2);
+        shopCtx.fill();
+        shopCtx.beginPath();
+        shopCtx.arc(santaX + 2, santaY + 1, 3, 0, Math.PI * 2);
+        shopCtx.fill();
+        
+        // Eyes
+        shopCtx.fillStyle = '#000000';
+        shopCtx.beginPath();
+        shopCtx.arc(santaX - 6, santaY - 3, 1.5, 0, Math.PI * 2);
+        shopCtx.fill();
+        shopCtx.beginPath();
+        shopCtx.arc(santaX, santaY - 3, 1.5, 0, Math.PI * 2);
+        shopCtx.fill();
+    }
+    
     // Ground - darker for night
     shopCtx.fillStyle = '#2F4F2F';
     shopCtx.fillRect(0, shopCanvas.height * 0.7, shopCanvas.width, shopCanvas.height * 0.3);
@@ -2333,3 +2931,123 @@ function updateSystemTime() {
 // Update system time immediately and then every second
 updateSystemTime();
 setInterval(updateSystemTime, 1000);
+
+// Snow effect - active between November 1st and March 1st
+class Snowflake {
+    constructor() {
+        this.reset();
+    }
+    
+    reset() {
+        this.x = Math.random() * snowCanvas.width;
+        this.y = Math.random() * snowCanvas.height - snowCanvas.height;
+        this.radius = Math.random() * 3 + 1;
+        this.speed = Math.random() * 1 + 0.5;
+        this.wind = Math.random() * 0.5 - 0.25;
+        this.opacity = Math.random() * 0.6 + 0.4;
+    }
+    
+    update() {
+        this.y += this.speed;
+        this.x += this.wind;
+        
+        // Reset snowflake when it goes off screen
+        if (this.y > snowCanvas.height) {
+            this.y = -10;
+            this.x = Math.random() * snowCanvas.width;
+        }
+        
+        if (this.x > snowCanvas.width) {
+            this.x = 0;
+        } else if (this.x < 0) {
+            this.x = snowCanvas.width;
+        }
+    }
+    
+    draw() {
+        snowCtx.beginPath();
+        snowCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        snowCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        snowCtx.fill();
+    }
+}
+
+let snowflakes = [];
+let snowActive = false;
+
+function initSnow() {
+    snowflakes = [];
+    for (let i = 0; i < 150; i++) {
+        snowflakes.push(new Snowflake());
+    }
+}
+
+function isWinterSeason() {
+    const now = new Date();
+    const month = now.getMonth(); // 0-11 (0 = January, 10 = November)
+    
+    // November (10), December (11), January (0), February (1) only
+    // Excludes March 1st and beyond
+    if (month === 10 || month === 11 || month === 0 || month === 1) {
+        return true;
+    }
+    
+    return false;
+}
+
+function isSantaSeason() {
+    const now = new Date();
+    const month = now.getMonth(); // 0-11 (0 = January, 10 = November)
+    
+    // November (10), December (11), January (0) only
+    if (month === 10 || month === 11 || month === 0) {
+        return true;
+    }
+    
+    return false;
+}
+
+function updateSnowEffect() {
+    const shouldBeActive = isWinterSeason();
+    
+    if (shouldBeActive && !snowActive) {
+        // Activate snow
+        snowActive = true;
+        snowCanvas.style.display = 'block';
+        if (snowflakes.length === 0) {
+            initSnow();
+        }
+    } else if (!shouldBeActive && snowActive) {
+        // Deactivate snow
+        snowActive = false;
+        snowCanvas.style.display = 'none';
+    }
+}
+
+function animateSnow() {
+    if (!snowActive) return;
+    
+    snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+    
+    for (let snowflake of snowflakes) {
+        snowflake.update();
+        snowflake.draw();
+    }
+}
+
+// Initialize and check snow effect
+updateSnowEffect();
+setInterval(updateSnowEffect, 60000); // Check every minute
+
+// Add snow animation to the game loop
+function snowGameLoop() {
+    animateSnow();
+    requestAnimationFrame(snowGameLoop);
+}
+snowGameLoop();
+
+// Handle window resize for snow canvas
+window.addEventListener('resize', () => {
+    snowCanvas.width = window.innerWidth;
+    snowCanvas.height = window.innerHeight;
+});
