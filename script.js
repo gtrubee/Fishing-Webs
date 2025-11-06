@@ -31,7 +31,7 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 8,
+        maxWeight: 4,
         spawnWeight: 65
     },
     sunfish: {
@@ -45,7 +45,7 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 7,
+        maxWeight: 6,
         spawnWeight: 58
     },
     spottedSunfish: {
@@ -73,7 +73,7 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 9,
+        maxWeight: 6,
         spawnWeight: 52
     },
     goldfish: {
@@ -87,7 +87,7 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 5,
+        maxWeight: 10,
         spawnWeight: 10
     },
     chub: {
@@ -101,7 +101,7 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 3,
-        maxWeight: 18,
+        maxWeight: 12,
         spawnWeight: 60
     },
     perch: {
@@ -115,7 +115,7 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 2,
-        maxWeight: 12,
+        maxWeight: 5,
         spawnWeight: 55
     },
     rockBass: {
@@ -128,8 +128,8 @@ const fishTypes = {
         fishChangeInterval: 43,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 2,
-        maxWeight: 10,
+        minWeight: 1,
+        maxWeight: 3,
         spawnWeight: 52
     },
     trout: {
@@ -142,8 +142,8 @@ const fishTypes = {
         fishChangeInterval: 42,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 4,
-        maxWeight: 20,
+        minWeight: 15,
+        maxWeight: 100,
         spawnWeight: 50
     },
     bullhead: {
@@ -156,8 +156,8 @@ const fishTypes = {
         fishChangeInterval: 44,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 3,
-        maxWeight: 14,
+        minWeight: 1,
+        maxWeight: 8,
         spawnWeight: 48
     },
     herring: {
@@ -170,8 +170,8 @@ const fishTypes = {
         fishChangeInterval: 41,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 2,
-        maxWeight: 9,
+        minWeight: 1,
+        maxWeight: 4,
         spawnWeight: 46
     },
     crappie: {
@@ -184,8 +184,8 @@ const fishTypes = {
         fishChangeInterval: 49,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 3,
-        maxWeight: 16,
+        minWeight: 1,
+        maxWeight: 5,
         spawnWeight: 42
     },
     warmouth: {
@@ -198,8 +198,8 @@ const fishTypes = {
         fishChangeInterval: 50,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 2,
-        maxWeight: 12,
+        minWeight: 1,
+        maxWeight: 4,
         spawnWeight: 38
     },
     crucianCarp: {
@@ -212,8 +212,8 @@ const fishTypes = {
         fishChangeInterval: 48,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 5,
-        maxWeight: 15,
+        minWeight: 1,
+        maxWeight: 5,
         spawnWeight: 40
     },
     ranchuGoldfish: {
@@ -226,8 +226,8 @@ const fishTypes = {
         fishChangeInterval: 47,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 2,
-        maxWeight: 8,
+        minWeight: 1,
+        maxWeight: 4,
         spawnWeight: 8
     },
     koi: {
@@ -240,8 +240,8 @@ const fishTypes = {
         fishChangeInterval: 49,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 5,
-        maxWeight: 30,
+        minWeight: 35,
+        maxWeight: 100,
         spawnWeight: 5
     },
     whitefish: {
@@ -254,8 +254,8 @@ const fishTypes = {
         fishChangeInterval: 51,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 4,
-        maxWeight: 18,
+        minWeight: 3,
+        maxWeight: 22,
         spawnWeight: 38
     },
     smallmouthBass: {
@@ -268,8 +268,8 @@ const fishTypes = {
         fishChangeInterval: 53,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 5,
-        maxWeight: 22,
+        minWeight: 1,
+        maxWeight: 13,
         spawnWeight: 35
     },
     salmon: {
@@ -282,8 +282,8 @@ const fishTypes = {
         fishChangeInterval: 50,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 8,
-        maxWeight: 30,
+        minWeight: 5,
+        maxWeight: 20,
         spawnWeight: 33
     },
     largemouthBass: {
@@ -296,8 +296,8 @@ const fishTypes = {
         fishChangeInterval: 54,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 6,
-        maxWeight: 25,
+        minWeight: 1,
+        maxWeight: 23,
         spawnWeight: 32
     },
     rainbowTrout: {
@@ -310,8 +310,8 @@ const fishTypes = {
         fishChangeInterval: 52,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 6,
-        maxWeight: 25,
+        minWeight: 1,
+        maxWeight: 50,
         spawnWeight: 30
     },
     walleye: {
@@ -324,8 +324,8 @@ const fishTypes = {
         fishChangeInterval: 55,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 10,
-        maxWeight: 35,
+        minWeight: 1,
+        maxWeight: 25,
         spawnWeight: 28
     },
     cherrySalmon: {
@@ -338,8 +338,8 @@ const fishTypes = {
         fishChangeInterval: 58,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 10,
-        maxWeight: 28,
+        minWeight: 3,
+        maxWeight: 20,
         spawnWeight: 22
     },
     catfish: {
@@ -352,8 +352,8 @@ const fishTypes = {
         fishChangeInterval: 59,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 12,
-        maxWeight: 50,
+        minWeight: 1,
+        maxWeight: 130,
         spawnWeight: 20
     },
     cohoSalmon: {
@@ -366,8 +366,8 @@ const fishTypes = {
         fishChangeInterval: 61,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 15,
-        maxWeight: 35,
+        minWeight: 5,
+        maxWeight: 36,
         spawnWeight: 18
     },
     carp: {
@@ -380,8 +380,8 @@ const fishTypes = {
         fishChangeInterval: 60,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 15,
-        maxWeight: 60,
+        minWeight: 3,
+        maxWeight: 120,
         spawnWeight: 16
     },
     pike: {
@@ -394,7 +394,7 @@ const fishTypes = {
         fishChangeInterval: 63,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 18,
+        minWeight: 2,
         maxWeight: 55,
         spawnWeight: 14
     },
@@ -408,9 +408,23 @@ const fishTypes = {
         fishChangeInterval: 65,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 20,
-        maxWeight: 70,
+        minWeight: 1,
+        maxWeight: 55,
         spawnWeight: 12
+    },
+    alligatorGar: {
+        name: 'Alligator Gar',
+        color: '#4B5320',
+        difficulty: 'Hard',
+        barSize: 80,
+        fishSpeed: 0.019,
+        fishRandomness: 1.1,
+        fishChangeInterval: 69,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 80,
+        maxWeight: 350,
+        spawnWeight: 3
     },
     kingSalmon: {
         name: 'King Salmon',
@@ -422,8 +436,8 @@ const fishTypes = {
         fishChangeInterval: 66,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 25,
-        maxWeight: 80,
+        minWeight: 10,
+        maxWeight: 126,
         spawnWeight: 10
     },
     sturgeon: {
@@ -436,8 +450,8 @@ const fishTypes = {
         fishChangeInterval: 67,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 30,
-        maxWeight: 100,
+        minWeight: 5,
+        maxWeight: 1800,
         spawnWeight: 8
     },
     muskellunge: {
@@ -450,8 +464,8 @@ const fishTypes = {
         fishChangeInterval: 68,
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
-        minWeight: 35,
-        maxWeight: 110,
+        minWeight: 10,
+        maxWeight: 67,
         spawnWeight: 5
     }
 };
@@ -491,37 +505,38 @@ let lastUpdateTime = Date.now();
 
 // Fish selling prices (per pound)
 const fishPrices = {
-    'Bluegill': 2,
-    'Sunfish': 2,
-    'Spotted Sunfish': 2,
-    'Redbreast Sunfish': 2,
-    'Herring': 3,
-    'Perch': 3,
-    'Rock Bass': 3,
-    'Bullhead': 4,
-    'Chub': 4,
-    'Trout': 5,
-    'Whitefish': 5,
+    'Bluegill': 3,
+    'Sunfish': 3,
+    'Spotted Sunfish': 3,
+    'Redbreast Sunfish': 3,
+    'Herring': 4,
+    'Perch': 4,
+    'Rock Bass': 4,
+    'Bullhead': 5,
+    'Chub': 5,
     'Crappie': 6,
     'Warmouth': 6,
     'Crucian Carp': 6,
-    'Salmon': 7,
-    'Smallmouth Bass': 8,
-    'Largemouth Bass': 8,
-    'Rainbow Trout': 8,
-    'Cherry Salmon': 9,
-    'Walleye': 10,
-    'Catfish': 11,
-    'Carp': 12,
-    'Coho Salmon': 13,
-    'Pike': 14,
-    'Gar': 14,
-    'Sturgeon': 15,
-    'King Salmon': 16,
-    'Muskellunge': 18,
-    'Goldfish': 20,
-    'Ranchu Goldfish': 25,
-    'Koi': 30
+    'Trout': 7,
+    'Whitefish': 7,
+    'Smallmouth Bass': 9,
+    'Salmon': 10,
+    'Largemouth Bass': 10,
+    'Rainbow Trout': 11,
+    'Walleye': 12,
+    'Cherry Salmon': 13,
+    'Catfish': 14,
+    'Coho Salmon': 15,
+    'Carp': 16,
+    'Pike': 18,
+    'Gar': 18,
+    'King Salmon': 20,
+    'Muskellunge': 22,
+    'Goldfish': 25,
+    'Ranchu Goldfish': 30,
+    'Alligator Gar': 35,
+    'Koi': 40,
+    'Sturgeon': 50
 };
 
 // Bait system
@@ -1393,13 +1408,13 @@ function startMinigame() {
         weightRoll = weightRoll + (1 - weightRoll) * trophyOddsBonus;
     }
     
-    currentFishWeight = Math.floor(weightRoll * (currentFish.maxWeight - currentFish.minWeight + 1)) + currentFish.minWeight;
+    currentFishWeight = Math.round((weightRoll * (currentFish.maxWeight - currentFish.minWeight + 1) + currentFish.minWeight) * 10) / 10;
     
     // Apply weight bonus from equipped trinkets
     const weightBonus = getTrinketBonus('weightBonus');
     if (weightBonus > 0) {
         const weightRange = currentFish.maxWeight - currentFish.minWeight;
-        currentFishWeight = Math.floor(currentFishWeight + (weightRange * weightBonus));
+        currentFishWeight = Math.round((currentFishWeight + (weightRange * weightBonus)) * 10) / 10;
         // Clamp to max weight
         currentFishWeight = Math.min(currentFishWeight, currentFish.maxWeight);
     }
@@ -1680,8 +1695,8 @@ function endMinigame(success) {
         let perfectCatchBonus = '';
         
         if (isPerfectCatch) {
-            finalWeight = Math.floor(currentFishWeight * 1.30); // 30% bonus
-            perfectCatchBonus = ' ⭐ PERFECT CATCH! +30% weight!';
+            finalWeight = Math.round(currentFishWeight * 1.30 * 10) / 10; // 30% bonus with 1 decimal
+            perfectCatchBonus = ` ⭐ PERFECT CATCH! +30% weight!`;
         }
         
         // Determine fish rarity
@@ -1727,11 +1742,11 @@ function endMinigame(success) {
                 museum[currentFish.name].biggestWeight = finalWeight;
             }
             
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
         } else {
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus}${rarityText} But your inventory is full!`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs!${perfectCatchBonus}${rarityText} But your inventory is full!`;
         }
     } else {
         statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
