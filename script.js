@@ -569,8 +569,13 @@ const trinketTypes = {
     }
 };
 
-let currentTrinket = null; // Currently equipped trinket
+let equippedTrinkets = []; // Array of currently equipped trinkets
 let trinketInventory = {}; // Stores owned trinkets (boolean)
+let maxTrinketSlots = 1; // Default: can equip 1 trinket
+let trinketSlotUpgrades = [
+    { slots: 2, price: 500000, purchased: false },
+    { slots: 3, price: 5000000, purchased: false }
+];
 
 // Fishing rods
 const fishingRods = [
@@ -607,9 +612,19 @@ function loadGameData() {
             baitInventory = data.baitInventory || {};
             currentBait = data.currentBait || null;
             
-            // Restore trinket inventory and equipped trinket
+            // Restore trinket inventory and equipped trinkets
             trinketInventory = data.trinketInventory || {};
-            currentTrinket = data.currentTrinket || null;
+            equippedTrinkets = data.equippedTrinkets || [];
+            maxTrinketSlots = data.maxTrinketSlots || 1;
+            
+            // Restore trinket slot upgrades
+            if (data.trinketSlotUpgrades) {
+                data.trinketSlotUpgrades.forEach((purchased, index) => {
+                    if (trinketSlotUpgrades[index]) {
+                        trinketSlotUpgrades[index].purchased = purchased;
+                    }
+                });
+            }
             
             console.log('Game data loaded successfully');
         } catch (e) {
@@ -629,10 +644,30 @@ function saveGameData() {
         baitInventory: baitInventory,
         currentBait: currentBait,
         trinketInventory: trinketInventory,
-        currentTrinket: currentTrinket
+        equippedTrinkets: equippedTrinkets,
+        maxTrinketSlots: maxTrinketSlots,
+        trinketSlotUpgrades: trinketSlotUpgrades.map(u => u.purchased)
     };
     localStorage.setItem('fishingGameSave', JSON.stringify(data));
     console.log('Game data saved');
+}
+
+// Helper function to get total bonus from all equipped trinkets of a specific effect
+function getTrinketBonus(effectType) {
+    let totalBonus = 0;
+    equippedTrinkets.forEach(trinketKey => {
+        if (trinketTypes[trinketKey] && trinketTypes[trinketKey].effect === effectType) {
+            totalBonus += trinketTypes[trinketKey].bonus;
+        }
+    });
+    return totalBonus;
+}
+
+// Helper function to check if any equipped trinket has a specific effect
+function hasTrinketEffect(effectType) {
+    return equippedTrinkets.some(trinketKey => 
+        trinketTypes[trinketKey] && trinketTypes[trinketKey].effect === effectType
+    );
 }
 
 // Minigame variables - Circular ring design
@@ -650,6 +685,8 @@ let progressDecayRate = 0.2;
 let progressGainRate = 0.4;
 const maxProgress = 100;
 const winThreshold = 100;
+let isPerfectCatch = true; // Track if player has maintained perfect catch
+let lastProgress = 0; // Track last frame's progress to detect decreases
 
 let leftMouseDown = false;
 let rightMouseDown = false;
@@ -873,20 +910,20 @@ function startMinigame() {
     // Generate random weight for this fish
     let weightRoll = Math.random();
     
-    // Apply trophy odds bonus from trinket if equipped
-    if (currentTrinket && trinketTypes[currentTrinket].effect === 'trophyOdds') {
-        const bonus = trinketTypes[currentTrinket].bonus;
+    // Apply trophy odds bonus from equipped trinkets
+    const trophyOddsBonus = getTrinketBonus('trophyOdds');
+    if (trophyOddsBonus > 0) {
         // Push the random roll toward 1 (higher weight)
-        weightRoll = weightRoll + (1 - weightRoll) * bonus;
+        weightRoll = weightRoll + (1 - weightRoll) * trophyOddsBonus;
     }
     
     currentFishWeight = Math.floor(weightRoll * (currentFish.maxWeight - currentFish.minWeight + 1)) + currentFish.minWeight;
     
-    // Apply weight bonus from trinket if equipped
-    if (currentTrinket && trinketTypes[currentTrinket].effect === 'weightBonus') {
-        const bonus = trinketTypes[currentTrinket].bonus;
+    // Apply weight bonus from equipped trinkets
+    const weightBonus = getTrinketBonus('weightBonus');
+    if (weightBonus > 0) {
         const weightRange = currentFish.maxWeight - currentFish.minWeight;
-        currentFishWeight = Math.floor(currentFishWeight + (weightRange * bonus));
+        currentFishWeight = Math.floor(currentFishWeight + (weightRange * weightBonus));
         // Clamp to max weight
         currentFishWeight = Math.min(currentFishWeight, currentFish.maxWeight);
     }
@@ -910,10 +947,10 @@ function startMinigame() {
     // Reset minigame variables for circular ring design
     let barSizeInDegrees = (currentFish.barSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
     
-    // Apply catch zone bonus from trinket if equipped
-    if (currentTrinket && trinketTypes[currentTrinket].effect === 'catchZone') {
-        const bonus = trinketTypes[currentTrinket].bonus;
-        barSizeInDegrees *= (1 + bonus);
+    // Apply catch zone bonus from equipped trinkets
+    const catchZoneBonus = getTrinketBonus('catchZone');
+    if (catchZoneBonus > 0) {
+        barSizeInDegrees *= (1 + catchZoneBonus);
     }
     
     barAngleSize = (barSizeInDegrees / 180) * Math.PI; // Convert to radians
@@ -926,6 +963,8 @@ function startMinigame() {
     progress = 15;
     progressGainRate = currentFish.progressGainRate;
     progressDecayRate = currentFish.progressDecayRate;
+    isPerfectCatch = true; // Reset perfect catch tracker
+    lastProgress = progress; // Initialize last progress
     
     // Store weight-adjusted values for use in game loop
     currentFish.adjustedSpeed = weightAdjustedSpeed;
@@ -979,13 +1018,14 @@ function gameLoop() {
         fishChangeTimer = 0;
     }
     
-    // Move fish towards target angle (original difficulty)
+    // Move fish towards target angle (30% easier - reduced speed and randomness)
     let angleDiff = fishTargetAngle - fishAngle;
     // Take shortest path around circle
     if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
     if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
     
-    fishAngularSpeed = (angleDiff * currentFish.adjustedSpeed + (Math.random() - 0.5) * currentFish.adjustedRandomness * 0.1) * deltaMultiplier;
+    // Apply 30% difficulty reduction (multiply speed by 0.7)
+    fishAngularSpeed = (angleDiff * currentFish.adjustedSpeed * 0.7 + (Math.random() - 0.5) * currentFish.adjustedRandomness * 0.1 * 0.7) * deltaMultiplier;
     fishAngle += fishAngularSpeed;
     
     // Normalize fish angle
@@ -1015,6 +1055,12 @@ function gameLoop() {
     }
     
     progress = Math.max(0, Math.min(maxProgress, progress));
+    
+    // Check if progress decreased from last frame - if so, not a perfect catch
+    if (progress < lastProgress) {
+        isPerfectCatch = false;
+    }
+    lastProgress = progress;
     
     // Check for win/lose
     if (progress >= winThreshold) {
@@ -1118,6 +1164,13 @@ function drawMinigame(fishInBar) {
     minigameCtx.textAlign = 'center';
     minigameCtx.fillText(Math.floor(progress) + '%', centerX, centerY + 10);
     
+    // Perfect catch indicator
+    if (isPerfectCatch) {
+        minigameCtx.fillStyle = '#FFD700';
+        minigameCtx.font = 'bold 16px Arial';
+        minigameCtx.fillText('⭐ PERFECT ⭐', centerX, centerY - 20);
+    }
+    
     // Instructions
     minigameCtx.fillStyle = '#FFFFFF';
     minigameCtx.font = '14px Arial';
@@ -1143,17 +1196,26 @@ function endMinigame(success) {
     statusDiv.style.transition = 'none';
     
     if (success) {
+        // Apply perfect catch bonus
+        let finalWeight = currentFishWeight;
+        let perfectCatchBonus = '';
+        
+        if (isPerfectCatch) {
+            finalWeight = Math.floor(currentFishWeight * 1.30); // 30% bonus
+            perfectCatchBonus = ' ⭐ PERFECT CATCH! +30% weight!';
+        }
+        
         // Add fish to inventory
         if (inventory.length < maxInventorySlots) {
             inventory.push({
                 type: currentFish.name,
-                weight: currentFishWeight
+                weight: finalWeight
             });
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! (${inventory.length}/${maxInventorySlots})`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
         } else {
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs! But your inventory is full!`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${finalWeight} lbs!${perfectCatchBonus} But your inventory is full!`;
         }
     } else {
         statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
@@ -1351,10 +1413,24 @@ function updateTrinketPopup() {
     const trinketGrid = document.getElementById('trinket-popup-grid');
     trinketGrid.innerHTML = '';
     
+    // Add slots info at the top
+    const slotsHeader = document.createElement('div');
+    slotsHeader.style.gridColumn = '1 / -1';
+    slotsHeader.style.padding = '15px';
+    slotsHeader.style.background = 'rgba(186, 104, 200, 0.3)';
+    slotsHeader.style.borderRadius = '8px';
+    slotsHeader.style.textAlign = 'center';
+    slotsHeader.style.fontWeight = 'bold';
+    slotsHeader.style.fontSize = '18px';
+    slotsHeader.style.color = '#6A1B9A';
+    slotsHeader.style.marginBottom = '10px';
+    slotsHeader.textContent = `Equipped: ${equippedTrinkets.length}/${maxTrinketSlots}`;
+    trinketGrid.appendChild(slotsHeader);
+    
     Object.keys(trinketTypes).forEach(trinketKey => {
         const trinket = trinketTypes[trinketKey];
         const isOwned = trinketInventory[trinketKey] || false;
-        const isEquipped = currentTrinket === trinketKey;
+        const isEquipped = equippedTrinkets.includes(trinketKey);
         
         const trinketSlot = document.createElement('div');
         trinketSlot.className = 'trinket-slot';
@@ -1395,9 +1471,11 @@ function updateTrinketPopup() {
         if (isOwned) {
             trinketSlot.addEventListener('click', () => {
                 if (isEquipped) {
-                    unequipTrinket();
+                    unequipTrinket(trinketKey);
                 } else {
-                    equipTrinket(trinketKey);
+                    if (equippedTrinkets.length < maxTrinketSlots) {
+                        equipTrinket(trinketKey);
+                    }
                 }
                 updateTrinketPopup();
             });
@@ -1657,10 +1735,10 @@ function updateSellInventory() {
         
         let price = fishPrices[fish.type] * fish.weight;
         
-        // Apply sell bonus from trinket if equipped
-        if (currentTrinket && trinketTypes[currentTrinket].effect === 'sellBonus') {
-            const bonus = trinketTypes[currentTrinket].bonus;
-            price = Math.floor(price * (1 + bonus));
+        // Apply sell bonus from equipped trinkets
+        const sellBonus = getTrinketBonus('sellBonus');
+        if (sellBonus > 0) {
+            price = Math.floor(price * (1 + sellBonus));
         }
         
         const priceTag = document.createElement('div');
@@ -1682,10 +1760,10 @@ function sellFish(index) {
     const fish = inventory[index];
     let price = fishPrices[fish.type] * fish.weight;
     
-    // Apply sell bonus from trinket if equipped
-    if (currentTrinket && trinketTypes[currentTrinket].effect === 'sellBonus') {
-        const bonus = trinketTypes[currentTrinket].bonus;
-        price = Math.floor(price * (1 + bonus));
+    // Apply sell bonus from equipped trinkets
+    const sellBonus = getTrinketBonus('sellBonus');
+    if (sellBonus > 0) {
+        price = Math.floor(price * (1 + sellBonus));
     }
     
     money += price;
@@ -1700,10 +1778,10 @@ function sellAllFish() {
     inventory.forEach(fish => {
         let price = fishPrices[fish.type] * fish.weight;
         
-        // Apply sell bonus from trinket if equipped
-        if (currentTrinket && trinketTypes[currentTrinket].effect === 'sellBonus') {
-            const bonus = trinketTypes[currentTrinket].bonus;
-            price = Math.floor(price * (1 + bonus));
+        // Apply sell bonus from equipped trinkets
+        const sellBonus = getTrinketBonus('sellBonus');
+        if (sellBonus > 0) {
+            price = Math.floor(price * (1 + sellBonus));
         }
         
         totalEarned += price;
@@ -1911,10 +1989,65 @@ function updateTrinketDisplay() {
     const trinketContainer = document.getElementById('trinket-container');
     trinketContainer.innerHTML = '';
     
+    // Add trinket slot upgrades section
+    trinketSlotUpgrades.forEach((upgrade, index) => {
+        if (!upgrade.purchased) {
+            const upgradeItem = document.createElement('div');
+            upgradeItem.className = 'shop-item';
+            upgradeItem.style.background = 'rgba(186, 104, 200, 0.1)';
+            
+            const upgradeInfo = document.createElement('div');
+            upgradeInfo.className = 'shop-item-info';
+            
+            const upgradeIcon = document.createElement('div');
+            upgradeIcon.className = 'shop-item-icon';
+            upgradeIcon.textContent = '💎';
+            
+            const upgradeDetails = document.createElement('div');
+            const upgradeName = document.createElement('div');
+            upgradeName.className = 'shop-item-name';
+            upgradeName.textContent = `Trinket Slot Upgrade (${upgrade.slots} slots)`;
+            upgradeName.style.color = '#BA68C8';
+            upgradeName.style.fontWeight = 'bold';
+            
+            const upgradeDesc = document.createElement('div');
+            upgradeDesc.className = 'shop-item-desc';
+            upgradeDesc.textContent = `Equip up to ${upgrade.slots} trinkets at once!`;
+            
+            upgradeDetails.appendChild(upgradeName);
+            upgradeDetails.appendChild(upgradeDesc);
+            
+            upgradeInfo.appendChild(upgradeIcon);
+            upgradeInfo.appendChild(upgradeDetails);
+            
+            upgradeItem.appendChild(upgradeInfo);
+            
+            const buyButton = document.createElement('button');
+            buyButton.className = 'buy-button';
+            buyButton.textContent = `Buy for $${upgrade.price.toLocaleString()}`;
+            buyButton.disabled = money < upgrade.price;
+            buyButton.addEventListener('click', () => buyTrinketSlot(index));
+            upgradeItem.appendChild(buyButton);
+            
+            trinketContainer.appendChild(upgradeItem);
+        }
+    });
+    
+    // Show current equipped trinkets info
+    const slotsInfo = document.createElement('div');
+    slotsInfo.style.padding = '10px';
+    slotsInfo.style.marginBottom = '10px';
+    slotsInfo.style.background = 'rgba(186, 104, 200, 0.2)';
+    slotsInfo.style.borderRadius = '8px';
+    slotsInfo.style.textAlign = 'center';
+    slotsInfo.style.fontWeight = 'bold';
+    slotsInfo.textContent = `Trinket Slots: ${equippedTrinkets.length}/${maxTrinketSlots}`;
+    trinketContainer.appendChild(slotsInfo);
+    
     Object.keys(trinketTypes).forEach(trinketKey => {
         const trinket = trinketTypes[trinketKey];
         const isOwned = trinketInventory[trinketKey] || false;
-        const isEquipped = currentTrinket === trinketKey;
+        const isEquipped = equippedTrinkets.includes(trinketKey);
         
         const trinketItem = document.createElement('div');
         trinketItem.className = 'shop-item';
@@ -1950,7 +2083,7 @@ function updateTrinketDisplay() {
         if (!isOwned) {
             const buyButton = document.createElement('button');
             buyButton.className = 'buy-button';
-            buyButton.textContent = `Buy for $${trinket.price}`;
+            buyButton.textContent = `Buy for $${trinket.price.toLocaleString()}`;
             buyButton.disabled = money < trinket.price;
             buyButton.addEventListener('click', () => buyTrinket(trinketKey));
             trinketItem.appendChild(buyButton);
@@ -1958,13 +2091,14 @@ function updateTrinketDisplay() {
             const equipButton = document.createElement('button');
             equipButton.className = 'buy-button';
             equipButton.textContent = 'Equip';
+            equipButton.disabled = equippedTrinkets.length >= maxTrinketSlots;
             equipButton.addEventListener('click', () => equipTrinket(trinketKey));
             trinketItem.appendChild(equipButton);
         } else {
             const unequipButton = document.createElement('button');
             unequipButton.className = 'buy-button';
             unequipButton.textContent = 'Unequip';
-            unequipButton.addEventListener('click', () => unequipTrinket());
+            unequipButton.addEventListener('click', () => unequipTrinket(trinketKey));
             trinketItem.appendChild(unequipButton);
         }
         
@@ -1984,16 +2118,40 @@ function buyTrinket(trinketKey) {
 
 function equipTrinket(trinketKey) {
     if (trinketInventory[trinketKey]) {
-        currentTrinket = trinketKey;
+        // Check if already equipped
+        const index = equippedTrinkets.indexOf(trinketKey);
+        if (index === -1) {
+            // Not equipped, try to equip it
+            if (equippedTrinkets.length < maxTrinketSlots) {
+                equippedTrinkets.push(trinketKey);
+            } else {
+                // Replace the first trinket if at max capacity
+                equippedTrinkets[0] = trinketKey;
+            }
+        }
         updateShopDisplay();
         saveGameData();
     }
 }
 
-function unequipTrinket() {
-    currentTrinket = null;
+function unequipTrinket(trinketKey) {
+    const index = equippedTrinkets.indexOf(trinketKey);
+    if (index > -1) {
+        equippedTrinkets.splice(index, 1);
+    }
     updateShopDisplay();
     saveGameData();
+}
+
+function buyTrinketSlot(upgradeIndex) {
+    const upgrade = trinketSlotUpgrades[upgradeIndex];
+    if (money >= upgrade.price && !upgrade.purchased) {
+        money -= upgrade.price;
+        upgrade.purchased = true;
+        maxTrinketSlots = upgrade.slots;
+        updateShopDisplay();
+        saveGameData();
+    }
 }
 
 function equipRod(index) {
