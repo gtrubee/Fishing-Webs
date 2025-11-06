@@ -511,6 +511,11 @@ const winThreshold = 100;
 let mouseDown = false;
 let animationFrameId = null;
 
+// Delta time variables for frame-rate independent movement
+let lastFrameTime = 0;
+const TARGET_FPS = 60;
+const TARGET_FRAME_TIME = 1000 / TARGET_FPS;
+
 // Draw the main scene (fisherman on dock with lake)
 function drawScene() {
     // Sky (gradient) - Night time
@@ -729,6 +734,8 @@ function startMinigame() {
     currentFish.adjustedInterval = weightAdjustedInterval;
     mouseDown = false;
     
+    lastFrameTime = performance.now(); // Initialize timing
+    
     gameLoop();
 }
 
@@ -736,16 +743,22 @@ function startMinigame() {
 function gameLoop() {
     if (!minigameActive) return;
     
+    // Calculate delta time
+    const currentTime = performance.now();
+    const deltaTime = currentTime - lastFrameTime;
+    const deltaMultiplier = deltaTime / TARGET_FRAME_TIME;
+    lastFrameTime = currentTime;
+    
     // Update bar position
     if (mouseDown) {
-        barSpeed += barJumpPower;
+        barSpeed += barJumpPower * deltaMultiplier;
     }
-    barSpeed += barGravity;
+    barSpeed += barGravity * deltaMultiplier;
     
     // Limit bar speed for smoother movement
     barSpeed = Math.max(-maxBarSpeed, Math.min(maxBarSpeed, barSpeed));
     
-    barY += barSpeed;
+    barY += barSpeed * deltaMultiplier;
     
     // Keep bar in bounds
     if (barY < 0) {
@@ -758,7 +771,7 @@ function gameLoop() {
     }
     
     // Update fish position
-    fishChangeTimer++;
+    fishChangeTimer += deltaMultiplier;
     if (fishChangeTimer > currentFish.adjustedInterval) {
         fishTargetY = Math.random() * (minigameCanvas.height - 40);
         fishChangeTimer = 0;
@@ -766,7 +779,7 @@ function gameLoop() {
     
     // Move fish towards target with weight-adjusted speed and randomness
     const fishDiff = fishTargetY - fishY;
-    fishSpeed = fishDiff * currentFish.adjustedSpeed + (Math.random() - 0.5) * currentFish.adjustedRandomness;
+    fishSpeed = (fishDiff * currentFish.adjustedSpeed + (Math.random() - 0.5) * currentFish.adjustedRandomness) * deltaMultiplier;
     fishY += fishSpeed;
     
     // Keep fish in bounds
@@ -776,9 +789,9 @@ function gameLoop() {
     const fishInBar = fishY >= barY && fishY <= barY + barHeight;
     
     if (fishInBar) {
-        progress += progressGainRate;
+        progress += progressGainRate * deltaMultiplier;
     } else {
-        progress -= progressDecayRate;
+        progress -= progressDecayRate * deltaMultiplier;
     }
     
     progress = Math.max(0, Math.min(maxProgress, progress));
