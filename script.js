@@ -2327,7 +2327,7 @@ function updateSystemTime() {
     
     // Update shop page
     document.getElementById('shop-system-date').textContent = dateString;
-    document.getElementById('shop-system-time').textContent = timeString;
+    document.getElementById('shop-system-clock').textContent = timeString;
 }
 
 // Update system time immediately and then every second
