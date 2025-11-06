@@ -501,6 +501,77 @@ const baitTypes = {
 let currentBait = null; // Currently equipped bait
 let baitInventory = {}; // Stores quantity of each bait type
 
+// Trinket system
+const trinketTypes = {
+    luckyCharm: {
+        name: 'Lucky Charm',
+        price: 50000,
+        description: 'Increases catch zone by 20%',
+        effect: 'catchZone',
+        bonus: 0.20,
+        icon: '🍀'
+    },
+    goldenClover: {
+        name: 'Golden Clover',
+        price: 200000,
+        description: 'Increases catch zone by 40%',
+        effect: 'catchZone',
+        bonus: 0.40,
+        icon: '☘️'
+    },
+    coinPurse: {
+        name: 'Coin Purse',
+        price: 75000,
+        description: 'Increases sell prices by 20%',
+        effect: 'sellBonus',
+        bonus: 0.20,
+        icon: '👛'
+    },
+    treasureChest: {
+        name: 'Treasure Chest',
+        price: 250000,
+        description: 'Increases sell prices by 40%',
+        effect: 'sellBonus',
+        bonus: 0.40,
+        icon: '💰'
+    },
+    trophyLure: {
+        name: 'Trophy Lure',
+        price: 100000,
+        description: 'Increases trophy fish odds by 20%',
+        effect: 'trophyOdds',
+        bonus: 0.20,
+        icon: '🎖️'
+    },
+    masterLure: {
+        name: 'Master Lure',
+        price: 300000,
+        description: 'Increases trophy fish odds by 40%',
+        effect: 'trophyOdds',
+        bonus: 0.40,
+        icon: '🏆'
+    },
+    weightCharm: {
+        name: 'Weight Charm',
+        price: 80000,
+        description: 'Increases fish weight by 20%',
+        effect: 'weightBonus',
+        bonus: 0.20,
+        icon: '⚖️'
+    },
+    heavyCharm: {
+        name: 'Heavy Charm',
+        price: 275000,
+        description: 'Increases fish weight by 40%',
+        effect: 'weightBonus',
+        bonus: 0.40,
+        icon: '🪨'
+    }
+};
+
+let currentTrinket = null; // Currently equipped trinket
+let trinketInventory = {}; // Stores owned trinkets (boolean)
+
 // Fishing rods
 const fishingRods = [
     { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true },
@@ -536,6 +607,10 @@ function loadGameData() {
             baitInventory = data.baitInventory || {};
             currentBait = data.currentBait || null;
             
+            // Restore trinket inventory and equipped trinket
+            trinketInventory = data.trinketInventory || {};
+            currentTrinket = data.currentTrinket || null;
+            
             console.log('Game data loaded successfully');
         } catch (e) {
             console.error('Error loading game data:', e);
@@ -552,7 +627,9 @@ function saveGameData() {
         currentRodIndex: currentRodIndex,
         ownedRods: fishingRods.map(rod => rod.owned),
         baitInventory: baitInventory,
-        currentBait: currentBait
+        currentBait: currentBait,
+        trinketInventory: trinketInventory,
+        currentTrinket: currentTrinket
     };
     localStorage.setItem('fishingGameSave', JSON.stringify(data));
     console.log('Game data saved');
@@ -794,7 +871,25 @@ function startMinigame() {
     console.log('Current fish:', currentFish);
     
     // Generate random weight for this fish
-    currentFishWeight = Math.floor(Math.random() * (currentFish.maxWeight - currentFish.minWeight + 1)) + currentFish.minWeight;
+    let weightRoll = Math.random();
+    
+    // Apply trophy odds bonus from trinket if equipped
+    if (currentTrinket && trinketTypes[currentTrinket].effect === 'trophyOdds') {
+        const bonus = trinketTypes[currentTrinket].bonus;
+        // Push the random roll toward 1 (higher weight)
+        weightRoll = weightRoll + (1 - weightRoll) * bonus;
+    }
+    
+    currentFishWeight = Math.floor(weightRoll * (currentFish.maxWeight - currentFish.minWeight + 1)) + currentFish.minWeight;
+    
+    // Apply weight bonus from trinket if equipped
+    if (currentTrinket && trinketTypes[currentTrinket].effect === 'weightBonus') {
+        const bonus = trinketTypes[currentTrinket].bonus;
+        const weightRange = currentFish.maxWeight - currentFish.minWeight;
+        currentFishWeight = Math.floor(currentFishWeight + (weightRange * bonus));
+        // Clamp to max weight
+        currentFishWeight = Math.min(currentFishWeight, currentFish.maxWeight);
+    }
     
     // Calculate weight factor (0 to 1, where 1 is maximum weight)
     const weightFactor = (currentFishWeight - currentFish.minWeight) / (currentFish.maxWeight - currentFish.minWeight);
@@ -813,7 +908,14 @@ function startMinigame() {
     console.log('Canvas display states - scene:', sceneCanvas.style.display, 'minigame:', minigameCanvas.style.display);
     
     // Reset minigame variables for circular ring design
-    const barSizeInDegrees = (currentFish.barSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
+    let barSizeInDegrees = (currentFish.barSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
+    
+    // Apply catch zone bonus from trinket if equipped
+    if (currentTrinket && trinketTypes[currentTrinket].effect === 'catchZone') {
+        const bonus = trinketTypes[currentTrinket].bonus;
+        barSizeInDegrees *= (1 + bonus);
+    }
+    
     barAngleSize = (barSizeInDegrees / 180) * Math.PI; // Convert to radians
     barAngle = 0; // Start at top
     barAngularSpeed = 0;
@@ -1244,6 +1346,67 @@ function updateBaitPopup() {
     });
 }
 
+// Function to update the trinket popup
+function updateTrinketPopup() {
+    const trinketGrid = document.getElementById('trinket-popup-grid');
+    trinketGrid.innerHTML = '';
+    
+    Object.keys(trinketTypes).forEach(trinketKey => {
+        const trinket = trinketTypes[trinketKey];
+        const isOwned = trinketInventory[trinketKey] || false;
+        const isEquipped = currentTrinket === trinketKey;
+        
+        const trinketSlot = document.createElement('div');
+        trinketSlot.className = 'trinket-slot';
+        
+        if (!isOwned) {
+            trinketSlot.classList.add('unowned');
+        }
+        
+        if (isEquipped) {
+            trinketSlot.classList.add('equipped');
+        }
+        
+        const icon = document.createElement('div');
+        icon.className = 'trinket-slot-icon';
+        icon.textContent = trinket.icon;
+        
+        const name = document.createElement('div');
+        name.className = 'trinket-slot-name';
+        name.textContent = trinket.name;
+        if (isEquipped) {
+            name.textContent += ' ✓';
+        }
+        
+        const desc = document.createElement('div');
+        desc.className = 'trinket-slot-desc';
+        desc.textContent = trinket.description;
+        
+        const status = document.createElement('div');
+        status.className = 'trinket-slot-status';
+        status.textContent = isOwned ? (isEquipped ? 'Equipped' : 'Owned') : 'Not owned';
+        
+        trinketSlot.appendChild(icon);
+        trinketSlot.appendChild(name);
+        trinketSlot.appendChild(desc);
+        trinketSlot.appendChild(status);
+        
+        // Click to equip/unequip
+        if (isOwned) {
+            trinketSlot.addEventListener('click', () => {
+                if (isEquipped) {
+                    unequipTrinket();
+                } else {
+                    equipTrinket(trinketKey);
+                }
+                updateTrinketPopup();
+            });
+        }
+        
+        trinketGrid.appendChild(trinketSlot);
+    });
+}
+
 function updateInventoryDisplay() {
     const fishCountDiv = document.getElementById('fish-count');
     fishCountDiv.textContent = `${inventory.length}/${maxInventorySlots}`;
@@ -1325,6 +1488,18 @@ document.getElementById('bait-button').addEventListener('click', () => {
 // Close bait popup
 document.getElementById('close-bait-popup').addEventListener('click', () => {
     document.getElementById('bait-popup').style.display = 'none';
+});
+
+// Trinket inventory popup
+document.getElementById('trinket-button').addEventListener('click', () => {
+    const popup = document.getElementById('trinket-popup');
+    popup.style.display = 'block';
+    updateTrinketPopup();
+});
+
+// Close trinket popup
+document.getElementById('close-trinket-popup').addEventListener('click', () => {
+    document.getElementById('trinket-popup').style.display = 'none';
 });
 
 // Shop navigation
@@ -1480,7 +1655,14 @@ function updateSellInventory() {
         fishWeight.className = 'fish-weight';
         fishWeight.textContent = `${fish.weight} lbs`;
         
-        const price = fishPrices[fish.type] * fish.weight;
+        let price = fishPrices[fish.type] * fish.weight;
+        
+        // Apply sell bonus from trinket if equipped
+        if (currentTrinket && trinketTypes[currentTrinket].effect === 'sellBonus') {
+            const bonus = trinketTypes[currentTrinket].bonus;
+            price = Math.floor(price * (1 + bonus));
+        }
+        
         const priceTag = document.createElement('div');
         priceTag.className = 'sell-price';
         priceTag.textContent = `$${price}`;
@@ -1498,7 +1680,14 @@ function updateSellInventory() {
 
 function sellFish(index) {
     const fish = inventory[index];
-    const price = fishPrices[fish.type] * fish.weight;
+    let price = fishPrices[fish.type] * fish.weight;
+    
+    // Apply sell bonus from trinket if equipped
+    if (currentTrinket && trinketTypes[currentTrinket].effect === 'sellBonus') {
+        const bonus = trinketTypes[currentTrinket].bonus;
+        price = Math.floor(price * (1 + bonus));
+    }
+    
     money += price;
     inventory.splice(index, 1);
     updateShopDisplay();
@@ -1509,7 +1698,14 @@ function sellFish(index) {
 function sellAllFish() {
     let totalEarned = 0;
     inventory.forEach(fish => {
-        const price = fishPrices[fish.type] * fish.weight;
+        let price = fishPrices[fish.type] * fish.weight;
+        
+        // Apply sell bonus from trinket if equipped
+        if (currentTrinket && trinketTypes[currentTrinket].effect === 'sellBonus') {
+            const bonus = trinketTypes[currentTrinket].bonus;
+            price = Math.floor(price * (1 + bonus));
+        }
+        
         totalEarned += price;
     });
     money += totalEarned;
@@ -1541,6 +1737,9 @@ function updateBuyButton() {
     
     // Update bait display
     updateBaitDisplay();
+    
+    // Update trinket display
+    updateTrinketDisplay();
 }
 
 function updateRodsDisplay() {
@@ -1708,6 +1907,94 @@ function unequipBait() {
     saveGameData();
 }
 
+function updateTrinketDisplay() {
+    const trinketContainer = document.getElementById('trinket-container');
+    trinketContainer.innerHTML = '';
+    
+    Object.keys(trinketTypes).forEach(trinketKey => {
+        const trinket = trinketTypes[trinketKey];
+        const isOwned = trinketInventory[trinketKey] || false;
+        const isEquipped = currentTrinket === trinketKey;
+        
+        const trinketItem = document.createElement('div');
+        trinketItem.className = 'shop-item';
+        
+        const trinketInfo = document.createElement('div');
+        trinketInfo.className = 'shop-item-info';
+        
+        const trinketIcon = document.createElement('div');
+        trinketIcon.className = 'shop-item-icon';
+        trinketIcon.textContent = trinket.icon;
+        
+        const trinketDetails = document.createElement('div');
+        const trinketName = document.createElement('div');
+        trinketName.className = 'shop-item-name';
+        trinketName.textContent = trinket.name;
+        if (isEquipped) {
+            trinketName.textContent += ' ✓ Equipped';
+            trinketName.style.color = '#BA68C8';
+        }
+        
+        const trinketDesc = document.createElement('div');
+        trinketDesc.className = 'shop-item-desc';
+        trinketDesc.textContent = trinket.description;
+        
+        trinketDetails.appendChild(trinketName);
+        trinketDetails.appendChild(trinketDesc);
+        
+        trinketInfo.appendChild(trinketIcon);
+        trinketInfo.appendChild(trinketDetails);
+        
+        trinketItem.appendChild(trinketInfo);
+        
+        if (!isOwned) {
+            const buyButton = document.createElement('button');
+            buyButton.className = 'buy-button';
+            buyButton.textContent = `Buy for $${trinket.price}`;
+            buyButton.disabled = money < trinket.price;
+            buyButton.addEventListener('click', () => buyTrinket(trinketKey));
+            trinketItem.appendChild(buyButton);
+        } else if (!isEquipped) {
+            const equipButton = document.createElement('button');
+            equipButton.className = 'buy-button';
+            equipButton.textContent = 'Equip';
+            equipButton.addEventListener('click', () => equipTrinket(trinketKey));
+            trinketItem.appendChild(equipButton);
+        } else {
+            const unequipButton = document.createElement('button');
+            unequipButton.className = 'buy-button';
+            unequipButton.textContent = 'Unequip';
+            unequipButton.addEventListener('click', () => unequipTrinket());
+            trinketItem.appendChild(unequipButton);
+        }
+        
+        trinketContainer.appendChild(trinketItem);
+    });
+}
+
+function buyTrinket(trinketKey) {
+    const trinket = trinketTypes[trinketKey];
+    if (money >= trinket.price && !trinketInventory[trinketKey]) {
+        money -= trinket.price;
+        trinketInventory[trinketKey] = true;
+        updateShopDisplay();
+        saveGameData();
+    }
+}
+
+function equipTrinket(trinketKey) {
+    if (trinketInventory[trinketKey]) {
+        currentTrinket = trinketKey;
+        updateShopDisplay();
+        saveGameData();
+    }
+}
+
+function unequipTrinket() {
+    currentTrinket = null;
+    updateShopDisplay();
+    saveGameData();
+}
 
 function equipRod(index) {
     if (fishingRods[index].owned) {
