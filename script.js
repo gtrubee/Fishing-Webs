@@ -34,6 +34,48 @@ const fishTypes = {
         maxWeight: 8,
         spawnWeight: 65
     },
+    sunfish: {
+        name: 'Sunfish',
+        color: '#FFA500',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.005,
+        fishRandomness: 0.12,
+        fishChangeInterval: 38,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 1,
+        maxWeight: 7,
+        spawnWeight: 58
+    },
+    spottedSunfish: {
+        name: 'Spotted Sunfish',
+        color: '#FF8C00',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.005,
+        fishRandomness: 0.13,
+        fishChangeInterval: 39,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 1,
+        maxWeight: 6,
+        spawnWeight: 54
+    },
+    redbreastSunfish: {
+        name: 'Redbreast Sunfish',
+        color: '#FF6347',
+        difficulty: 'Easy',
+        barSize: 80,
+        fishSpeed: 0.0052,
+        fishRandomness: 0.13,
+        fishChangeInterval: 39,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 1,
+        maxWeight: 9,
+        spawnWeight: 52
+    },
     goldfish: {
         name: 'Goldfish',
         color: '#FFD700',
@@ -145,6 +187,20 @@ const fishTypes = {
         minWeight: 3,
         maxWeight: 16,
         spawnWeight: 42
+    },
+    warmouth: {
+        name: 'Warmouth',
+        color: '#8B4513',
+        difficulty: 'Average',
+        barSize: 80,
+        fishSpeed: 0.0078,
+        fishRandomness: 0.24,
+        fishChangeInterval: 50,
+        progressGainRate: 0.3,
+        progressDecayRate: 0.3,
+        minWeight: 2,
+        maxWeight: 12,
+        spawnWeight: 38
     },
     crucianCarp: {
         name: 'Crucian Carp',
@@ -432,6 +488,9 @@ let lastUpdateTime = Date.now();
 // Fish selling prices (per pound)
 const fishPrices = {
     'Bluegill': 2,
+    'Sunfish': 2,
+    'Spotted Sunfish': 2,
+    'Redbreast Sunfish': 2,
     'Herring': 3,
     'Perch': 3,
     'Rock Bass': 3,
@@ -440,6 +499,7 @@ const fishPrices = {
     'Trout': 5,
     'Whitefish': 5,
     'Crappie': 6,
+    'Warmouth': 6,
     'Crucian Carp': 6,
     'Salmon': 7,
     'Smallmouth Bass': 8,
@@ -466,7 +526,7 @@ const baitTypes = {
         name: 'Worms',
         price: 50,
         description: 'Great for panfish',
-        boosts: ['bluegill', 'perch', 'rockBass', 'crappie', 'bullhead'],
+        boosts: ['bluegill', 'sunfish', 'spottedSunfish', 'redbreastSunfish', 'perch', 'rockBass', 'crappie', 'warmouth', 'bullhead'],
         multiplier: 8
     },
     grubs: {
