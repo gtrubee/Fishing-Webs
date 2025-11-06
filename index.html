@@ -14,6 +14,10 @@
             <button id="fish-button">Cast Your Line!</button>
             <canvas id="minigame-canvas" style="display: none;"></canvas>
             <div id="status">Click the button to start fishing!</div>
+            <div id="system-time-display">
+                <div id="system-date">Loading...</div>
+                <div id="system-time">--:--:--</div>
+            </div>
             <div id="backpack-icon">
                 🎒
                 <span id="fish-count">0/20</span>
@@ -29,11 +33,14 @@
         <div id="shop-page" style="display: none;">
             <canvas id="shop-canvas"></canvas>
             <button id="back-to-fishing">← Back to Fishing</button>
-            <div id="shop-money">💰 $<span id="shop-money-amount">0</span></div>
-            <div id="shop-time">⏱️ <span id="shop-time-amount">0:00:00</span></div>
             <div id="shop-interface">
                 <h1>Fish Shop</h1>
                 <div id="shop-money">💰 $<span id="shop-money-amount">0</span></div>
+                <div id="shop-time">⏱️ <span id="shop-time-amount">0:00:00</span></div>
+                <div id="shop-system-time">
+                    <div id="shop-system-date">Loading...</div>
+                    <div id="shop-system-time">--:--:--</div>
+                </div>
                 <div id="shop-tabs">
                     <button id="sell-tab" class="shop-tab active">Sell</button>
                     <button id="buy-tab" class="shop-tab">Buy</button>

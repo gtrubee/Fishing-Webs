@@ -100,7 +100,7 @@ button {
     z-index: 10;
 }
 
-#money-display, #shop-money {
+#money-display {
     position: absolute;
     top: 20px;
     left: 20px;
@@ -115,7 +115,7 @@ button {
     user-select: none;
 }
 
-#time-display, #shop-time {
+#time-display {
     position: absolute;
     top: 75px;
     left: 20px;
@@ -128,6 +128,100 @@ button {
     border: 3px solid #666;
     z-index: 10;
     user-select: none;
+}
+
+#shop-money {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 215, 0, 0.9);
+    color: #8B4513;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 3px solid #8B4513;
+    user-select: none;
+}
+
+#shop-time {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 3px solid #666;
+    user-select: none;
+}
+
+/* System Time Display - Cozy Style */
+#system-time-display {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.85), rgba(101, 67, 33, 0.9));
+    color: #FFF8DC;
+    padding: 15px 30px;
+    border-radius: 15px;
+    border: 3px solid #8B4513;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(255, 248, 220, 0.2);
+    text-align: center;
+    z-index: 10;
+    user-select: none;
+    font-family: 'Georgia', serif;
+}
+
+#system-date {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#system-time {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+#shop-system-time {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 180px;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.85), rgba(101, 67, 33, 0.9));
+    color: #FFF8DC;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 3px solid #8B4513;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(255, 248, 220, 0.2);
+    text-align: center;
+    user-select: none;
+    font-family: 'Georgia', serif;
+    z-index: 1;
+}
+
+#shop-system-date {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#shop-system-time {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 #shop-tabs {
@@ -497,12 +591,18 @@ button {
     transform: translate(-50%, -50%);
     background: rgba(255, 255, 255, 0.95);
     padding: 30px;
+    padding-top: 80px;
     border-radius: 15px;
     border: 4px solid #8B4513;
     width: 700px;
     max-height: 600px;
     overflow-y: auto;
     z-index: 10;
+}
+
+#shop-interface > #shop-money,
+#shop-interface > #shop-time {
+    position: absolute;
 }
 
 #shop-interface h1 {
@@ -535,10 +635,13 @@ button {
 
 #sell-inventory-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(5, 90px);
+    gap: 15px;
     max-height: 400px;
     overflow-y: auto;
+    justify-content: center;
+    width: 80%;
+    margin: 0 auto;
 }
 
 .sell-slot {

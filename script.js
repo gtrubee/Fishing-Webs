@@ -2303,3 +2303,33 @@ setInterval(() => {
         saveGameData(); // Auto-save time
     }
 }, 1000);
+
+// Update system date and time display
+function updateSystemTime() {
+    const now = new Date();
+    
+    // Format date: "Wednesday, Nov 6, 2025"
+    const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+    const dateString = now.toLocaleDateString('en-US', options);
+    
+    // Format time: "2:23:45 PM" (12-hour format)
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be 12
+    const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+    
+    // Update fishing page
+    document.getElementById('system-date').textContent = dateString;
+    document.getElementById('system-time').textContent = timeString;
+    
+    // Update shop page
+    document.getElementById('shop-system-date').textContent = dateString;
+    document.getElementById('shop-system-time').textContent = timeString;
+}
+
+// Update system time immediately and then every second
+updateSystemTime();
+setInterval(updateSystemTime, 1000);
