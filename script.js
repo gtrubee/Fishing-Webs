@@ -2074,42 +2074,89 @@ function displayFishInMuseum(inventoryIndex) {
     const fish = inventory[inventoryIndex];
     if (!fish) return;
     
-    // Initialize museum entry if it doesn't exist
-    if (!museum[fish.type]) {
-        museum[fish.type] = {
-            discovered: true,
-            totalCaught: 0,
-            biggestWeight: 0,
-            showcaseFish: null
+    // Check if museum already has a showcase fish for this type
+    const hasExistingDisplay = museum[fish.type] && museum[fish.type].showcaseFish;
+    
+    let confirmMessage;
+    if (!museum[fish.type] || !museum[fish.type].discovered) {
+        // New fish being added to museum
+        confirmMessage = `Add this ${fish.type} (${fish.weight} lbs) to the museum?\n\nThis fish will be removed from your inventory and displayed in the museum.`;
+    } else if (hasExistingDisplay) {
+        // Replacing existing display
+        const currentWeight = museum[fish.type].showcaseFish.weight;
+        confirmMessage = `Replace the current museum display?\n\nCurrent: ${fish.type} (${currentWeight} lbs)\nNew: ${fish.type} (${fish.weight} lbs)\n\nThis fish will be removed from your inventory.`;
+    } else {
+        // Adding display to discovered fish
+        confirmMessage = `Display this ${fish.type} (${fish.weight} lbs) in the museum?\n\nThis fish will be removed from your inventory.`;
+    }
+    
+    // Show custom confirmation popup
+    showMuseumConfirmation(confirmMessage, () => {
+        // User confirmed - proceed with museum display
+        
+        // Initialize museum entry if it doesn't exist
+        if (!museum[fish.type]) {
+            museum[fish.type] = {
+                discovered: true,
+                totalCaught: 0,
+                biggestWeight: 0,
+                showcaseFish: null
+            };
+        }
+        
+        // Store the fish data in museum showcase
+        museum[fish.type].showcaseFish = {
+            weight: fish.weight,
+            rarity: fish.rarity || 'normal',
+            rarityMultiplier: fish.rarityMultiplier || 1
         };
-    }
+        
+        // Remove fish from inventory
+        inventory.splice(inventoryIndex, 1);
+        
+        // Update displays
+        updateInventoryDisplay();
+        saveGameData();
+        
+        // Update museum display if it's currently open
+        if (currentPage === 'museum') {
+            updateMuseumDisplay();
+        }
+        
+        // Show confirmation message
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = `🏛️ ${fish.type} is now displayed in the museum!`;
+        statusDiv.style.opacity = '1';
+        setTimeout(() => {
+            statusDiv.style.opacity = '0';
+        }, 3000);
+    });
+}
+
+function showMuseumConfirmation(message, onConfirm) {
+    const popup = document.getElementById('museum-confirm-popup');
+    const messageElement = document.getElementById('museum-confirm-message');
+    const yesButton = document.getElementById('museum-confirm-yes');
+    const noButton = document.getElementById('museum-confirm-no');
     
-    // Store the fish data in museum showcase
-    museum[fish.type].showcaseFish = {
-        weight: fish.weight,
-        rarity: fish.rarity || 'normal',
-        rarityMultiplier: fish.rarityMultiplier || 1
-    };
+    messageElement.textContent = message;
+    popup.style.display = 'block';
     
-    // Remove fish from inventory
-    inventory.splice(inventoryIndex, 1);
+    // Remove old event listeners by cloning buttons
+    const newYesButton = yesButton.cloneNode(true);
+    const newNoButton = noButton.cloneNode(true);
+    yesButton.parentNode.replaceChild(newYesButton, yesButton);
+    noButton.parentNode.replaceChild(newNoButton, noButton);
     
-    // Update displays
-    updateInventoryDisplay();
-    saveGameData();
+    // Add new event listeners
+    newYesButton.addEventListener('click', () => {
+        popup.style.display = 'none';
+        onConfirm();
+    });
     
-    // Update museum display if it's currently open
-    if (currentPage === 'museum') {
-        updateMuseumDisplay();
-    }
-    
-    // Show confirmation message
-    const statusDiv = document.getElementById('status');
-    statusDiv.textContent = `🏛️ ${fish.type} is now displayed in the museum!`;
-    statusDiv.style.opacity = '1';
-    setTimeout(() => {
-        statusDiv.style.opacity = '0';
-    }, 3000);
+    newNoButton.addEventListener('click', () => {
+        popup.style.display = 'none';
+    });
 }
 
 function updateInventoryDisplay() {
