@@ -472,6 +472,7 @@ const fishTypes = {
 
 let currentFish = null;
 let currentFishWeight = 0;
+let currentFishRarity = 'normal'; // Track rarity during minigame for visual effects
 
 // Inventory and shop system
 let maxInventorySlots = 20;
@@ -1453,6 +1454,18 @@ function startMinigame() {
         currentFishWeight = Math.min(currentFishWeight, currentFish.maxWeight);
     }
     
+    // Determine fish rarity upfront for visual effects during minigame
+    const rarityRoll = Math.random();
+    if (rarityRoll < 1/4000) { // 1/4000 chance for shiny
+        currentFishRarity = 'shiny';
+    } else if (rarityRoll < 1/1000) { // 1/1000 chance for golden
+        currentFishRarity = 'golden';
+    } else if (rarityRoll < 1) { // 100% chance for mutated (TESTING)
+        currentFishRarity = 'mutated';
+    } else {
+        currentFishRarity = 'normal';
+    }
+    
     // Calculate weight factor (0 to 1, where 1 is maximum weight)
     const weightFactor = (currentFishWeight - currentFish.minWeight) / (currentFish.maxWeight - currentFish.minWeight);
     
@@ -1637,8 +1650,66 @@ function drawMinigame(fishInBar) {
     const fishX = centerX + Math.cos(fishAngle - Math.PI / 2) * ringRadius;
     const fishY = centerY + Math.sin(fishAngle - Math.PI / 2) * ringRadius;
     
-    // Fish icon (circular)
-    minigameCtx.fillStyle = currentFish.color;
+    // Add glow effect for rare fish
+    if (currentFishRarity === 'shiny') {
+        // Shiny: Rainbow sparkle glow
+        const glowSize = 40;
+        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, glowSize);
+        gradient.addColorStop(0, 'rgba(255, 215, 0, 0.6)');
+        gradient.addColorStop(0.3, 'rgba(255, 215, 0, 0.5)');
+        gradient.addColorStop(0.6, 'rgba(255, 105, 180, 0.4)');
+        gradient.addColorStop(1, 'rgba(138, 43, 226, 0)');
+        minigameCtx.fillStyle = gradient;
+        minigameCtx.beginPath();
+        minigameCtx.arc(fishX, fishY, glowSize, 0, Math.PI * 2);
+        minigameCtx.fill();
+        
+        // Add sparkle particles
+        for (let i = 0; i < 3; i++) {
+            const sparkleAngle = (Date.now() / 500 + i * (Math.PI * 2 / 3)) % (Math.PI * 2);
+            const sparkleDistance = 20 + Math.sin(Date.now() / 300 + i) * 5;
+            const sparkleX = fishX + Math.cos(sparkleAngle) * sparkleDistance;
+            const sparkleY = fishY + Math.sin(sparkleAngle) * sparkleDistance;
+            minigameCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            minigameCtx.beginPath();
+            minigameCtx.arc(sparkleX, sparkleY, 3, 0, Math.PI * 2);
+            minigameCtx.fill();
+        }
+    } else if (currentFishRarity === 'golden') {
+        // Golden: Bright gold glow
+        const glowSize = 40;
+        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, glowSize);
+        gradient.addColorStop(0, 'rgba(255, 215, 0, 0.7)');
+        gradient.addColorStop(0.4, 'rgba(255, 223, 0, 0.5)');
+        gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+        minigameCtx.fillStyle = gradient;
+        minigameCtx.beginPath();
+        minigameCtx.arc(fishX, fishY, glowSize, 0, Math.PI * 2);
+        minigameCtx.fill();
+    } else if (currentFishRarity === 'mutated') {
+        // Mutated: Purple/pink glow
+        const glowSize = 40;
+        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, glowSize);
+        gradient.addColorStop(0, 'rgba(156, 39, 176, 0.7)');
+        gradient.addColorStop(0.4, 'rgba(233, 30, 99, 0.5)');
+        gradient.addColorStop(1, 'rgba(156, 39, 176, 0)');
+        minigameCtx.fillStyle = gradient;
+        minigameCtx.beginPath();
+        minigameCtx.arc(fishX, fishY, glowSize, 0, Math.PI * 2);
+        minigameCtx.fill();
+    }
+    
+    // Fish icon (circular) - use rarity color if rare
+    let fishColor = currentFish.color;
+    if (currentFishRarity === 'shiny') {
+        fishColor = '#FFD700'; // Gold
+    } else if (currentFishRarity === 'golden') {
+        fishColor = '#FFD700'; // Gold
+    } else if (currentFishRarity === 'mutated') {
+        fishColor = '#9C27B0'; // Purple
+    }
+    
+    minigameCtx.fillStyle = fishColor;
     minigameCtx.beginPath();
     minigameCtx.arc(fishX, fishY, 15, 0, Math.PI * 2);
     minigameCtx.fill();
@@ -1733,22 +1804,18 @@ function endMinigame(success) {
             perfectCatchBonus = ` ⭐ PERFECT CATCH! +30% weight!`;
         }
         
-        // Determine fish rarity
-        let rarity = 'normal';
+        // Use the pre-determined rarity from minigame start
+        let rarity = currentFishRarity;
         let rarityMultiplier = 1;
         let rarityText = '';
         
-        const rarityRoll = Math.random();
-        if (rarityRoll < 1/4000) { // 1/4000 chance for shiny
-            rarity = 'shiny';
+        if (rarity === 'shiny') {
             rarityMultiplier = 4000;
             rarityText = ' ✨ SHINY! 4000x value!';
-        } else if (rarityRoll < 1/1000) { // 1/1000 chance for golden
-            rarity = 'golden';
+        } else if (rarity === 'golden') {
             rarityMultiplier = 1000;
             rarityText = ' 🌟 GOLDEN! 1000x value!';
-        } else if (rarityRoll < 1/100) { // 1/100 chance for mutated
-            rarity = 'mutated';
+        } else if (rarity === 'mutated') {
             rarityMultiplier = 100;
             rarityText = ' 🧬 MUTATED! 100x value!';
         }
