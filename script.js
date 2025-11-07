@@ -2688,7 +2688,7 @@ function startMinigame() {
         weightRoll = weightRoll + (1 - weightRoll) * trophyOddsBonus;
     }
     
-    currentFishWeight = Math.round((weightRoll * (currentFish.maxWeight - currentFish.minWeight + 1) + currentFish.minWeight) * 10) / 10;
+    currentFishWeight = Math.round((weightRoll * (currentFish.maxWeight - currentFish.minWeight) + currentFish.minWeight) * 10) / 10;
     
     // Apply weight bonus from equipped trinkets
     const weightBonus = getTrinketBonus('weightBonus');
