@@ -1460,7 +1460,7 @@ function startMinigame() {
         currentFishRarity = 'shiny';
     } else if (rarityRoll < 1/1000) { // 1/1000 chance for golden
         currentFishRarity = 'golden';
-    } else if (rarityRoll < 1) { // 100% chance for mutated (TESTING)
+    } else if (rarityRoll < 1/100) { // 1/100 chance for mutated
         currentFishRarity = 'mutated';
     } else {
         currentFishRarity = 'normal';
