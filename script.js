@@ -2017,6 +2017,10 @@ let currentLocation = 'lake'; // 'lake' or 'ocean'
 // Museum section tracking
 let currentMuseumSection = 'freshwater'; // 'freshwater' or 'saltwater'
 
+// Museum completion tracking
+let freshwaterMuseumCompleted = false;
+let saltwaterMuseumCompleted = false;
+
 // Museum system - tracks fish catches
 let museum = {};
 // Structure: { 'fishTypeName': { discovered: true, totalCaught: number, biggestWeight: number } }
@@ -2175,61 +2179,135 @@ const fishPrices = {
 
 // Bait system
 const baitTypes = {
+    // Freshwater/Lake Baits
     worms: {
         name: 'Worms',
         price: 50,
         description: 'Great for panfish',
         boosts: ['bluegill', 'sunfish', 'spottedSunfish', 'redbreastSunfish', 'perch', 'rockBass', 'crappie', 'warmouth', 'bullhead'],
-        multiplier: 8
+        multiplier: 8,
+        location: 'lake'
     },
     grubs: {
         name: 'Grubs',
         price: 75,
         description: 'Attracts small fish',
         boosts: ['chub', 'herring', 'whitefish', 'goldfish'],
-        multiplier: 8
+        multiplier: 8,
+        location: 'lake'
     },
     minnows: {
         name: 'Minnows',
         price: 150,
         description: 'Perfect for bass',
-        boosts: ['smallmouthBass', 'largemouthBass', 'pike', 'walleye'],
-        multiplier: 8
+        boosts: ['smallmouthBass', 'largemouthBass', 'whiteBass', 'pike', 'walleye'],
+        multiplier: 8,
+        location: 'lake'
     },
     spinners: {
         name: 'Spinners',
         price: 400,
         description: 'Best for trout',
         boosts: ['trout', 'rainbowTrout', 'salmon', 'cherrySalmon', 'cohoSalmon', 'kingSalmon'],
-        multiplier: 8
+        multiplier: 8,
+        location: 'lake'
     },
     leeches: {
         name: 'Leeches',
         price: 450,
         description: 'Premium for walleye',
         boosts: ['walleye', 'pike', 'muskellunge'],
-        multiplier: 8
+        multiplier: 8,
+        location: 'lake'
     },
     doughBalls: {
         name: 'Dough Balls',
         price: 600,
         description: 'Carp favorite',
         boosts: ['carp', 'crucianCarp', 'koi'],
-        multiplier: 8
+        multiplier: 8,
+        location: 'lake'
     },
     crawfish: {
         name: 'Crawfish',
         price: 1000,
         description: 'Irresistible to catfish',
         boosts: ['catfish', 'bullhead', 'carp'],
-        multiplier: 8
+        multiplier: 8,
+        location: 'lake'
     },
     cutBait: {
         name: 'Cut Bait',
         price: 1500,
         description: 'For trophy fish',
-        boosts: ['sturgeon', 'gar', 'muskellunge', 'kingSalmon'],
-        multiplier: 8
+        boosts: ['sturgeon', 'gar', 'spottedGar', 'shortnoseGar', 'floridaGar', 'muskellunge', 'kingSalmon'],
+        multiplier: 8,
+        location: 'lake'
+    },
+    // Ocean/Saltwater Baits
+    shrimpBait: {
+        name: 'Shrimp Bait',
+        price: 100,
+        description: 'Attracts small reef fish',
+        boosts: ['anemoneShrimp', 'glassShrimp', 'sexyShrimp', 'bumbleBeeShrimp', 'peppermintShrimp', 'neonGoby', 'redheadGoby', 'caveTransparentGoby'],
+        multiplier: 8,
+        location: 'ocean'
+    },
+    squidLures: {
+        name: 'Squid Lures',
+        price: 200,
+        description: 'Perfect for snappers',
+        boosts: ['blueStripeSnapper', 'oneSpotSnapper', 'yellowtailSnapper', 'mangroveSnapper'],
+        multiplier: 8,
+        location: 'ocean'
+    },
+    crabPieces: {
+        name: 'Crab Pieces',
+        price: 300,
+        description: 'Attracts bottom feeders',
+        boosts: ['blueCrab', 'arrowCrab', 'emeraldCrab', 'hermitCrab', 'flameGoby', 'fireGoby'],
+        multiplier: 8,
+        location: 'ocean'
+    },
+    artificialFlies: {
+        name: 'Artificial Flies',
+        price: 500,
+        description: 'Great for colorful reef fish',
+        boosts: ['clownfish', 'tomato Clownfish', 'cinnamonAnemonefish', 'pinkSkunkAnemonefish', 'clarkiiAnemonefish', 'maroonClownfish', 'sebaeAnemonefish'],
+        multiplier: 8,
+        location: 'ocean'
+    },
+    jerkbaits: {
+        name: 'Jerkbaits',
+        price: 800,
+        description: 'For aggressive predators',
+        boosts: ['redLionfish', 'blackfootedLionfish', 'turkeyfish', 'peacockGrouper', 'coralGrouper', 'miniataGrouper'],
+        multiplier: 8,
+        location: 'ocean'
+    },
+    liveBaitfish: {
+        name: 'Live Baitfish',
+        price: 1200,
+        description: 'Irresistible to big fish',
+        boosts: ['bluefinTuna', 'marlin', 'sailfish', 'swordfish', 'giantGrouper', 'goliathGrouper'],
+        multiplier: 8,
+        location: 'ocean'
+    },
+    chum: {
+        name: 'Chum',
+        price: 2000,
+        description: 'Attracts sharks',
+        boosts: ['blacknoseShark', 'blacktipShark', 'blueShark', 'bullShark', 'lemonShark', 'tigerShark', 'hammerheadShark', 'greatWhiteShark'],
+        multiplier: 8,
+        location: 'ocean'
+    },
+    giantLures: {
+        name: 'Giant Lures',
+        price: 3000,
+        description: 'For massive ocean giants',
+        boosts: ['giantMantaRay', 'whaleshark', 'oceanSunfish', 'orca', 'humpbackWhale', 'grayWhale', 'spermWhale', 'blueWhale'],
+        multiplier: 8,
+        location: 'ocean'
     }
 };
 
@@ -2319,10 +2397,15 @@ const boatPrice = 100000;
 // Fishing rods
 const fishingRods = [
     { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true },
-    { name: 'Bamboo Rod', barSizeBonus: 20, price: 5000, owned: false },
-    { name: 'Rubber Rod', barSizeBonus: 40, price: 10000, owned: false },
-    { name: 'Iron Rod', barSizeBonus: 60, price: 100000, owned: false },
-    { name: 'Titanium Rod', barSizeBonus: 80, price: 1000000, owned: false }
+    { name: 'Bamboo Rod', barSizeBonus: 10, price: 5000, owned: false },
+    { name: 'Rubber Rod', barSizeBonus: 20, price: 10000, owned: false },
+    { name: 'Iron Rod', barSizeBonus: 30, price: 100000, owned: false },
+    { name: 'Titanium Rod', barSizeBonus: 40, price: 1000000, owned: false },
+    { name: 'Diamond Rod', barSizeBonus: 50, price: 5000000, owned: false },
+    { name: 'Fire Rod', barSizeBonus: 60, price: 10000000, owned: false },
+    { name: 'Ice Rod', barSizeBonus: 70, price: 25000000, owned: false },
+    { name: 'Wind Rod', barSizeBonus: 80, price: 50000000, owned: false },
+    { name: "Wizard's Rod", barSizeBonus: 100, price: 100000000, owned: false }
 ];
 
 let currentRodIndex = 0;
@@ -2384,6 +2467,10 @@ function loadGameData() {
             // Restore location
             currentLocation = data.currentLocation || 'lake';
             
+            // Restore museum completion flags
+            freshwaterMuseumCompleted = data.freshwaterMuseumCompleted || false;
+            saltwaterMuseumCompleted = data.saltwaterMuseumCompleted || false;
+            
             console.log('Game data loaded successfully');
         } catch (e) {
             console.error('Error loading game data:', e);
@@ -2408,7 +2495,9 @@ function saveGameData() {
         timePlayed: timePlayed,
         museum: museum,
         boatOwned: boatOwned,
-        currentLocation: currentLocation
+        currentLocation: currentLocation,
+        freshwaterMuseumCompleted: freshwaterMuseumCompleted,
+        saltwaterMuseumCompleted: saltwaterMuseumCompleted
     };
     localStorage.setItem('fishingGameSave', JSON.stringify(data));
     console.log('Game data saved');
@@ -3711,6 +3800,12 @@ function updateBaitPopup() {
     
     Object.keys(baitTypes).forEach(baitKey => {
         const bait = baitTypes[baitKey];
+        
+        // Only show baits for the current location
+        if (bait.location !== currentLocation) {
+            return; // Skip this bait
+        }
+        
         const count = baitInventory[baitKey] || 0;
         const isEquipped = currentBait === baitKey;
         
@@ -3727,7 +3822,8 @@ function updateBaitPopup() {
         
         const icon = document.createElement('div');
         icon.className = 'bait-slot-icon';
-        icon.textContent = '🪱';
+        // Different icons for lake vs ocean bait
+        icon.textContent = bait.location === 'lake' ? '🪱' : '🦐';
         
         const name = document.createElement('div');
         name.className = 'bait-slot-name';
@@ -3898,6 +3994,9 @@ function displayFishInMuseum(inventoryIndex) {
         // Remove fish from inventory
         inventory.splice(inventoryIndex, 1);
         
+        // Check for museum completion
+        checkMuseumCompletion();
+        
         // Update displays
         updateInventoryDisplay();
         saveGameData();
@@ -3915,6 +4014,65 @@ function displayFishInMuseum(inventoryIndex) {
             statusDiv.style.opacity = '0';
         }, 3000);
     });
+}
+
+function checkMuseumCompletion() {
+    const freshwaterFish = Object.values(fishTypes);
+    const saltwaterFish = Object.values(oceanFishTypes);
+    
+    // Check freshwater completion
+    if (!freshwaterMuseumCompleted) {
+        const allFreshwaterHaveDisplay = freshwaterFish.every(fishType => {
+            const museumData = museum[fishType.name];
+            return museumData && museumData.showcaseFish;
+        });
+        
+        if (allFreshwaterHaveDisplay) {
+            freshwaterMuseumCompleted = true;
+            money += 200000;
+            saveGameData();
+            updateMoneyDisplay();
+            
+            // Show reward message
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = `🎉 FRESHWATER MUSEUM COMPLETED! You've earned $200,000!`;
+            statusDiv.style.opacity = '1';
+            statusDiv.style.fontSize = '24px';
+            statusDiv.style.fontWeight = 'bold';
+            setTimeout(() => {
+                statusDiv.style.opacity = '0';
+                statusDiv.style.fontSize = '18px';
+                statusDiv.style.fontWeight = 'normal';
+            }, 5000);
+        }
+    }
+    
+    // Check saltwater completion
+    if (!saltwaterMuseumCompleted) {
+        const allSaltwaterHaveDisplay = saltwaterFish.every(fishType => {
+            const museumData = museum[fishType.name];
+            return museumData && museumData.showcaseFish;
+        });
+        
+        if (allSaltwaterHaveDisplay) {
+            saltwaterMuseumCompleted = true;
+            money += 1000000;
+            saveGameData();
+            updateMoneyDisplay();
+            
+            // Show reward message
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = `🎉 SALTWATER MUSEUM COMPLETED! You've earned $1,000,000!`;
+            statusDiv.style.opacity = '1';
+            statusDiv.style.fontSize = '24px';
+            statusDiv.style.fontWeight = 'bold';
+            setTimeout(() => {
+                statusDiv.style.opacity = '0';
+                statusDiv.style.fontSize = '18px';
+                statusDiv.style.fontWeight = 'normal';
+            }, 5000);
+        }
+    }
 }
 
 function showMuseumConfirmation(message, onConfirm) {
@@ -4786,6 +4944,12 @@ function updateBaitDisplay() {
     
     Object.keys(baitTypes).forEach(baitKey => {
         const bait = baitTypes[baitKey];
+        
+        // Only show baits for the current location
+        if (bait.location !== currentLocation) {
+            return; // Skip this bait
+        }
+        
         const baitItem = document.createElement('div');
         baitItem.className = 'shop-item';
         
@@ -4794,7 +4958,8 @@ function updateBaitDisplay() {
         
         const baitIcon = document.createElement('div');
         baitIcon.className = 'shop-item-icon';
-        baitIcon.textContent = '🪱';
+        // Different icons for lake vs ocean bait
+        baitIcon.textContent = bait.location === 'lake' ? '🪱' : '🦐';
         
         const baitDetails = document.createElement('div');
         baitDetails.className = 'shop-item-details';
