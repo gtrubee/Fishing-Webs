@@ -2020,6 +2020,7 @@ let currentMuseumSection = 'freshwater'; // 'freshwater' or 'saltwater'
 // Museum completion tracking
 let freshwaterMuseumCompleted = false;
 let saltwaterMuseumCompleted = false;
+let completeMuseumBonusAwarded = false;
 
 // Museum system - tracks fish catches
 let museum = {};
@@ -2470,6 +2471,7 @@ function loadGameData() {
             // Restore museum completion flags
             freshwaterMuseumCompleted = data.freshwaterMuseumCompleted || false;
             saltwaterMuseumCompleted = data.saltwaterMuseumCompleted || false;
+            completeMuseumBonusAwarded = data.completeMuseumBonusAwarded || false;
             
             console.log('Game data loaded successfully');
         } catch (e) {
@@ -2497,7 +2499,8 @@ function saveGameData() {
         boatOwned: boatOwned,
         currentLocation: currentLocation,
         freshwaterMuseumCompleted: freshwaterMuseumCompleted,
-        saltwaterMuseumCompleted: saltwaterMuseumCompleted
+        saltwaterMuseumCompleted: saltwaterMuseumCompleted,
+        completeMuseumBonusAwarded: completeMuseumBonusAwarded
     };
     localStorage.setItem('fishingGameSave', JSON.stringify(data));
     console.log('Game data saved');
@@ -4072,6 +4075,28 @@ function checkMuseumCompletion() {
                 statusDiv.style.fontWeight = 'normal';
             }, 5000);
         }
+    }
+    
+    // Check if both museums are completed for the ultimate bonus
+    if (freshwaterMuseumCompleted && saltwaterMuseumCompleted && !completeMuseumBonusAwarded) {
+        completeMuseumBonusAwarded = true;
+        money += 2000000;
+        saveGameData();
+        updateMoneyDisplay();
+        
+        // Show ultimate completion message
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = `🏆 COMPLETE MUSEUM MASTERY! You've earned an additional $2,000,000!`;
+        statusDiv.style.opacity = '1';
+        statusDiv.style.fontSize = '26px';
+        statusDiv.style.fontWeight = 'bold';
+        statusDiv.style.color = '#FFD700'; // Gold color
+        setTimeout(() => {
+            statusDiv.style.opacity = '0';
+            statusDiv.style.fontSize = '18px';
+            statusDiv.style.fontWeight = 'normal';
+            statusDiv.style.color = '';
+        }, 6000);
     }
 }
 
