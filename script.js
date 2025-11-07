@@ -3941,6 +3941,80 @@ function updateTrinketPopup() {
     });
 }
 
+function updateRodPopup() {
+    const rodGrid = document.getElementById('rod-popup-grid');
+    rodGrid.innerHTML = '';
+    
+    // Add current rod info at the top
+    const currentRodHeader = document.createElement('div');
+    currentRodHeader.style.gridColumn = '1 / -1';
+    currentRodHeader.style.padding = '15px';
+    currentRodHeader.style.background = 'rgba(121, 85, 72, 0.3)';
+    currentRodHeader.style.borderRadius = '8px';
+    currentRodHeader.style.textAlign = 'center';
+    currentRodHeader.style.fontWeight = 'bold';
+    currentRodHeader.style.fontSize = '18px';
+    currentRodHeader.style.color = '#4E342E';
+    currentRodHeader.style.marginBottom = '10px';
+    currentRodHeader.textContent = `Current Rod: ${fishingRods[currentRodIndex].name}`;
+    rodGrid.appendChild(currentRodHeader);
+    
+    fishingRods.forEach((rod, index) => {
+        const isOwned = rod.owned;
+        const isEquipped = currentRodIndex === index;
+        
+        const rodSlot = document.createElement('div');
+        rodSlot.className = 'rod-slot';
+        
+        if (!isOwned) {
+            rodSlot.classList.add('unowned');
+        }
+        
+        if (isEquipped) {
+            rodSlot.classList.add('equipped');
+        }
+        
+        const icon = document.createElement('div');
+        icon.className = 'rod-slot-icon';
+        icon.textContent = '🎣';
+        
+        const name = document.createElement('div');
+        name.className = 'rod-slot-name';
+        name.textContent = rod.name;
+        if (isEquipped) {
+            name.textContent += ' ✓';
+        }
+        
+        const bonus = document.createElement('div');
+        bonus.className = 'rod-slot-bonus';
+        bonus.textContent = rod.barSizeBonus > 0 ? `+${rod.barSizeBonus} Bar Size` : 'Base Rod';
+        
+        const price = document.createElement('div');
+        price.className = 'rod-slot-status';
+        if (isOwned) {
+            price.textContent = isEquipped ? 'Equipped' : 'Owned';
+        } else {
+            price.textContent = `$${rod.price.toLocaleString()}`;
+        }
+        
+        rodSlot.appendChild(icon);
+        rodSlot.appendChild(name);
+        rodSlot.appendChild(bonus);
+        rodSlot.appendChild(price);
+        
+        // Click to equip
+        if (isOwned && !isEquipped) {
+            rodSlot.addEventListener('click', () => {
+                currentRodIndex = index;
+                saveGameData();
+                updateRodPopup();
+            });
+        }
+        
+        rodGrid.appendChild(rodSlot);
+    });
+}
+
 function displayFishInMuseum(inventoryIndex) {
     const fish = inventory[inventoryIndex];
     if (!fish) return;
@@ -4271,6 +4345,18 @@ document.getElementById('trinket-button').addEventListener('click', () => {
 // Close trinket popup
 document.getElementById('close-trinket-popup').addEventListener('click', () => {
     document.getElementById('trinket-popup').style.display = 'none';
+});
+
+// Rod inventory popup
+document.getElementById('rod-button').addEventListener('click', () => {
+    const popup = document.getElementById('rod-popup');
+    popup.style.display = 'block';
+    updateRodPopup();
+});
+
+// Close rod popup
+document.getElementById('close-rod-popup').addEventListener('click', () => {
+    document.getElementById('rod-popup').style.display = 'none';
 });
 
 // Shop navigation
