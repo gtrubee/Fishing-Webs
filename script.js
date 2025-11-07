@@ -1668,8 +1668,8 @@ let lastUpdateTime = Date.now();
 
 // Fish selling prices (per pound)
 const fishPrices = {
-    'Spotted Galaxias': 1,
-    "Reeya's Shrimp": 2,
+    'Spotted Galaxias': 50,
+    "Reeya's Shrimp": 30,
     'Bluegill': 3,
     'Sunfish': 3,
     'Spotted Sunfish': 3,
