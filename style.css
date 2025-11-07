@@ -945,6 +945,37 @@ button {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+#museum-section-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.museum-section-btn {
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 3px solid #654321;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #654321;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.museum-section-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.museum-section-btn.active {
+    background: linear-gradient(135deg, #8B4513, #D2691E);
+    color: white;
+    border-color: #654321;
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
 #museum-stats {
     display: flex;
     justify-content: space-around;
