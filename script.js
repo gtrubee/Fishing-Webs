@@ -2141,20 +2141,32 @@ function displayFishInMuseum(inventoryIndex) {
     const fish = inventory[inventoryIndex];
     if (!fish) return;
     
+    // Helper function to get rarity display text
+    const getRarityText = (rarity) => {
+        if (rarity === 'shiny') return '✨ SHINY';
+        if (rarity === 'golden') return '🌟 GOLDEN';
+        if (rarity === 'mutated') return '🧬 MUTATED';
+        return 'Normal';
+    };
+    
     // Check if museum already has a showcase fish for this type
     const hasExistingDisplay = museum[fish.type] && museum[fish.type].showcaseFish;
     
     let confirmMessage;
     if (!museum[fish.type] || !museum[fish.type].discovered) {
         // New fish being added to museum
-        confirmMessage = `Add this ${fish.type} (${fish.weight} lbs) to the museum?\n\nThis fish will be removed from your inventory and displayed in the museum.`;
+        const newRarity = getRarityText(fish.rarity || 'normal');
+        confirmMessage = `Add this ${fish.type} (${fish.weight} lbs) to the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory and displayed in the museum.`;
     } else if (hasExistingDisplay) {
         // Replacing existing display
         const currentWeight = museum[fish.type].showcaseFish.weight;
-        confirmMessage = `Replace the current museum display?\n\nCurrent: ${fish.type} (${currentWeight} lbs)\nNew: ${fish.type} (${fish.weight} lbs)\n\nThis fish will be removed from your inventory.`;
+        const currentRarity = getRarityText(museum[fish.type].showcaseFish.rarity || 'normal');
+        const newRarity = getRarityText(fish.rarity || 'normal');
+        confirmMessage = `Replace the current museum display?\n\nCurrent: ${fish.type} (${currentWeight} lbs) - ${currentRarity}\nNew: ${fish.type} (${fish.weight} lbs) - ${newRarity}\n\nThis fish will be removed from your inventory.`;
     } else {
         // Adding display to discovered fish
-        confirmMessage = `Display this ${fish.type} (${fish.weight} lbs) in the museum?\n\nThis fish will be removed from your inventory.`;
+        const newRarity = getRarityText(fish.rarity || 'normal');
+        confirmMessage = `Display this ${fish.type} (${fish.weight} lbs) in the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory.`;
     }
     
     // Show custom confirmation popup
