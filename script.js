@@ -3990,6 +3990,31 @@ function updateInventoryDisplay() {
             fishName.className = 'fish-name';
             fishName.textContent = fish.type;
             
+            // Check if this fish type has a display fish in museum
+            const museumData = museum[fish.type];
+            const hasDisplayFish = museumData && museumData.showcaseFish;
+            
+            // Display fish indicator
+            if (hasDisplayFish) {
+                const displayIndicator = document.createElement('div');
+                displayIndicator.className = 'has-display-indicator';
+                const rarity = museumData.showcaseFish.rarity;
+                if (rarity === 'shiny') {
+                    displayIndicator.textContent = '✨';
+                    displayIndicator.title = 'Shiny fish displayed in museum';
+                } else if (rarity === 'golden') {
+                    displayIndicator.textContent = '🌟';
+                    displayIndicator.title = 'Golden fish displayed in museum';
+                } else if (rarity === 'mutated') {
+                    displayIndicator.textContent = '🧬';
+                    displayIndicator.title = 'Mutated fish displayed in museum';
+                } else {
+                    displayIndicator.textContent = '📍';
+                    displayIndicator.title = 'Fish displayed in museum';
+                }
+                fishName.appendChild(displayIndicator);
+            }
+            
             // Fish weight
             const fishWeight = document.createElement('div');
             fishWeight.className = 'fish-weight';

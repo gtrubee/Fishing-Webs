@@ -638,6 +638,27 @@ button {
     text-align: center;
     word-wrap: break-word;
     max-width: 90%;
+    position: relative;
+    display: inline-block;
+}
+
+.has-display-indicator {
+    display: inline-block;
+    margin-left: 3px;
+    font-size: 12px;
+    vertical-align: middle;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
 }
 
 .fish-weight {
