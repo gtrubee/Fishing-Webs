@@ -2397,16 +2397,16 @@ const boatPrice = 100000;
 
 // Fishing rods
 const fishingRods = [
-    { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true },
-    { name: 'Bamboo Rod', barSizeBonus: 10, price: 5000, owned: false },
-    { name: 'Rubber Rod', barSizeBonus: 20, price: 10000, owned: false },
-    { name: 'Iron Rod', barSizeBonus: 30, price: 100000, owned: false },
-    { name: 'Titanium Rod', barSizeBonus: 40, price: 1000000, owned: false },
-    { name: 'Diamond Rod', barSizeBonus: 50, price: 5000000, owned: false },
-    { name: 'Fire Rod', barSizeBonus: 60, price: 10000000, owned: false },
-    { name: 'Ice Rod', barSizeBonus: 70, price: 25000000, owned: false },
-    { name: 'Wind Rod', barSizeBonus: 80, price: 50000000, owned: false },
-    { name: "Wizard's Rod", barSizeBonus: 100, price: 100000000, owned: false }
+    { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true, color: '#808080' },
+    { name: 'Bamboo Rod', barSizeBonus: 10, price: 5000, owned: false, color: '#D2691E' },
+    { name: 'Rubber Rod', barSizeBonus: 20, price: 10000, owned: false, color: '#2F4F4F' },
+    { name: 'Iron Rod', barSizeBonus: 30, price: 100000, owned: false, color: '#708090' },
+    { name: 'Titanium Rod', barSizeBonus: 40, price: 1000000, owned: false, color: '#C0C0C0' },
+    { name: 'Diamond Rod', barSizeBonus: 50, price: 5000000, owned: false, color: '#00CED1' },
+    { name: 'Fire Rod', barSizeBonus: 60, price: 10000000, owned: false, color: '#FF4500' },
+    { name: 'Ice Rod', barSizeBonus: 70, price: 25000000, owned: false, color: '#87CEEB' },
+    { name: 'Wind Rod', barSizeBonus: 80, price: 50000000, owned: false, color: '#98FB98' },
+    { name: "Wizard's Rod", barSizeBonus: 100, price: 100000000, owned: false, color: '#9370DB' }
 ];
 
 let currentRodIndex = 0;
@@ -3987,12 +3987,12 @@ function updateRodPopup() {
     const currentRodHeader = document.createElement('div');
     currentRodHeader.style.gridColumn = '1 / -1';
     currentRodHeader.style.padding = '15px';
-    currentRodHeader.style.background = 'rgba(121, 85, 72, 0.3)';
+    currentRodHeader.style.background = 'rgba(139, 69, 19, 0.3)';
     currentRodHeader.style.borderRadius = '8px';
     currentRodHeader.style.textAlign = 'center';
     currentRodHeader.style.fontWeight = 'bold';
     currentRodHeader.style.fontSize = '18px';
-    currentRodHeader.style.color = '#4E342E';
+    currentRodHeader.style.color = '#8B4513';
     currentRodHeader.style.marginBottom = '10px';
     currentRodHeader.textContent = `Current Rod: ${fishingRods[currentRodIndex].name}`;
     rodGrid.appendChild(currentRodHeader);
@@ -4005,7 +4005,7 @@ function updateRodPopup() {
         rodSlot.className = 'rod-slot';
         
         if (!isOwned) {
-            rodSlot.classList.add('unowned');
+            rodSlot.classList.add('locked');
         }
         
         if (isEquipped) {
@@ -4022,23 +4022,31 @@ function updateRodPopup() {
         if (isEquipped) {
             name.textContent += ' ✓';
         }
+        // Apply rod color to the name
+        if (rod.color) {
+            name.style.color = rod.color;
+            name.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.7)';
+        }
         
-        const bonus = document.createElement('div');
-        bonus.className = 'rod-slot-bonus';
-        bonus.textContent = rod.barSizeBonus > 0 ? `+${rod.barSizeBonus} Bar Size` : 'Base Rod';
+        const desc = document.createElement('div');
+        desc.className = 'rod-slot-desc';
+        desc.textContent = rod.barSizeBonus > 0 ? `Catch Zone: +${rod.barSizeBonus}` : 'Standard fishing rod';
         
-        const price = document.createElement('div');
-        price.className = 'rod-slot-status';
+        const status = document.createElement('div');
+        status.className = 'rod-slot-status';
         if (isOwned) {
-            price.textContent = isEquipped ? 'Equipped' : 'Owned';
+            status.textContent = isEquipped ? 'Equipped' : 'Owned';
+            status.style.color = isEquipped ? '#FF6B6B' : '#666';
+            status.style.fontWeight = isEquipped ? 'bold' : 'normal';
         } else {
-            price.textContent = `$${rod.price.toLocaleString()}`;
+            status.textContent = 'Not owned';
+            status.style.color = '#999';
         }
         
         rodSlot.appendChild(icon);
         rodSlot.appendChild(name);
-        rodSlot.appendChild(bonus);
-        rodSlot.appendChild(price);
+        rodSlot.appendChild(desc);
+        rodSlot.appendChild(status);
         
         // Click to equip
         if (isOwned && !isEquipped) {

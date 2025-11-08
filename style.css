@@ -365,6 +365,21 @@ button {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
+#rod-button {
+    position: absolute;
+    top: 220px;
+    right: 20px;
+    font-size: 18px;
+    padding: 12px 24px;
+    z-index: 10;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#rod-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
 #backpack-icon:hover {
     transform: scale(1.1);
 }
@@ -432,7 +447,23 @@ button {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
-#inventory-header, #bait-popup-header, #trinket-popup-header {
+#rod-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(139, 69, 19, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    border: 4px solid #8B4513;
+    width: 90%;
+    max-width: 900px;
+    max-height: 80vh;
+    z-index: 100;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+#inventory-header, #bait-popup-header, #trinket-popup-header, #rod-popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -449,7 +480,11 @@ button {
     border-bottom: 3px solid #6A1B9A;
 }
 
-#inventory-header h2, #bait-popup-header h2, #trinket-popup-header h2 {
+#rod-popup-header {
+    border-bottom: 3px solid #8B4513;
+}
+
+#inventory-header h2, #bait-popup-header h2, #trinket-popup-header h2, #rod-popup-header h2 {
     margin: 0;
     color: #8B4513;
     font-size: 28px;
@@ -463,7 +498,11 @@ button {
     color: #6A1B9A;
 }
 
-#close-inventory, #close-bait-popup, #close-trinket-popup {
+#rod-popup-header h2 {
+    color: #000000;
+}
+
+#close-inventory, #close-bait-popup, #close-trinket-popup, #close-rod-popup {
     background: #FF6B6B;
     border: 2px solid #8B4513;
     border-radius: 5px;
@@ -487,11 +526,15 @@ button {
     border: 2px solid #6A1B9A;
 }
 
-#close-inventory:hover, #close-bait-popup:hover, #close-trinket-popup:hover {
+#close-rod-popup {
+    border: 2px solid #8B4513;
+}
+
+#close-inventory:hover, #close-bait-popup:hover, #close-trinket-popup:hover, #close-rod-popup:hover {
     background: #FF5252;
 }
 
-#inventory-grid, #bait-popup-grid, #trinket-popup-grid {
+#inventory-grid, #bait-popup-grid, #trinket-popup-grid, #rod-popup-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 10px;
@@ -507,6 +550,10 @@ button {
 
 #trinket-popup-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+#rod-popup-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .bait-slot {
@@ -634,6 +681,72 @@ button {
 .trinket-slot-status {
     font-size: 14px;
     color: #666;
+    font-weight: bold;
+    text-align: center;
+}
+
+.rod-slot {
+    border: 3px solid #8B4513;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.rod-slot:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 1);
+}
+
+.rod-slot.equipped {
+    border-color: #FFD700;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 193, 7, 0.4));
+    border-width: 4px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.rod-slot.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.rod-slot.locked:hover {
+    transform: none;
+}
+
+.rod-slot-icon {
+    font-size: 40px;
+    flex-shrink: 0;
+}
+
+.rod-slot-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2C1810;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+.rod-slot-desc {
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+    line-height: 1.3;
+}
+
+.rod-slot-status {
+    font-size: 14px;
+    color: #333;
     font-weight: bold;
     text-align: center;
 }
