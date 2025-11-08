@@ -919,6 +919,27 @@ button {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+#reset-button {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    font-size: 18px;
+    padding: 12px 24px;
+    z-index: 10;
+    background: linear-gradient(to bottom, #FF6B6B, #FF5252);
+    color: white;
+    border: 3px solid #C62828;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#reset-button:hover {
+    background: linear-gradient(to bottom, #FF5252, #E64545);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
 #museum-page {
     position: absolute;
     width: 100%;
@@ -1206,6 +1227,91 @@ button {
 
 .no-btn:hover {
     background: linear-gradient(to bottom, #FF5252, #E64545);
+    transform: scale(1.05);
+}
+
+/* Reset Progress Confirmation Popup */
+#reset-confirm-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(198, 40, 40, 0.98);
+    padding: 25px;
+    border-radius: 15px;
+    border: 4px solid #C62828;
+    width: 90%;
+    max-width: 500px;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+}
+
+#reset-confirm-header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #FFD700;
+    padding-bottom: 15px;
+}
+
+#reset-confirm-header h2 {
+    margin: 0;
+    color: #FFD700;
+    font-size: 28px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#reset-confirm-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+#reset-confirm-message {
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.6;
+    white-space: pre-line;
+    text-align: left;
+}
+
+#reset-confirm-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.reset-confirm-btn {
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 3px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 120px;
+}
+
+.reset-confirm-btn.yes-btn {
+    background: linear-gradient(to bottom, #FF6B6B, #FF5252);
+    color: white;
+    border-color: #C62828;
+}
+
+.reset-confirm-btn.yes-btn:hover {
+    background: linear-gradient(to bottom, #FF5252, #E64545);
+    transform: scale(1.05);
+}
+
+.reset-confirm-btn.no-btn {
+    background: linear-gradient(to bottom, #4CAF50, #45a049);
+    color: white;
+    border-color: #2d6e2f;
+}
+
+.reset-confirm-btn.no-btn:hover {
+    background: linear-gradient(to bottom, #45a049, #3d8b40);
     transform: scale(1.05);
 }
 

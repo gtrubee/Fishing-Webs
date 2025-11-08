@@ -4497,6 +4497,25 @@ document.getElementById('back-from-museum').addEventListener('click', () => {
     document.getElementById('fishing-page').style.display = 'block';
 });
 
+// Reset progress button
+document.getElementById('reset-button').addEventListener('click', () => {
+    const resetPopup = document.getElementById('reset-confirm-popup');
+    resetPopup.style.display = 'block';
+});
+
+// Reset confirmation handlers
+document.getElementById('reset-confirm-yes').addEventListener('click', () => {
+    // Clear all localStorage data
+    localStorage.clear();
+    
+    // Reload the page to reset everything
+    location.reload();
+});
+
+document.getElementById('reset-confirm-no').addEventListener('click', () => {
+    document.getElementById('reset-confirm-popup').style.display = 'none';
+});
+
 // Museum section switching
 document.getElementById('freshwater-section-btn').addEventListener('click', () => {
     currentMuseumSection = 'freshwater';

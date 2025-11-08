@@ -34,6 +34,7 @@
             <button id="rod-button">🎣 Rods</button>
             <button id="museum-button">🏛️ Museum</button>
             <button id="shop-button">🏪 Shop</button>
+            <button id="reset-button">🔄 Reset</button>
             <div id="money-display">💰 $<span id="money-amount">0</span></div>
             <div id="time-display">⏱️ <span id="time-amount">0:00:00</span></div>
         </div>
@@ -158,6 +159,29 @@
             <div id="museum-confirm-buttons">
                 <button id="museum-confirm-yes" class="museum-confirm-btn yes-btn">Confirm</button>
                 <button id="museum-confirm-no" class="museum-confirm-btn no-btn">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Reset Progress Confirmation Popup -->
+        <div id="reset-confirm-popup" style="display: none;">
+            <div id="reset-confirm-header">
+                <h2>⚠️ Reset Progress</h2>
+            </div>
+            <div id="reset-confirm-content">
+                <p id="reset-confirm-message">Are you sure you want to reset ALL your progress?
+
+This will delete:
+• All caught fish
+• All money
+• All purchased upgrades
+• Museum progress
+• Unlocked locations
+
+This action cannot be undone!</p>
+            </div>
+            <div id="reset-confirm-buttons">
+                <button id="reset-confirm-yes" class="reset-confirm-btn yes-btn">Yes, Reset Everything</button>
+                <button id="reset-confirm-no" class="reset-confirm-btn no-btn">Cancel</button>
             </div>
         </div>
     </div>
