@@ -790,6 +790,11 @@ button {
     color: #666;
 }
 
+.fish-length {
+    font-size: 10px;
+    color: #666;
+}
+
 /* Shop Styles */
 #shop-interface {
     position: absolute;
@@ -861,6 +866,7 @@ button {
 .sell-slot {
     width: 100%;
     min-width: 120px;
+    max-width: 180px;
     height: 140px;
     border: 3px solid #8B4513;
     border-radius: 8px;
@@ -895,12 +901,18 @@ button {
 }
 
 .sell-slot .fish-weight {
-    font-size: 13px;
+    font-size: 10px;
+    color: #666;
+}
+
+.sell-slot .fish-length {
+    font-size: 10px;
+    color: #666;
 }
 
 .sell-price {
     position: absolute;
-    bottom: -12px;
+    bottom: -18px;
     background: #FFD700;
     color: #8B4513;
     font-size: 13px;
