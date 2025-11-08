@@ -2467,6 +2467,7 @@ function loadGameData() {
             
             // Restore location
             currentLocation = data.currentLocation || 'lake';
+            updateLocationDisplay();
             
             // Restore museum completion flags
             freshwaterMuseumCompleted = data.freshwaterMuseumCompleted || false;
@@ -3131,22 +3132,6 @@ function drawScene() {
     }
     
     // Location indicator in top-left corner
-    sceneCtx.save();
-    sceneCtx.font = 'bold 24px Arial';
-    sceneCtx.textAlign = 'left';
-    sceneCtx.textBaseline = 'top';
-    
-    // Background for location text
-    const locationText = currentLocation === 'ocean' ? '🌊 Ocean' : '🏞️ Lake';
-    const textMetrics = sceneCtx.measureText(locationText);
-    const padding = 10;
-    sceneCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    sceneCtx.fillRect(10, 10, textMetrics.width + padding * 2, 34 + padding * 2);
-    
-    // Location text
-    sceneCtx.fillStyle = currentLocation === 'ocean' ? '#00CED1' : '#228B22';
-    sceneCtx.fillText(locationText, 10 + padding, 10 + padding);
-    sceneCtx.restore();
 }
 
 // Start the minigame
@@ -4440,6 +4425,7 @@ sceneCanvas.addEventListener('click', (e) => {
             if (confirmed) {
                 currentLocation = 'ocean';
                 localStorage.setItem('currentLocation', currentLocation);
+                updateLocationDisplay();
                 console.log('Switched to ocean location');
             }
         } else {
@@ -4447,6 +4433,7 @@ sceneCanvas.addEventListener('click', (e) => {
             if (confirmed) {
                 currentLocation = 'lake';
                 localStorage.setItem('currentLocation', currentLocation);
+                updateLocationDisplay();
                 console.log('Switched to lake location');
             }
         }
@@ -5470,6 +5457,28 @@ function updateSystemTime() {
 // Update system time immediately and then every second
 updateSystemTime();
 setInterval(updateSystemTime, 1000);
+
+// Function to update location display
+function updateLocationDisplay() {
+    const locationIcon = document.getElementById('location-icon');
+    const locationName = document.getElementById('location-name');
+    const locationDisplay = document.getElementById('location-display');
+    
+    if (currentLocation === 'ocean') {
+        locationIcon.textContent = '🌊';
+        locationName.textContent = 'Ocean';
+        locationDisplay.style.background = 'linear-gradient(135deg, rgba(33, 150, 243, 0.9), rgba(30, 136, 229, 0.95))';
+        locationDisplay.style.borderColor = '#1976D2';
+    } else {
+        locationIcon.textContent = '🏞️';
+        locationName.textContent = 'Lake';
+        locationDisplay.style.background = 'linear-gradient(135deg, rgba(76, 175, 80, 0.9), rgba(67, 160, 71, 0.95))';
+        locationDisplay.style.borderColor = '#388E3C';
+    }
+}
+
+// Update location display on load
+updateLocationDisplay();
 
 // Snow effect - active between November 1st and March 1st
 class Snowflake {
