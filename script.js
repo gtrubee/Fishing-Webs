@@ -1060,12 +1060,12 @@ const fishTypes = {
         name: 'Amur Sturgeon',
         color: '#2F4F4F',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.0205,
-        fishRandomness: 1.08,
-        fishChangeInterval: 55,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 45,
+        fishSpeed: 0.028,
+        fishRandomness: 1.5,
+        fishChangeInterval: 40,
+        progressGainRate: 0.12,
+        progressDecayRate: 0.6,
         minWeight: 20,
         maxWeight: 430,
         spawnWeight: 4
@@ -1074,12 +1074,12 @@ const fishTypes = {
         name: 'Atlantic Sturgeon',
         color: '#36454F',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.0218,
-        fishRandomness: 1.15,
-        fishChangeInterval: 56,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 40,
+        fishSpeed: 0.032,
+        fishRandomness: 1.8,
+        fishChangeInterval: 38,
+        progressGainRate: 0.1,
+        progressDecayRate: 0.7,
         minWeight: 50,
         maxWeight: 820,
         spawnWeight: 2
@@ -1214,12 +1214,12 @@ const fishTypes = {
         name: 'Giant Barb',
         color: '#CD853F',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.0195,
-        fishRandomness: 1.00,
-        fishChangeInterval: 54,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 45,
+        fishSpeed: 0.027,
+        fishRandomness: 1.4,
+        fishChangeInterval: 46,
+        progressGainRate: 0.12,
+        progressDecayRate: 0.6,
         minWeight: 25,
         maxWeight: 300,
         spawnWeight: 5
@@ -1228,12 +1228,12 @@ const fishTypes = {
         name: 'Giant Pangasius',
         color: '#696969',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.0225,
-        fishRandomness: 1.20,
-        fishChangeInterval: 57,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 40,
+        fishSpeed: 0.033,
+        fishRandomness: 1.9,
+        fishChangeInterval: 36,
+        progressGainRate: 0.1,
+        progressDecayRate: 0.7,
         minWeight: 90,
         maxWeight: 650,
         spawnWeight: 1
@@ -1242,12 +1242,12 @@ const fishTypes = {
         name: 'Giant River-Catfish',
         color: '#4A4A4A',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.0225,
-        fishRandomness: 1.20,
-        fishChangeInterval: 57,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 40,
+        fishSpeed: 0.033,
+        fishRandomness: 1.9,
+        fishChangeInterval: 36,
+        progressGainRate: 0.1,
+        progressDecayRate: 0.7,
         minWeight: 90,
         maxWeight: 650,
         spawnWeight: 1
@@ -1354,12 +1354,12 @@ const fishTypes = {
         name: 'Kaluga',
         color: '#2F4F4F',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.0198,
-        fishRandomness: 1.03,
-        fishChangeInterval: 54,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 45,
+        fishSpeed: 0.026,
+        fishRandomness: 1.35,
+        fishChangeInterval: 48,
+        progressGainRate: 0.12,
+        progressDecayRate: 0.6,
         minWeight: 30,
         maxWeight: 300,
         spawnWeight: 5
@@ -1494,12 +1494,12 @@ const fishTypes = {
         name: 'Arapaima',
         color: '#8B4513',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.0232,
-        fishRandomness: 1.25,
-        fishChangeInterval: 58,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 45,
+        fishSpeed: 0.030,
+        fishRandomness: 1.6,
+        fishChangeInterval: 42,
+        progressGainRate: 0.12,
+        progressDecayRate: 0.6,
         minWeight: 80,
         maxWeight: 440,
         spawnWeight: 2
@@ -1634,12 +1634,12 @@ const fishTypes = {
         name: 'Alligator Gar',
         color: '#4B5320',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.02185,
-        fishRandomness: 1.265,
-        fishChangeInterval: 59,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 45,
+        fishSpeed: 0.028,
+        fishRandomness: 1.5,
+        fishChangeInterval: 44,
+        progressGainRate: 0.12,
+        progressDecayRate: 0.6,
         minWeight: 80,
         maxWeight: 350,
         spawnWeight: 3
@@ -1662,12 +1662,12 @@ const fishTypes = {
         name: 'Sturgeon',
         color: '#2F4F4F',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.023,
-        fishRandomness: 1.29375,
-        fishChangeInterval: 57,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 35,
+        fishSpeed: 0.035,
+        fishRandomness: 2.0,
+        fishChangeInterval: 35,
+        progressGainRate: 0.08,
+        progressDecayRate: 0.8,
         minWeight: 5,
         maxWeight: 1800,
         spawnWeight: 8
@@ -1676,12 +1676,12 @@ const fishTypes = {
         name: 'Muskellunge',
         color: '#2F4F2F',
         difficulty: 'Hard',
-        barSize: 80,
-        fishSpeed: 0.02415,
-        fishRandomness: 1.4375,
-        fishChangeInterval: 58,
-        progressGainRate: 0.3,
-        progressDecayRate: 0.3,
+        barSize: 50,
+        fishSpeed: 0.025,
+        fishRandomness: 1.2,
+        fishChangeInterval: 50,
+        progressGainRate: 0.15,
+        progressDecayRate: 0.55,
         minWeight: 10,
         maxWeight: 67,
         spawnWeight: 5
@@ -1959,18 +1959,18 @@ const oceanFishTypes = {
     blacknoseShark: { name: 'Blacknose Shark', color: '#696969', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0088, fishRandomness: 0.3, fishChangeInterval: 55, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 50, maxWeight: 100, spawnWeight: 14 },
     blacktipReefShark: { name: 'Blacktip Reef Shark', color: '#2F4F4F', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0089, fishRandomness: 0.3, fishChangeInterval: 55, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 300, spawnWeight: 12 },
     blacktipShark: { name: 'Blacktip Shark', color: '#696969', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0089, fishRandomness: 0.3, fishChangeInterval: 55, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 200, spawnWeight: 12 },
-    blueShark: { name: 'Blue Shark', color: '#4682B4', difficulty: 'Hard', barSize: 55, fishSpeed: 0.009, fishRandomness: 0.31, fishChangeInterval: 56, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 400, spawnWeight: 10 },
-    bullShark: { name: 'Bull Shark', color: '#808080', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0091, fishRandomness: 0.32, fishChangeInterval: 57, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 200, maxWeight: 500, spawnWeight: 8 },
-    caribbeanReefShark: { name: 'Caribbean Reef Shark', color: '#708090', difficulty: 'Hard', barSize: 55, fishSpeed: 0.009, fishRandomness: 0.31, fishChangeInterval: 56, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 150, spawnWeight: 10 },
-    duskyShark: { name: 'Dusky Shark', color: '#696969', difficulty: 'Hard', barSize: 55, fishSpeed: 0.009, fishRandomness: 0.31, fishChangeInterval: 56, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 150, maxWeight: 400, spawnWeight: 10 },
-    lemonShark: { name: 'Lemon Shark', color: '#F0E68C', difficulty: 'Hard', barSize: 55, fishSpeed: 0.009, fishRandomness: 0.31, fishChangeInterval: 56, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 400, spawnWeight: 10 },
-    nurseShark: { name: 'Nurse Shark', color: '#8B7D6B', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0086, fishRandomness: 0.29, fishChangeInterval: 54, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 300, spawnWeight: 12 },
-    sandbarShark: { name: 'Sandbar Shark', color: '#D2B48C', difficulty: 'Hard', barSize: 55, fishSpeed: 0.009, fishRandomness: 0.31, fishChangeInterval: 56, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 200, spawnWeight: 10 },
-    spinnerShark: { name: 'Spinner Shark', color: '#696969', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0089, fishRandomness: 0.3, fishChangeInterval: 55, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 100, maxWeight: 200, spawnWeight: 10 },
-    tigerShark: { name: 'Tiger Shark', color: '#8B7D6B', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0092, fishRandomness: 0.33, fishChangeInterval: 58, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 300, maxWeight: 1400, spawnWeight: 6 },
-    whitetipReefShark: { name: 'Whitetip Reef Shark', color: '#808080', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0088, fishRandomness: 0.3, fishChangeInterval: 55, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 50, maxWeight: 100, spawnWeight: 12 },
-    shortfinMakoShark: { name: 'Shortfin Mako Shark', color: '#4682B4', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0093, fishRandomness: 0.34, fishChangeInterval: 59, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 200, maxWeight: 1200, spawnWeight: 6 },
-    hammerheadShark: { name: 'Hammerhead Shark', color: '#696969', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0092, fishRandomness: 0.33, fishChangeInterval: 58, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 200, maxWeight: 1000, spawnWeight: 6 },
+    blueShark: { name: 'Blue Shark', color: '#4682B4', difficulty: 'Hard', barSize: 50, fishSpeed: 0.011, fishRandomness: 0.4, fishChangeInterval: 52, progressGainRate: 0.14, progressDecayRate: 0.55, minWeight: 100, maxWeight: 400, spawnWeight: 10 },
+    bullShark: { name: 'Bull Shark', color: '#808080', difficulty: 'Hard', barSize: 45, fishSpeed: 0.013, fishRandomness: 0.5, fishChangeInterval: 48, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 200, maxWeight: 500, spawnWeight: 8 },
+    caribbeanReefShark: { name: 'Caribbean Reef Shark', color: '#708090', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0105, fishRandomness: 0.38, fishChangeInterval: 54, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 100, maxWeight: 150, spawnWeight: 10 },
+    duskyShark: { name: 'Dusky Shark', color: '#696969', difficulty: 'Hard', barSize: 50, fishSpeed: 0.011, fishRandomness: 0.4, fishChangeInterval: 52, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 150, maxWeight: 400, spawnWeight: 10 },
+    lemonShark: { name: 'Lemon Shark', color: '#F0E68C', difficulty: 'Hard', barSize: 50, fishSpeed: 0.011, fishRandomness: 0.4, fishChangeInterval: 52, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 100, maxWeight: 400, spawnWeight: 10 },
+    nurseShark: { name: 'Nurse Shark', color: '#8B7D6B', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0105, fishRandomness: 0.38, fishChangeInterval: 54, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 100, maxWeight: 300, spawnWeight: 12 },
+    sandbarShark: { name: 'Sandbar Shark', color: '#D2B48C', difficulty: 'Hard', barSize: 52, fishSpeed: 0.0105, fishRandomness: 0.37, fishChangeInterval: 54, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 100, maxWeight: 200, spawnWeight: 10 },
+    spinnerShark: { name: 'Spinner Shark', color: '#696969', difficulty: 'Hard', barSize: 52, fishSpeed: 0.0105, fishRandomness: 0.37, fishChangeInterval: 54, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 100, maxWeight: 200, spawnWeight: 10 },
+    tigerShark: { name: 'Tiger Shark', color: '#8B7D6B', difficulty: 'Hard', barSize: 40, fishSpeed: 0.016, fishRandomness: 0.75, fishChangeInterval: 42, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 300, maxWeight: 1400, spawnWeight: 6 },
+    whitetipReefShark: { name: 'Whitetip Reef Shark', color: '#808080', difficulty: 'Hard', barSize: 55, fishSpeed: 0.01, fishRandomness: 0.35, fishChangeInterval: 55, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 50, maxWeight: 100, spawnWeight: 12 },
+    shortfinMakoShark: { name: 'Shortfin Mako Shark', color: '#4682B4', difficulty: 'Hard', barSize: 40, fishSpeed: 0.015, fishRandomness: 0.7, fishChangeInterval: 44, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 200, maxWeight: 1200, spawnWeight: 6 },
+    hammerheadShark: { name: 'Hammerhead Shark', color: '#696969', difficulty: 'Hard', barSize: 40, fishSpeed: 0.015, fishRandomness: 0.65, fishChangeInterval: 45, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 200, maxWeight: 1000, spawnWeight: 6 },
     
     // Sea turtles (50-500 lbs) - Hard difficulty
     greenSeaTurtle: { name: 'Green Sea Turtle', color: '#228B22', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0084, fishRandomness: 0.28, fishChangeInterval: 53, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 200, maxWeight: 500, spawnWeight: 8 },
@@ -1982,22 +1982,22 @@ const oceanFishTypes = {
     oliveRidleySeaTurtle: { name: 'Olive Ridley Sea Turtle', color: '#808000', difficulty: 'Hard', barSize: 55, fishSpeed: 0.0083, fishRandomness: 0.27, fishChangeInterval: 52, progressGainRate: 0.16, progressDecayRate: 0.46, minWeight: 80, maxWeight: 100, spawnWeight: 10 },
     
     // Massive marine animals (500+ lbs) - Hard difficulty
-    giantGrouper: { name: 'Giant Grouper', color: '#696969', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0094, fishRandomness: 0.35, fishChangeInterval: 60, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 400, maxWeight: 880, spawnWeight: 4 },
-    goliathGrouper: { name: 'Goliath Grouper', color: '#8B7D6B', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0095, fishRandomness: 0.36, fishChangeInterval: 61, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 400, maxWeight: 800, spawnWeight: 4 },
-    atlanticGoliathGrouper: { name: 'Atlantic Goliath Grouper', color: '#696969', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0095, fishRandomness: 0.36, fishChangeInterval: 61, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 400, maxWeight: 800, spawnWeight: 4 },
-    giantMantaRay: { name: 'Giant Manta Ray', color: '#2F4F4F', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0094, fishRandomness: 0.35, fishChangeInterval: 60, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 1500, maxWeight: 5300, spawnWeight: 2 },
-    greatWhiteShark: { name: 'Great White Shark', color: '#C0C0C0', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0097, fishRandomness: 0.38, fishChangeInterval: 63, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 1500, maxWeight: 5000, spawnWeight: 2 },
-    whaleshark: { name: 'Whale Shark', color: '#4682B4', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0094, fishRandomness: 0.35, fishChangeInterval: 60, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 15000, maxWeight: 41000, spawnWeight: 1 },
-    oceanSunfish: { name: 'Ocean Sunfish', color: '#C0C0C0', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0092, fishRandomness: 0.33, fishChangeInterval: 58, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 500, maxWeight: 5000, spawnWeight: 3 },
-    bluefinTuna: { name: 'Bluefin Tuna', color: '#4682B4', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0095, fishRandomness: 0.36, fishChangeInterval: 61, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 500, maxWeight: 1500, spawnWeight: 3 },
-    marlin: { name: 'Marlin', color: '#4169E1', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0096, fishRandomness: 0.37, fishChangeInterval: 62, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 500, maxWeight: 1800, spawnWeight: 3 },
-    sailfish: { name: 'Sailfish', color: '#4682B4', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0096, fishRandomness: 0.37, fishChangeInterval: 62, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 100, maxWeight: 220, spawnWeight: 5 },
-    swordfish: { name: 'Swordfish', color: '#708090', difficulty: 'Hard', barSize: 50, fishSpeed: 0.0096, fishRandomness: 0.37, fishChangeInterval: 62, progressGainRate: 0.14, progressDecayRate: 0.5, minWeight: 200, maxWeight: 1400, spawnWeight: 4 },
-    orca: { name: 'Orca', color: '#000000', difficulty: 'Hard', barSize: 45, fishSpeed: 0.0098, fishRandomness: 0.4, fishChangeInterval: 65, progressGainRate: 0.12, progressDecayRate: 0.55, minWeight: 8000, maxWeight: 12000, spawnWeight: 1 },
-    humpbackWhale: { name: 'Humpback Whale', color: '#696969', difficulty: 'Hard', barSize: 45, fishSpeed: 0.0097, fishRandomness: 0.39, fishChangeInterval: 64, progressGainRate: 0.12, progressDecayRate: 0.55, minWeight: 40000, maxWeight: 80000, spawnWeight: 1 },
-    grayWhale: { name: 'Gray Whale', color: '#808080', difficulty: 'Hard', barSize: 45, fishSpeed: 0.0097, fishRandomness: 0.39, fishChangeInterval: 64, progressGainRate: 0.12, progressDecayRate: 0.55, minWeight: 30000, maxWeight: 80000, spawnWeight: 1 },
-    spermWhale: { name: 'Sperm Whale', color: '#2F4F4F', difficulty: 'Hard', barSize: 45, fishSpeed: 0.0098, fishRandomness: 0.4, fishChangeInterval: 65, progressGainRate: 0.12, progressDecayRate: 0.55, minWeight: 35000, maxWeight: 90000, spawnWeight: 1 },
-    blueWhale: { name: 'Blue Whale', color: '#4682B4', difficulty: 'Hard', barSize: 40, fishSpeed: 0.01, fishRandomness: 0.42, fishChangeInterval: 67, progressGainRate: 0.1, progressDecayRate: 0.6, minWeight: 200000, maxWeight: 400000, spawnWeight: 1 }
+    giantGrouper: { name: 'Giant Grouper', color: '#696969', difficulty: 'Hard', barSize: 40, fishSpeed: 0.016, fishRandomness: 0.8, fishChangeInterval: 42, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 400, maxWeight: 880, spawnWeight: 4 },
+    goliathGrouper: { name: 'Goliath Grouper', color: '#8B7D6B', difficulty: 'Hard', barSize: 40, fishSpeed: 0.017, fishRandomness: 0.85, fishChangeInterval: 40, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 400, maxWeight: 800, spawnWeight: 4 },
+    atlanticGoliathGrouper: { name: 'Atlantic Goliath Grouper', color: '#696969', difficulty: 'Hard', barSize: 40, fishSpeed: 0.017, fishRandomness: 0.85, fishChangeInterval: 40, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 400, maxWeight: 800, spawnWeight: 4 },
+    giantMantaRay: { name: 'Giant Manta Ray', color: '#2F4F4F', difficulty: 'Hard', barSize: 35, fishSpeed: 0.019, fishRandomness: 0.9, fishChangeInterval: 38, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 1500, maxWeight: 5300, spawnWeight: 0.8 },
+    greatWhiteShark: { name: 'Great White Shark', color: '#C0C0C0', difficulty: 'Hard', barSize: 35, fishSpeed: 0.02, fishRandomness: 0.95, fishChangeInterval: 36, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 1500, maxWeight: 5000, spawnWeight: 0.8 },
+    whaleshark: { name: 'Whale Shark', color: '#4682B4', difficulty: 'Hard', barSize: 35, fishSpeed: 0.015, fishRandomness: 0.7, fishChangeInterval: 45, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 15000, maxWeight: 41000, spawnWeight: 0.3 },
+    oceanSunfish: { name: 'Ocean Sunfish', color: '#C0C0C0', difficulty: 'Hard', barSize: 45, fishSpeed: 0.012, fishRandomness: 0.5, fishChangeInterval: 50, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 500, maxWeight: 5000, spawnWeight: 1.5 },
+    bluefinTuna: { name: 'Bluefin Tuna', color: '#4682B4', difficulty: 'Hard', barSize: 45, fishSpeed: 0.013, fishRandomness: 0.55, fishChangeInterval: 48, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 500, maxWeight: 1500, spawnWeight: 2 },
+    marlin: { name: 'Marlin', color: '#4169E1', difficulty: 'Hard', barSize: 45, fishSpeed: 0.014, fishRandomness: 0.6, fishChangeInterval: 46, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 500, maxWeight: 1800, spawnWeight: 2 },
+    sailfish: { name: 'Sailfish', color: '#4682B4', difficulty: 'Hard', barSize: 50, fishSpeed: 0.012, fishRandomness: 0.5, fishChangeInterval: 50, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 100, maxWeight: 220, spawnWeight: 3 },
+    swordfish: { name: 'Swordfish', color: '#708090', difficulty: 'Hard', barSize: 45, fishSpeed: 0.013, fishRandomness: 0.55, fishChangeInterval: 48, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 200, maxWeight: 1400, spawnWeight: 2.5 },
+    orca: { name: 'Orca', color: '#000000', difficulty: 'Hard', barSize: 30, fishSpeed: 0.018, fishRandomness: 0.85, fishChangeInterval: 35, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 8000, maxWeight: 12000, spawnWeight: 0.4 },
+    humpbackWhale: { name: 'Humpback Whale', color: '#696969', difficulty: 'Hard', barSize: 25, fishSpeed: 0.022, fishRandomness: 1.0, fishChangeInterval: 30, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 40000, maxWeight: 80000, spawnWeight: 0.2 },
+    grayWhale: { name: 'Gray Whale', color: '#808080', difficulty: 'Hard', barSize: 25, fishSpeed: 0.021, fishRandomness: 0.95, fishChangeInterval: 32, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 30000, maxWeight: 80000, spawnWeight: 0.2 },
+    spermWhale: { name: 'Sperm Whale', color: '#2F4F4F', difficulty: 'Hard', barSize: 25, fishSpeed: 0.023, fishRandomness: 1.05, fishChangeInterval: 28, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 35000, maxWeight: 90000, spawnWeight: 0.15 },
+    blueWhale: { name: 'Blue Whale', color: '#4682B4', difficulty: 'Hard', barSize: 20, fishSpeed: 0.025, fishRandomness: 1.2, fishChangeInterval: 25, progressGainRate: 0.18, progressDecayRate: 0.42, minWeight: 200000, maxWeight: 400000, spawnWeight: 0.1 }
 };
 
 let currentFish = null;
@@ -2183,7 +2183,7 @@ const baitTypes = {
     // Freshwater/Lake Baits
     worms: {
         name: 'Worms',
-        price: 50,
+        price: 500,
         description: 'Great for panfish',
         boosts: ['bluegill', 'sunfish', 'spottedSunfish', 'redbreastSunfish', 'perch', 'rockBass', 'crappie', 'warmouth', 'bullhead'],
         multiplier: 8,
@@ -2191,7 +2191,7 @@ const baitTypes = {
     },
     grubs: {
         name: 'Grubs',
-        price: 75,
+        price: 800,
         description: 'Attracts small fish',
         boosts: ['chub', 'herring', 'whitefish', 'goldfish'],
         multiplier: 8,
@@ -2199,7 +2199,7 @@ const baitTypes = {
     },
     minnows: {
         name: 'Minnows',
-        price: 150,
+        price: 2000,
         description: 'Perfect for bass',
         boosts: ['smallmouthBass', 'largemouthBass', 'whiteBass', 'pike', 'walleye'],
         multiplier: 8,
@@ -2207,7 +2207,7 @@ const baitTypes = {
     },
     spinners: {
         name: 'Spinners',
-        price: 400,
+        price: 5000,
         description: 'Best for trout',
         boosts: ['trout', 'rainbowTrout', 'salmon', 'cherrySalmon', 'cohoSalmon', 'kingSalmon'],
         multiplier: 8,
@@ -2215,7 +2215,7 @@ const baitTypes = {
     },
     leeches: {
         name: 'Leeches',
-        price: 450,
+        price: 8000,
         description: 'Premium for walleye',
         boosts: ['walleye', 'pike', 'muskellunge'],
         multiplier: 8,
@@ -2223,7 +2223,7 @@ const baitTypes = {
     },
     doughBalls: {
         name: 'Dough Balls',
-        price: 600,
+        price: 10000,
         description: 'Carp favorite',
         boosts: ['carp', 'crucianCarp', 'koi'],
         multiplier: 8,
@@ -2231,7 +2231,7 @@ const baitTypes = {
     },
     crawfish: {
         name: 'Crawfish',
-        price: 1000,
+        price: 15000,
         description: 'Irresistible to catfish',
         boosts: ['catfish', 'bullhead', 'carp'],
         multiplier: 8,
@@ -2239,7 +2239,7 @@ const baitTypes = {
     },
     cutBait: {
         name: 'Cut Bait',
-        price: 1500,
+        price: 20000,
         description: 'For trophy fish',
         boosts: ['sturgeon', 'gar', 'spottedGar', 'shortnoseGar', 'floridaGar', 'muskellunge', 'kingSalmon'],
         multiplier: 8,
@@ -2248,7 +2248,7 @@ const baitTypes = {
     // Ocean/Saltwater Baits
     shrimpBait: {
         name: 'Shrimp Bait',
-        price: 100,
+        price: 1000,
         description: 'Attracts small reef fish',
         boosts: ['anemoneShrimp', 'glassShrimp', 'sexyShrimp', 'bumbleBeeShrimp', 'peppermintShrimp', 'neonGoby', 'redheadGoby', 'caveTransparentGoby'],
         multiplier: 8,
@@ -2256,7 +2256,7 @@ const baitTypes = {
     },
     squidLures: {
         name: 'Squid Lures',
-        price: 200,
+        price: 2500,
         description: 'Perfect for snappers',
         boosts: ['blueStripeSnapper', 'oneSpotSnapper', 'yellowtailSnapper', 'mangroveSnapper'],
         multiplier: 8,
@@ -2264,7 +2264,7 @@ const baitTypes = {
     },
     crabPieces: {
         name: 'Crab Pieces',
-        price: 300,
+        price: 4000,
         description: 'Attracts bottom feeders',
         boosts: ['blueCrab', 'arrowCrab', 'emeraldCrab', 'hermitCrab', 'flameGoby', 'fireGoby'],
         multiplier: 8,
@@ -2272,7 +2272,7 @@ const baitTypes = {
     },
     artificialFlies: {
         name: 'Artificial Flies',
-        price: 500,
+        price: 6000,
         description: 'Great for colorful reef fish',
         boosts: ['clownfish', 'tomato Clownfish', 'cinnamonAnemonefish', 'pinkSkunkAnemonefish', 'clarkiiAnemonefish', 'maroonClownfish', 'sebaeAnemonefish'],
         multiplier: 8,
@@ -2280,7 +2280,7 @@ const baitTypes = {
     },
     jerkbaits: {
         name: 'Jerkbaits',
-        price: 800,
+        price: 12000,
         description: 'For aggressive predators',
         boosts: ['redLionfish', 'blackfootedLionfish', 'turkeyfish', 'peacockGrouper', 'coralGrouper', 'miniataGrouper'],
         multiplier: 8,
@@ -2288,7 +2288,7 @@ const baitTypes = {
     },
     liveBaitfish: {
         name: 'Live Baitfish',
-        price: 1200,
+        price: 30000,
         description: 'Irresistible to big fish',
         boosts: ['bluefinTuna', 'marlin', 'sailfish', 'swordfish', 'giantGrouper', 'goliathGrouper'],
         multiplier: 8,
@@ -2296,7 +2296,7 @@ const baitTypes = {
     },
     chum: {
         name: 'Chum',
-        price: 2000,
+        price: 50000,
         description: 'Attracts sharks',
         boosts: ['blacknoseShark', 'blacktipShark', 'blueShark', 'bullShark', 'lemonShark', 'tigerShark', 'hammerheadShark', 'greatWhiteShark'],
         multiplier: 8,
@@ -2304,7 +2304,7 @@ const baitTypes = {
     },
     giantLures: {
         name: 'Giant Lures',
-        price: 3000,
+        price: 200000,
         description: 'For massive ocean giants',
         boosts: ['giantMantaRay', 'whaleshark', 'oceanSunfish', 'orca', 'humpbackWhale', 'grayWhale', 'spermWhale', 'blueWhale'],
         multiplier: 8,
@@ -3240,13 +3240,13 @@ function startMinigame() {
         weightRoll = weightRoll + (1 - weightRoll) * trophyOddsBonus;
     }
     
-    currentFishWeight = Math.round((weightRoll * (currentFish.maxWeight - currentFish.minWeight) + currentFish.minWeight) * 10) / 10;
+    currentFishWeight = Math.round((weightRoll * (currentFish.maxWeight - currentFish.minWeight) + currentFish.minWeight) * 1000) / 1000;
     
     // Apply weight bonus from equipped trinkets
     const weightBonus = getTrinketBonus('weightBonus');
     if (weightBonus > 0) {
         const weightRange = currentFish.maxWeight - currentFish.minWeight;
-        currentFishWeight = Math.round((currentFishWeight + (weightRange * weightBonus)) * 10) / 10;
+        currentFishWeight = Math.round((currentFishWeight + (weightRange * weightBonus)) * 1000) / 1000;
         // Clamp to max weight
         currentFishWeight = Math.min(currentFishWeight, currentFish.maxWeight);
     }
@@ -3263,14 +3263,67 @@ function startMinigame() {
         currentFishRarity = 'normal';
     }
     
-    // Calculate weight factor (0 to 1, where 1 is maximum weight)
+    // Calculate weight factor (0 to 1, where 1 is maximum weight for this species)
     const weightFactor = (currentFishWeight - currentFish.minWeight) / (currentFish.maxWeight - currentFish.minWeight);
     
-    // Adjust difficulty based on weight
-    // Heavier fish are faster, more erratic, and change direction more often
-    const weightAdjustedSpeed = currentFish.fishSpeed * (1 + weightFactor * 0.3); // Up to 30% faster
-    const weightAdjustedRandomness = currentFish.fishRandomness * (1 + weightFactor * 0.4); // Up to 40% more erratic
-    const weightAdjustedInterval = currentFish.fishChangeInterval * (1 - weightFactor * 0.25); // Up to 25% more frequent changes
+    // Define difficulty-based scaling factors to keep fish in their categories
+    let difficultyScaling = {
+        speedMultiplier: 0.3,     // Easy fish: up to 30% speed increase
+        randomnessMultiplier: 0.4, // Easy fish: up to 40% randomness increase
+        intervalMultiplier: 0.25,  // Easy fish: up to 25% more frequent changes
+        barSizeReduction: 0.1      // Easy fish: up to 10% smaller bar
+    };
+    
+    if (currentFish.difficulty === 'Average') {
+        difficultyScaling = {
+            speedMultiplier: 0.5,     // Average fish: up to 50% speed increase
+            randomnessMultiplier: 0.6, // Average fish: up to 60% randomness increase
+            intervalMultiplier: 0.35,  // Average fish: up to 35% more frequent changes
+            barSizeReduction: 0.15     // Average fish: up to 15% smaller bar
+        };
+    } else if (currentFish.difficulty === 'Hard') {
+        difficultyScaling = {
+            speedMultiplier: 0.8,     // Hard fish: up to 80% speed increase
+            randomnessMultiplier: 1.0, // Hard fish: up to 100% randomness increase
+            intervalMultiplier: 0.5,   // Hard fish: up to 50% more frequent changes
+            barSizeReduction: 0.25     // Hard fish: up to 25% smaller bar
+        };
+    }
+    
+    // Calculate absolute size-based bonus (massive multipliers for truly giant creatures)
+    let absoluteSizeBonus = 1;
+    if (currentFishWeight >= 100000) {
+        // Ultra-massive fish (100,000+ lbs): Absolutely brutal multiplier
+        absoluteSizeBonus = 3.5;
+    } else if (currentFishWeight >= 50000) {
+        // Super-massive fish (50,000-99,999 lbs): Extreme multiplier
+        absoluteSizeBonus = 3.0;
+    } else if (currentFishWeight >= 10000) {
+        // Massive fish (10,000-49,999 lbs): Very high multiplier
+        absoluteSizeBonus = 2.5;
+    } else if (currentFishWeight >= 5000) {
+        // Very large fish (5,000-9,999 lbs): High multiplier
+        absoluteSizeBonus = 2.0;
+    } else if (currentFishWeight >= 1000) {
+        // Giant fish (1,000-4,999 lbs): Significant multiplier
+        absoluteSizeBonus = 1.6;
+    } else if (currentFishWeight >= 500) {
+        // Large fish (500-999 lbs): Moderate multiplier
+        absoluteSizeBonus = 1.4;
+    } else if (currentFishWeight >= 100) {
+        // Medium-large fish (100-499 lbs): Small multiplier
+        absoluteSizeBonus = 1.2;
+    } else if (currentFishWeight >= 50) {
+        // Medium fish (50-99 lbs): Very small multiplier
+        absoluteSizeBonus = 1.1;
+    }
+    
+    // Adjust difficulty based on weight within the fish's difficulty category
+    // Heavier specimens of each species are more challenging, with massive creatures being absolutely brutal
+    const weightAdjustedSpeed = currentFish.fishSpeed * (1 + weightFactor * difficultyScaling.speedMultiplier * absoluteSizeBonus);
+    const weightAdjustedRandomness = currentFish.fishRandomness * (1 + weightFactor * difficultyScaling.randomnessMultiplier * absoluteSizeBonus);
+    const weightAdjustedInterval = currentFish.fishChangeInterval * (1 - weightFactor * difficultyScaling.intervalMultiplier * Math.min(absoluteSizeBonus, 2.0));
+    const weightAdjustedBarSize = currentFish.barSize * (1 - weightFactor * difficultyScaling.barSizeReduction * Math.min(absoluteSizeBonus, 2.0));
     
     statusDiv.textContent = 'Left click to move bar left, right click to move bar right!';
     
@@ -3280,7 +3333,8 @@ function startMinigame() {
     console.log('Canvas display states - scene:', sceneCanvas.style.display, 'minigame:', minigameCanvas.style.display);
     
     // Reset minigame variables for circular ring design
-    let barSizeInDegrees = (currentFish.barSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
+    // Use weight-adjusted bar size
+    let barSizeInDegrees = (weightAdjustedBarSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
     
     // Apply catch zone bonus from equipped trinkets
     const catchZoneBonus = getTrinketBonus('catchZone');
@@ -3597,7 +3651,7 @@ function endMinigame(success) {
         let perfectCatchBonus = '';
         
         if (isPerfectCatch) {
-            finalWeight = Math.round(currentFishWeight * 1.30 * 10) / 10; // 30% bonus with 1 decimal
+            finalWeight = Math.round(currentFishWeight * 1.30 * 1000) / 1000; // 30% bonus with 3 decimals
             perfectCatchBonus = ` ⭐ PERFECT CATCH! +30% weight!`;
         }
         
@@ -3644,11 +3698,11 @@ function endMinigame(success) {
                 museum[currentFish.name].biggestWeight = finalWeight;
             }
             
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
         } else {
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${currentFishWeight} lbs!${perfectCatchBonus}${rarityText} But your inventory is full!`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs!${perfectCatchBonus}${rarityText} But your inventory is full!`;
         }
     } else {
         statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
@@ -4034,13 +4088,13 @@ function displayFishInMuseum(inventoryIndex) {
     if (!museum[fish.type] || !museum[fish.type].discovered) {
         // New fish being added to museum
         const newRarity = getRarityText(fish.rarity || 'normal');
-        confirmMessage = `Add this ${fish.type} (${fish.weight} lbs) to the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory and displayed in the museum.`;
+        confirmMessage = `Add this ${fish.type} (${formatWeight(fish.weight)} lbs) to the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory and displayed in the museum.`;
     } else if (hasExistingDisplay) {
         // Replacing existing display
         const currentWeight = museum[fish.type].showcaseFish.weight;
         const currentRarity = getRarityText(museum[fish.type].showcaseFish.rarity || 'normal');
         const newRarity = getRarityText(fish.rarity || 'normal');
-        confirmMessage = `Replace the current museum display?\n\nCurrent: ${fish.type} (${currentWeight} lbs) - ${currentRarity}\nNew: ${fish.type} (${fish.weight} lbs) - ${newRarity}\n\nThis fish will be removed from your inventory.`;
+        confirmMessage = `Replace the current museum display?\n\nCurrent: ${fish.type} (${formatWeight(currentWeight)} lbs) - ${currentRarity}\nNew: ${fish.type} (${formatWeight(fish.weight)} lbs) - ${newRarity}\n\nThis fish will be removed from your inventory.`;
     } else {
         // Adding display to discovered fish
         const newRarity = getRarityText(fish.rarity || 'normal');
@@ -4275,7 +4329,7 @@ function updateInventoryDisplay() {
             // Fish weight
             const fishWeight = document.createElement('div');
             fishWeight.className = 'fish-weight';
-            fishWeight.textContent = `${fish.weight} lbs`;
+            fishWeight.textContent = `${formatWeight(fish.weight)} lbs`;
             
             // Museum button
             const museumBtn = document.createElement('button');
@@ -4824,6 +4878,16 @@ function formatTime(seconds) {
     return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
+function formatWeight(weight) {
+    if (weight < 0.1) {
+        return weight.toFixed(3);
+    } else if (weight < 10) {
+        return weight.toFixed(2);
+    } else {
+        return weight.toFixed(1);
+    }
+}
+
 function updateTimeDisplay() {
     const formattedTime = formatTime(timePlayed);
     document.getElementById('time-amount').textContent = formattedTime;
@@ -4870,7 +4934,7 @@ function updateSellInventory() {
         
         const fishWeight = document.createElement('div');
         fishWeight.className = 'fish-weight';
-        fishWeight.textContent = `${fish.weight} lbs`;
+        fishWeight.textContent = `${formatWeight(fish.weight)} lbs`;
         
         let price = fishPrices[fish.type] * fish.weight;
         
@@ -5600,7 +5664,7 @@ function updateMuseumDisplay() {
             biggestRow.className = 'museum-stat-row';
             biggestRow.innerHTML = `
                 <span class="museum-stat-label">Biggest Catch:</span>
-                <span class="museum-stat-value">${museumData.biggestWeight.toFixed(2)} lbs</span>
+                <span class="museum-stat-value">${formatWeight(museumData.biggestWeight)} lbs</span>
             `;
             statsDiv.appendChild(biggestRow);
             
@@ -5637,7 +5701,7 @@ function updateMuseumDisplay() {
                 
                 const showcaseWeight = document.createElement('div');
                 showcaseWeight.className = 'museum-showcase-weight';
-                showcaseWeight.textContent = `${museumData.showcaseFish.weight.toFixed(2)} lbs`;
+                showcaseWeight.textContent = `${formatWeight(museumData.showcaseFish.weight)} lbs`;
                 
                 const showcaseRarity = document.createElement('div');
                 showcaseRarity.className = 'museum-showcase-rarity';
