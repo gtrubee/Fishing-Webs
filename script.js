@@ -4799,6 +4799,90 @@ document.getElementById('saltwater-section-btn').addEventListener('click', () =>
     updateMuseumDisplay();
 });
 
+// Museum search functionality
+function searchMuseumFish(searchTerm) {
+    if (!searchTerm || searchTerm.trim() === '') {
+        return;
+    }
+    
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    
+    // Get all fish types
+    const freshwaterFish = Object.values(fishTypes);
+    const saltwaterFish = Object.values(oceanFishTypes);
+    const allFish = [...freshwaterFish, ...saltwaterFish];
+    
+    // Find matching discovered fish
+    let matchedFish = null;
+    let matchedSection = null;
+    
+    for (const fishType of allFish) {
+        const museumData = museum[fishType.name];
+        if (museumData && museumData.discovered && fishType.name.toLowerCase().includes(normalizedSearch)) {
+            matchedFish = fishType;
+            // Determine which section this fish belongs to
+            matchedSection = freshwaterFish.includes(fishType) ? 'freshwater' : 'saltwater';
+            break;
+        }
+    }
+    
+    if (matchedFish) {
+        // Switch to the correct section if needed
+        if (currentMuseumSection !== matchedSection) {
+            currentMuseumSection = matchedSection;
+            if (matchedSection === 'freshwater') {
+                document.getElementById('freshwater-section-btn').classList.add('active');
+                document.getElementById('saltwater-section-btn').classList.remove('active');
+            } else {
+                document.getElementById('saltwater-section-btn').classList.add('active');
+                document.getElementById('freshwater-section-btn').classList.remove('active');
+            }
+            updateMuseumDisplay();
+        }
+        
+        // Find the museum entry element
+        setTimeout(() => {
+            const museumEntries = document.querySelectorAll('.museum-entry');
+            let targetEntry = null;
+            
+            museumEntries.forEach(entry => {
+                const fishNameElement = entry.querySelector('.museum-fish-name');
+                if (fishNameElement && fishNameElement.textContent === matchedFish.name) {
+                    targetEntry = entry;
+                }
+            });
+            
+            if (targetEntry) {
+                // Remove previous highlights
+                museumEntries.forEach(entry => entry.classList.remove('highlighted'));
+                
+                // Highlight the found entry
+                targetEntry.classList.add('highlighted');
+                
+                // Scroll to the entry
+                targetEntry.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Remove highlight after animation completes
+                setTimeout(() => {
+                    targetEntry.classList.remove('highlighted');
+                }, 3000);
+            }
+        }, 100);
+    }
+    // If no match found, do nothing
+}
+
+document.getElementById('museum-search-button').addEventListener('click', () => {
+    const searchInput = document.getElementById('museum-search-input');
+    searchMuseumFish(searchInput.value);
+});
+
+document.getElementById('museum-search-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        searchMuseumFish(e.target.value);
+    }
+});
+
 // Shop tab switching
 document.getElementById('sell-tab').addEventListener('click', () => {
     document.getElementById('sell-tab').classList.add('active');
