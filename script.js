@@ -3308,7 +3308,6 @@ function startMinigame() {
     const weightAdjustedSpeed = currentFish.fishSpeed * (1 + weightFactor * difficultyScaling.speedMultiplier * absoluteSizeBonus);
     const weightAdjustedRandomness = currentFish.fishRandomness * (1 + weightFactor * difficultyScaling.randomnessMultiplier * absoluteSizeBonus);
     const weightAdjustedInterval = currentFish.fishChangeInterval * (1 - weightFactor * difficultyScaling.intervalMultiplier * Math.min(absoluteSizeBonus, 2.0));
-    const weightAdjustedBarSize = currentFish.barSize * (1 - weightFactor * difficultyScaling.barSizeReduction * Math.min(absoluteSizeBonus, 2.0));
     
     statusDiv.textContent = 'Left click to move bar left, right click to move bar right!';
     
@@ -3318,8 +3317,8 @@ function startMinigame() {
     console.log('Canvas display states - scene:', sceneCanvas.style.display, 'minigame:', minigameCanvas.style.display);
     
     // Reset minigame variables for circular ring design
-    // Use weight-adjusted bar size
-    let barSizeInDegrees = (weightAdjustedBarSize + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
+    // Use constant bar size for all fish (no difficulty/weight adjustment)
+    let barSizeInDegrees = (80 + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
     
     // Apply catch zone bonus from equipped trinkets
     const catchZoneBonus = getTrinketBonus('catchZone');
