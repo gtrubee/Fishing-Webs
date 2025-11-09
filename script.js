@@ -32,8 +32,8 @@ const fishTypes = {
         progressDecayRate: 0.3,
         minWeight: 1,
         maxWeight: 4,
-        minLength: 4,
-        maxLength: 16,
+        minLength: 4.0,
+        maxLength: 16.0,
         spawnWeight: 65
     },
     sunfish: {
@@ -48,8 +48,8 @@ const fishTypes = {
         progressDecayRate: 0.3,
         minWeight: 1,
         maxWeight: 6,
-        minLength: 3,
-        maxLength: 15,
+        minLength: 4.0,
+        maxLength: 24.0,
         spawnWeight: 58
     },
     spottedSunfish: {
@@ -64,8 +64,8 @@ const fishTypes = {
         progressDecayRate: 0.3,
         minWeight: 1,
         maxWeight: 6,
-        minLength: 3,
-        maxLength: 9,
+        minLength: 4.0,
+        maxLength: 24.0,
         spawnWeight: 54
     },
     redbreastSunfish: {
@@ -80,8 +80,8 @@ const fishTypes = {
         progressDecayRate: 0.3,
         minWeight: 1,
         maxWeight: 6,
-        minLength: 4,
-        maxLength: 12,
+        minLength: 4.0,
+        maxLength: 24.0,
         spawnWeight: 52
     },
     goldfish: {
@@ -96,8 +96,8 @@ const fishTypes = {
         progressDecayRate: 0.3,
         minWeight: 1,
         maxWeight: 10,
-        minLength: 3,
-        maxLength: 19,
+        minLength: 4.0,
+        maxLength: 40.0,
         spawnWeight: 10
     },
     chub: {
@@ -112,8 +112,8 @@ const fishTypes = {
         progressDecayRate: 0.3,
         minWeight: 3,
         maxWeight: 12,
-        minLength: 8,
-        maxLength: 24,
+        minLength: 12.0,
+        maxLength: 48.0,
         spawnWeight: 60
     },
     perch: {
@@ -127,9 +127,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 2,
-        maxWeight: 5,
-        minLength: 6,
-        maxLength: 15,
+    maxWeight: 5,
+    minLength: 8.0,
+    maxLength: 20.0,
         spawnWeight: 55
     },
     rockBass: {
@@ -143,9 +143,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 3,
-        minLength: 5,
-        maxLength: 13,
+    maxWeight: 3,
+    minLength: 4.0,
+    maxLength: 12.0,
         spawnWeight: 52
     },
     trout: {
@@ -159,9 +159,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 15,
-        maxWeight: 100,
-        minLength: 12,
-        maxLength: 48,
+    maxWeight: 100,
+    minLength: 60.0,
+    maxLength: 400.0,
         spawnWeight: 50
     },
     bullhead: {
@@ -175,9 +175,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 8,
-        minLength: 6,
-        maxLength: 24,
+    maxWeight: 8,
+    minLength: 4.0,
+    maxLength: 32.0,
         spawnWeight: 48
     },
     herring: {
@@ -191,9 +191,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 4,
-        minLength: 8,
-        maxLength: 18,
+    maxWeight: 4,
+    minLength: 4.0,
+    maxLength: 16.0,
         spawnWeight: 46
     },
     asp: {
@@ -207,9 +207,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 5,
-        minLength: 10,
-        maxLength: 32,
+    maxWeight: 5,
+    minLength: 4.0,
+    maxLength: 20.0,
         spawnWeight: 44
     },
     arcticGrayling: {
@@ -223,9 +223,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 9,
-        minLength: 8,
-        maxLength: 23,
+    maxWeight: 9,
+    minLength: 4.0,
+    maxLength: 36.0,
         spawnWeight: 42
     },
     australianGrayling: {
@@ -239,9 +239,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 5,
-        minLength: 8,
-        maxLength: 16,
+    maxWeight: 5,
+    minLength: 4.0,
+    maxLength: 20.0,
         spawnWeight: 40
     },
     brookTrout: {
@@ -255,9 +255,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 6,
-        minLength: 6,
-        maxLength: 21,
+    maxWeight: 6,
+    minLength: 4.0,
+    maxLength: 24.0,
         spawnWeight: 41
     },
     chainPickerel: {
@@ -271,9 +271,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 8,
-        minLength: 12,
-        maxLength: 39,
+    maxWeight: 8,
+    minLength: 4.0,
+    maxLength: 32.0,
         spawnWeight: 39
     },
     europeanPerch: {
@@ -287,9 +287,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 10,
-        minLength: 6,
-        maxLength: 24,
+    maxWeight: 10,
+    minLength: 4.0,
+    maxLength: 40.0,
         spawnWeight: 40
     },
     giantKokopu: {
@@ -303,9 +303,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 4,
-        minLength: 10,
-        maxLength: 23,
+    maxWeight: 4,
+    minLength: 4.0,
+    maxLength: 16.0,
         spawnWeight: 38
     },
     goldeye: {
@@ -319,9 +319,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 10,
-        minLength: 10,
-        maxLength: 20,
+    maxWeight: 10,
+    minLength: 4.0,
+    maxLength: 40.0,
         spawnWeight: 39
     },
     goldenMandarinFish: {
@@ -335,9 +335,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 10,
-        minLength: 12,
-        maxLength: 28,
+    maxWeight: 10,
+    minLength: 4.0,
+    maxLength: 40.0,
         spawnWeight: 37
     },
     mayanCichlid: {
@@ -351,9 +351,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 3,
-        minLength: 6,
-        maxLength: 15,
+    maxWeight: 3,
+    minLength: 4.0,
+    maxLength: 12.0,
         spawnWeight: 36
     },
     mooneye: {
@@ -367,9 +367,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 2,
-        minLength: 8,
-        maxLength: 20,
+    maxWeight: 2,
+    minLength: 4.0,
+    maxLength: 8.0,
         spawnWeight: 35
     },
     pinkSalmon: {
@@ -383,9 +383,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 2,
-        maxWeight: 12,
-        minLength: 16,
-        maxLength: 30,
+    maxWeight: 12,
+    minLength: 8.0,
+    maxLength: 48.0,
         spawnWeight: 38
     },
     pumpkinseed: {
@@ -399,9 +399,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 3,
-        minLength: 4,
-        maxLength: 16,
+    maxWeight: 3,
+    minLength: 4.0,
+    maxLength: 12.0,
         spawnWeight: 45
     },
     redhookMyleus: {
@@ -415,9 +415,9 @@ const fishTypes = {
         progressGainRate: 0.3,
         progressDecayRate: 0.3,
         minWeight: 1,
-        maxWeight: 5,
-        minLength: 10,
-        maxLength: 20,
+    maxWeight: 5,
+    minLength: 4.0,
+    maxLength: 20.0,
         spawnWeight: 37
     },
     riverBlackfish: {
@@ -1929,15 +1929,15 @@ const fishTypes = {
 // Ocean fish types - only available at ocean location
 const oceanFishTypes = {
     // Tiny fish (under 0.1 lbs) - Easy
-    caveTransparentGoby: { name: 'Cave Transparent Goby', color: '#E0E0E0', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0055, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.02, minLength: 0.5, maxLength: 1.2, spawnWeight: 50 },
-    neonGoby: { name: 'Neon Goby', color: '#00BFFF', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0056, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.02, minLength: 0.8, maxLength: 2, spawnWeight: 50 },
-    redheadGoby: { name: 'Redhead Goby', color: '#CD5C5C', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0056, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.02, minLength: 0.8, maxLength: 2, spawnWeight: 48 },
-    anemoneShrimp: { name: 'Anemone Shrimp', color: '#FF6B6B', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0057, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 0.015, minLength: 0.5, maxLength: 1.5, spawnWeight: 48 },
-    glassShrimp: { name: 'Glass Shrimp', color: '#F0F8FF', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0057, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 0.015, minLength: 0.5, maxLength: 1.5, spawnWeight: 46 },
-    sexyShrimp: { name: 'Sexy Shrimp', color: '#FF69B4', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0058, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.002, maxWeight: 0.003, minLength: 0.4, maxLength: 0.6, spawnWeight: 45 },
-    bumbleBeeShrimp: { name: 'Bumble Bee Shrimp', color: '#FFD700', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0057, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.007, minLength: 0.5, maxLength: 0.8, spawnWeight: 44 },
-    commonJellyfish: { name: 'Common Jellyfish', color: '#E6E6FA', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0058, fishRandomness: 0.15, fishChangeInterval: 39, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 1, minLength: 4, maxLength: 16, spawnWeight: 42 },
-    duskyJawfish: { name: 'Dusky Jawfish', color: '#8B7D6B', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0056, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 0.004, minLength: 1, maxLength: 3, spawnWeight: 40 },
+    caveTransparentGoby: { name: 'Cave Transparent Goby', color: '#E0E0E0', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0055, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.02, minLength: 0.02, maxLength: 0.08, spawnWeight: 50 },
+    neonGoby: { name: 'Neon Goby', color: '#00BFFF', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0056, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.02, minLength: 0.02, maxLength: 0.08, spawnWeight: 50 },
+    redheadGoby: { name: 'Redhead Goby', color: '#CD5C5C', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0056, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.02, minLength: 0.02, maxLength: 0.08, spawnWeight: 48 },
+    anemoneShrimp: { name: 'Anemone Shrimp', color: '#FF6B6B', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0057, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 0.015, minLength: 0.0, maxLength: 0.06, spawnWeight: 48 },
+    glassShrimp: { name: 'Glass Shrimp', color: '#F0F8FF', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0057, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 0.015, minLength: 0.0, maxLength: 0.06, spawnWeight: 46 },
+    sexyShrimp: { name: 'Sexy Shrimp', color: '#FF69B4', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0058, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.002, maxWeight: 0.003, minLength: 0.01, maxLength: 0.01, spawnWeight: 45 },
+    bumbleBeeShrimp: { name: 'Bumble Bee Shrimp', color: '#FFD700', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0057, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.005, maxWeight: 0.007, minLength: 0.02, maxLength: 0.03, spawnWeight: 44 },
+    commonJellyfish: { name: 'Common Jellyfish', color: '#E6E6FA', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0058, fishRandomness: 0.15, fishChangeInterval: 39, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 1, minLength: 0.0, maxLength: 4.0, spawnWeight: 42 },
+    duskyJawfish: { name: 'Dusky Jawfish', color: '#8B7D6B', difficulty: 'Easy', barSize: 80, fishSpeed: 0.0056, fishRandomness: 0.14, fishChangeInterval: 38, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.001, maxWeight: 0.004, minLength: 0.0, maxLength: 0.02, spawnWeight: 40 },
     
     // Small fish (0.01 - 0.5 lbs) - Easy
     blackClownGoby: { name: 'Black Clown Goby', color: '#2F4F4F', difficulty: 'Easy', barSize: 80, fishSpeed: 0.006, fishRandomness: 0.16, fishChangeInterval: 40, progressGainRate: 0.3, progressDecayRate: 0.3, minWeight: 0.01, maxWeight: 0.04, minLength: 1, maxLength: 1.5, spawnWeight: 48 },
@@ -2027,14 +2027,14 @@ const oceanFishTypes = {
     atlanticSpadefish: { name: 'Atlantic Spadefish', color: '#C0C0C0', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 3, minLength: 10, maxLength: 20, spawnWeight: 36 },
     grayAngelfish: { name: 'Gray Angelfish', color: '#808080', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 3, minLength: 12, maxLength: 24, spawnWeight: 36 },
     yellowEdgedLyretail: { name: 'Yellow-Edged Lyretail', color: '#FFD700', difficulty: 'Average', barSize: 70, fishSpeed: 0.0072, fishRandomness: 0.21, fishChangeInterval: 46, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 3, minLength: 4, maxLength: 6, spawnWeight: 34 },
-    bicolorAngelfish: { name: 'Bicolor Angelfish', color: '#4169E1', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 2, minLength: 5, maxLength: 6, spawnWeight: 34 },
-    blueAngelfish: { name: 'Blue Angelfish', color: '#0000FF', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 4, minLength: 12, maxLength: 15, spawnWeight: 32 },
-    cherubfish: { name: 'Cherubfish', color: '#FF69B4', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 2, maxLength: 3, spawnWeight: 32 },
-    coralBeauty: { name: 'Coral Beauty', color: '#FF6B6B', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 3, maxLength: 4, spawnWeight: 30 },
-    flameAngelfish: { name: 'Flame Angelfish', color: '#FF4500', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 3, maxLength: 4, spawnWeight: 28 },
-    frenchAngelfish: { name: 'French Angelfish', color: '#2F4F4F', difficulty: 'Average', barSize: 70, fishSpeed: 0.0072, fishRandomness: 0.21, fishChangeInterval: 46, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 3, minLength: 12, maxLength: 15, spawnWeight: 30 },
-    goldflakeAngelfish: { name: 'Goldflake Angelfish', color: '#DAA520', difficulty: 'Average', barSize: 70, fishSpeed: 0.0072, fishRandomness: 0.21, fishChangeInterval: 46, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 3, minLength: 5, maxLength: 8, spawnWeight: 28 },
-    heraldAngelfish: { name: 'Herald Angelfish', color: '#FFD700', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 4, maxLength: 5, spawnWeight: 28 },
+    bicolorAngelfish: { name: 'Bicolor Angelfish', color: '#4169E1', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 2, minLength: 4.0, maxLength: 8.0, spawnWeight: 34 },
+    blueAngelfish: { name: 'Blue Angelfish', color: '#0000FF', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 4, minLength: 4.0, maxLength: 16.0, spawnWeight: 32 },
+    cherubfish: { name: 'Cherubfish', color: '#FF69B4', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 2.0, maxLength: 4.0, spawnWeight: 32 },
+    coralBeauty: { name: 'Coral Beauty', color: '#FF6B6B', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 2.0, maxLength: 4.0, spawnWeight: 30 },
+    flameAngelfish: { name: 'Flame Angelfish', color: '#FF4500', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 2.0, maxLength: 4.0, spawnWeight: 28 },
+    frenchAngelfish: { name: 'French Angelfish', color: '#2F4F4F', difficulty: 'Average', barSize: 70, fishSpeed: 0.0072, fishRandomness: 0.21, fishChangeInterval: 46, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 3, minLength: 4.0, maxLength: 12.0, spawnWeight: 30 },
+    goldflakeAngelfish: { name: 'Goldflake Angelfish', color: '#DAA520', difficulty: 'Average', barSize: 70, fishSpeed: 0.0072, fishRandomness: 0.21, fishChangeInterval: 46, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 3, minLength: 4.0, maxLength: 12.0, spawnWeight: 28 },
+    heraldAngelfish: { name: 'Herald Angelfish', color: '#FFD700', difficulty: 'Average', barSize: 70, fishSpeed: 0.007, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 2.0, maxLength: 4.0, spawnWeight: 28 },
     lemonpeelAngelfish: { name: 'Lemonpeel Angelfish', color: '#FFFF00', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 4, maxLength: 5.5, spawnWeight: 26 },
     multicolorAngelfish: { name: 'Multicolor Angelfish', color: '#FF8C00', difficulty: 'Average', barSize: 70, fishSpeed: 0.0071, fishRandomness: 0.2, fishChangeInterval: 45, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 0.5, maxWeight: 1, minLength: 3, maxLength: 3.5, spawnWeight: 26 },
     pearlScaleAngelfish: { name: 'Pearlscale Angelfish', color: '#F0E68C', difficulty: 'Average', barSize: 70, fishSpeed: 0.0072, fishRandomness: 0.21, fishChangeInterval: 46, progressGainRate: 0.24, progressDecayRate: 0.35, minWeight: 1, maxWeight: 2, minLength: 5, maxLength: 6, spawnWeight: 24 },
