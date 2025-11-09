@@ -5950,19 +5950,25 @@ function updateMuseumDisplay() {
     let totalSpeciesInSection = displayedFish.length;
     let discoveredInSection = 0;
     let totalCaughtInSection = 0;
-    
+    let displayCountInSection = 0;
+
     displayedFish.forEach(fishType => {
         const museumData = museum[fishType.name];
         if (museumData && museumData.discovered) {
             discoveredInSection++;
             totalCaughtInSection += museumData.totalCaught;
+            if (museumData.showcaseFish) {
+                displayCountInSection++;
+            }
         }
     });
-    
+
     // Update stats display for current section
     document.getElementById('species-count').textContent = discoveredInSection;
     document.getElementById('total-species').textContent = totalSpeciesInSection;
     document.getElementById('total-caught').textContent = totalCaughtInSection;
+    document.getElementById('display-count').textContent = displayCountInSection;
+    document.getElementById('total-displays').textContent = totalSpeciesInSection;
     
     // Create entries for fish in current section
     displayedFish.forEach(fishType => {
