@@ -4689,22 +4689,45 @@ sceneCanvas.addEventListener('click', (e) => {
         
         // Toggle between lake and ocean
         if (currentLocation === 'lake') {
-            const confirmed = confirm('Travel to the ocean?\n\nYou will be able to catch ocean fish there.');
-            if (confirmed) {
+            showTravelConfirm('Travel to the ocean?\n\nYou will be able to catch ocean fish there.', () => {
                 currentLocation = 'ocean';
                 localStorage.setItem('currentLocation', currentLocation);
                 updateLocationDisplay();
                 console.log('Switched to ocean location');
-            }
+            });
         } else {
-            const confirmed = confirm('Return to the lake?\n\nYou will be able to catch lake fish there.');
-            if (confirmed) {
+            showTravelConfirm('Return to the lake?\n\nYou will be able to catch lake fish there.', () => {
                 currentLocation = 'lake';
                 localStorage.setItem('currentLocation', currentLocation);
                 updateLocationDisplay();
                 console.log('Switched to lake location');
-            }
+            });
         }
+// Show travel confirmation popup (styled like other popups)
+function showTravelConfirm(message, onConfirm) {
+    const popup = document.getElementById('travel-confirm-popup');
+    const messageElement = document.getElementById('travel-confirm-message');
+    const yesButton = document.getElementById('travel-confirm-yes');
+    const noButton = document.getElementById('travel-confirm-no');
+
+    messageElement.textContent = message.replace(/\n/g, '\n');
+    popup.style.display = 'block';
+
+    function cleanup() {
+        popup.style.display = 'none';
+        yesButton.removeEventListener('click', onYes);
+        noButton.removeEventListener('click', onNo);
+    }
+    function onYes() {
+        cleanup();
+        if (onConfirm) onConfirm();
+    }
+    function onNo() {
+        cleanup();
+    }
+    yesButton.addEventListener('click', onYes);
+    noButton.addEventListener('click', onNo);
+}
     }
 });
 
