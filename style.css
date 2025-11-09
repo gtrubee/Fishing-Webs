@@ -852,7 +852,7 @@ button {
 
 #sell-inventory-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
     max-height: 500px;
     overflow-y: auto;
@@ -1493,6 +1493,920 @@ button {
 .reset-confirm-btn.no-btn:hover {
     background: linear-gradient(to bottom, #45a049, #3d8b40);
     transform: scale(1.05);
+}
+
+/* ========================================
+   MOBILE RESPONSIVE STYLES
+   ======================================== */
+
+/* Desktop and larger screens (min-width: 769px) */
+@media screen and (min-width: 769px) {
+    #sell-inventory-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+    }
+
+    .sell-slot {
+        max-width: 180px;
+        padding: 5px;
+    }
+}
+
+/* Tablets and smaller (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    /* Make background canvases fill the screen on tablet */
+    #scene-canvas, #shop-canvas, #museum-canvas {
+        width: 100vw;
+        height: 80vh;
+        max-width: 100vw;
+        max-height: 80vh;
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border: none;
+    }
+
+    /* General button adjustments */
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    /* Main fishing page buttons */
+    #fish-button {
+        bottom: 20px;
+        padding: 12px 24px;
+        font-size: 18px;
+    }
+
+    #shop-button, #museum-button, #reset-button {
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+
+    #shop-button {
+        left: 15px;
+        bottom: 75px;
+    }
+
+    #museum-button {
+        left: 15px;
+        bottom: 20px;
+        right: auto;
+    }
+
+    #reset-button {
+        bottom: 20px;
+        right: 15px;
+    }
+
+    /* Top toolbar buttons */
+    #bait-button, #trinket-button, #rod-button {
+        font-size: 14px;
+        padding: 8px 12px;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        left: auto;
+    }
+
+    #bait-button {
+        top: 80px;
+        right: 15px;
+    }
+
+    #trinket-button {
+        top: 130px;
+        right: 15px;
+    }
+
+    #rod-button {
+        top: 180px;
+        right: 15px;
+    }
+
+    /* Display elements */
+    #money-display {
+        top: 15px;
+        left: 15px;
+        font-size: 18px;
+        padding: 8px 15px;
+    }
+
+    #time-display {
+        top: 70px;
+        left: 15px;
+        font-size: 16px;
+        padding: 6px 12px;
+    }
+
+    #system-time-display {
+        top: 15px;
+        padding: 10px 20px;
+    }
+
+    #system-date {
+        font-size: 14px;
+    }
+
+    #system-time {
+        font-size: 18px;
+    }
+
+    #location-display {
+        top: 120px;
+        left: 15px;
+        right: auto;
+        padding: 8px 12px;
+    }
+
+    #location-icon {
+        font-size: 24px;
+    }
+
+    #location-name {
+        font-size: 14px;
+    }
+
+    #backpack-icon {
+        top: 15px;
+        bottom: auto;
+        right: 15px;
+        font-size: 32px;
+        padding: 8px 12px;
+    }
+
+    #fish-count {
+        font-size: 11px;
+        padding: 2px 5px;
+    }
+
+    /* Status message */
+    #status {
+        font-size: 14px;
+        padding: 8px 15px;
+        bottom: 80px;
+    }
+
+    /* Shop page */
+    #back-to-fishing, #back-from-museum {
+        top: 15px;
+        left: 15px;
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    #shop-interface {
+        padding: 15px;
+        max-width: 95%;
+    }
+
+    #shop-interface h1 {
+        font-size: 28px;
+    }
+
+    #shop-interface h2 {
+        font-size: 20px;
+    }
+
+    #shop-money {
+        font-size: 14px;
+        padding: 5px 10px;
+        top: 15px;
+        left: 15px;
+    }
+
+    #shop-time {
+        font-size: 12px;
+        padding: 4px 8px;
+        top: 50px;
+        left: 15px;
+        transform: none;
+    }
+
+    #shop-system-time {
+        top: 15px;
+        right: 15px;
+        padding: 3px 6px;
+        width: auto;
+        min-width: 80px;
+    }
+
+    #shop-system-date {
+        font-size: 8px;
+    }
+
+    #shop-system-clock {
+        font-size: 10px;
+    }
+
+    .shop-tab {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    #shop-tabs {
+        margin-top: 15px;
+    }
+
+    #sell-inventory-grid, #buy-section {
+        gap: 10px;
+    }
+
+    #sell-inventory-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .sell-slot {
+        padding: 8px;
+        max-width: 150px;
+    }
+
+    .sell-fish-emoji {
+        font-size: 28px;
+    }
+
+    .sell-fish-name {
+        font-size: 11px;
+    }
+
+    .sell-fish-weight, .sell-fish-length {
+        font-size: 9px;
+    }
+
+    .sell-price {
+        font-size: 11px;
+        bottom: -20px;
+    }
+
+    .sell-all-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .shop-item {
+        padding: 12px;
+    }
+
+    .shop-item-icon {
+        font-size: 32px;
+    }
+
+    .shop-item-name {
+        font-size: 14px;
+    }
+
+    .shop-item-desc {
+        font-size: 11px;
+    }
+
+    .buy-button {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    /* Museum page */
+    #museum-interface {
+        padding: 15px;
+        max-width: 95%;
+    }
+
+    #museum-interface h1 {
+        font-size: 24px;
+    }
+
+    #museum-search-input {
+        max-width: 200px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    #museum-search-button {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    .museum-section-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    #museum-stats {
+        flex-direction: column;
+        gap: 6px;
+        padding: 10px;
+    }
+
+    .museum-stat {
+        font-size: 12px;
+    }
+
+    #museum-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px;
+    }
+
+    .museum-entry {
+        padding: 8px;
+    }
+
+    .museum-fish-emoji {
+        font-size: 28px;
+    }
+
+    .museum-fish-name {
+        font-size: 10px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .museum-count {
+        font-size: 9px;
+    }
+
+    /* Inventory popup */
+    #inventory-popup, #bait-popup, #trinket-popup, #rod-popup {
+        width: 90%;
+        max-width: 90%;
+        max-height: 80vh;
+    }
+
+    #inventory-header h2, #bait-popup-header h2, #trinket-popup-header h2, #rod-popup-header h2 {
+        font-size: 20px;
+    }
+
+    #close-inventory, #close-bait-popup, #close-trinket-popup, #close-rod-popup {
+        font-size: 20px;
+        padding: 5px 10px;
+    }
+
+    #inventory-grid, #bait-popup-grid, #trinket-popup-grid, #rod-popup-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .inventory-slot, .bait-slot, .trinket-slot, .rod-slot {
+        padding: 10px;
+    }
+
+    .inventory-emoji, .bait-emoji, .trinket-emoji, .rod-emoji {
+        font-size: 24px;
+    }
+
+    .inventory-name, .bait-name, .trinket-name, .rod-name {
+        font-size: 9px;
+    }
+
+    /* Confirmation popups */
+    #museum-confirm-popup, #reset-confirm-popup {
+        width: 85%;
+        padding: 15px;
+    }
+
+    #museum-confirm-header h2, #reset-confirm-header h2 {
+        font-size: 20px;
+    }
+
+    #museum-confirm-content p, #reset-confirm-content p {
+        font-size: 13px;
+    }
+
+    .museum-confirm-btn, .reset-confirm-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-width: 100px;
+    }
+}
+
+/* Mobile phones (max-width: 480px) */
+@media screen and (max-width: 480px) {
+    /* Make background canvases fill the screen on mobile */
+    #scene-canvas, #shop-canvas, #museum-canvas {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border: none;
+    }
+
+    /* Further reduce button sizes */
+    button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #fish-button {
+        bottom: 15px;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    #shop-button, #museum-button, #reset-button {
+        font-size: 12px;
+        padding: 8px 12px;
+        bottom: 15px;
+    }
+
+    #shop-button {
+        left: 10px;
+        bottom: 60px;
+    }
+
+    #reset-button {
+        right: 10px;
+    }
+
+    #museum-button {
+        left: 10px;
+        bottom: 15px;
+        right: auto;
+    }
+
+    /* Compact toolbar buttons */
+    #bait-button, #trinket-button, #rod-button {
+        font-size: 12px;
+        padding: 6px 10px;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        left: auto;
+    }
+
+    #bait-button {
+        top: 65px;
+        right: 10px;
+    }
+
+    #trinket-button {
+        top: 110px;
+        right: 10px;
+    }
+
+    #rod-button {
+        top: 155px;
+        right: 10px;
+    }
+
+    /* Compact displays */
+    #money-display {
+        top: 10px;
+        left: 10px;
+        font-size: 16px;
+        padding: 6px 12px;
+    }
+
+    #time-display {
+        top: 60px;
+        left: 10px;
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+
+    #system-time-display {
+        top: 10px;
+        padding: 8px 15px;
+    }
+
+    #system-date {
+        font-size: 12px;
+    }
+
+    #system-time {
+        font-size: 16px;
+    }
+
+    #location-display {
+        top: 105px;
+        left: 10px;
+        right: auto;
+        padding: 6px 10px;
+    }
+
+    #location-icon {
+        font-size: 20px;
+    }
+
+    #location-name {
+        font-size: 12px;
+    }
+
+    #backpack-icon {
+        top: 10px;
+        bottom: auto;
+        right: 10px;
+        font-size: 28px;
+        padding: 6px 10px;
+    }
+
+    #fish-count {
+        font-size: 10px;
+        padding: 2px 4px;
+    }
+
+    /* Status */
+    #status {
+        font-size: 12px;
+        padding: 6px 12px;
+        max-width: 80%;
+        bottom: 70px;
+    }
+
+    /* Shop page mobile */
+    #back-to-fishing, #back-from-museum {
+        top: 10px;
+        left: 10px;
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    #shop-interface {
+        padding: 10px;
+        max-width: 98%;
+    }
+
+    #shop-interface h1 {
+        font-size: 24px;
+        margin: 10px 0;
+    }
+
+    #shop-interface h2 {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+    #shop-money {
+        font-size: 12px;
+        padding: 4px 8px;
+        left: 10px;
+        top: 10px;
+    }
+
+    #shop-time {
+        font-size: 11px;
+        padding: 3px 6px;
+        top: 45px;
+        left: 10px;
+        transform: none;
+    }
+
+    #shop-system-time {
+        top: 10px;
+        right: 10px;
+        padding: 2px 5px;
+        width: auto;
+        min-width: 70px;
+    }
+
+    #shop-system-date {
+        font-size: 7px;
+    }
+
+    #shop-system-clock {
+        font-size: 9px;
+    }
+
+    .shop-tab {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #shop-tabs {
+        margin-top: 15px;
+    }
+
+    #sell-inventory-grid {
+        gap: 6px;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        padding: 5px;
+        width: 100%;
+    }
+
+    .sell-slot {
+        padding: 5px;
+        max-width: 95px;
+        min-width: 80px;
+    }
+
+    .sell-fish-emoji {
+        font-size: 22px;
+    }
+
+    .sell-fish-name {
+        font-size: 9px;
+    }
+
+    .sell-fish-weight, .sell-fish-length {
+        font-size: 7px;
+    }
+
+    .sell-price {
+        font-size: 9px;
+        bottom: -20px;
+    }
+
+    .sell-all-button {
+        padding: 8px 16px;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .shop-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .shop-item-info {
+        flex-direction: column;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .shop-item-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .shop-item-name {
+        font-size: 13px;
+    }
+
+    .shop-item-desc {
+        font-size: 10px;
+    }
+
+    .buy-button {
+        padding: 8px 14px;
+        font-size: 12px;
+        width: 100%;
+    }
+
+    /* Museum mobile */
+    #museum-interface {
+        padding: 10px;
+    }
+
+    #museum-interface h1 {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+
+    #museum-search-container {
+        flex-direction: row;
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+
+    #museum-search-input {
+        max-width: 70%;
+        width: 70%;
+        padding: 3px 5px;
+        font-size: 9px;
+    }
+
+    #museum-search-button {
+        padding: 3px 6px;
+        font-size: 9px;
+        width: auto;
+        flex: 1;
+    }
+
+    .museum-section-btn {
+        padding: 3px 6px;
+        font-size: 9px;
+    }
+
+    #museum-stats {
+        padding: 4px;
+        margin-bottom: 8px;
+        gap: 4px;
+    }
+
+    .museum-stat {
+        font-size: 9px;
+    }
+
+    #museum-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3px;
+        padding: 2px;
+    }
+
+    .museum-entry {
+        padding: 2px;
+        min-height: auto;
+        height: auto;
+    }
+
+    .museum-fish-emoji {
+        font-size: 14px;
+        margin: 1px 0;
+    }
+
+    .museum-fish-icon {
+        font-size: 14px;
+    }
+
+    .museum-fish-name {
+        font-size: 6px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.0;
+        margin: 1px 0;
+    }
+
+    .museum-count {
+        font-size: 6px;
+        margin: 1px 0;
+    }
+
+    .museum-stat-row {
+        font-size: 6px;
+    }
+
+    .museum-stat-label {
+        font-size: 6px;
+    }
+
+    .museum-stat-value {
+        font-size: 6px;
+    }
+
+    .museum-entry-header {
+        margin-bottom: 2px;
+        padding-bottom: 2px;
+    }
+
+    .museum-entry-stats {
+        gap: 2px;
+    }
+
+    .museum-showcase {
+        margin-top: 3px;
+        padding: 3px;
+        border-width: 1px;
+    }
+
+    .museum-showcase-title {
+        font-size: 6px;
+        margin-bottom: 2px;
+    }
+
+    .museum-showcase-weight {
+        font-size: 6px;
+        margin-bottom: 2px;
+    }
+
+    .museum-showcase-length {
+        font-size: 6px;
+        margin-bottom: 2px;
+    }
+
+    .museum-showcase-rarity {
+        font-size: 6px;
+    }
+
+    .museum-no-showcase {
+        margin-top: 3px;
+        padding: 3px;
+        font-size: 6px;
+        border-top-width: 1px;
+    }
+
+    .museum-display-btn {
+        font-size: 6px;
+        padding: 2px 4px;
+        border-width: 1px;
+        top: 2px;
+        right: 2px;
+    }
+
+    /* Popups mobile */
+    #inventory-popup, #bait-popup, #trinket-popup, #rod-popup {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    #inventory-header, #bait-popup-header, #trinket-popup-header, #rod-popup-header {
+        padding: 10px;
+    }
+
+    #inventory-header h2, #bait-popup-header h2, #trinket-popup-header h2, #rod-popup-header h2 {
+        font-size: 18px;
+    }
+
+    #close-inventory, #close-bait-popup, #close-trinket-popup, #close-rod-popup {
+        font-size: 18px;
+        padding: 4px 8px;
+    }
+
+    #inventory-grid, #bait-popup-grid, #trinket-popup-grid, #rod-popup-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .inventory-slot, .bait-slot, .trinket-slot, .rod-slot {
+        padding: 8px;
+    }
+
+    .inventory-emoji, .bait-emoji, .trinket-emoji, .rod-emoji {
+        font-size: 20px;
+    }
+
+    .inventory-name, .bait-name, .trinket-name, .rod-name {
+        font-size: 8px;
+    }
+
+    .inventory-weight, .inventory-length {
+        font-size: 9px;
+    }
+
+    /* Confirmation popups mobile */
+    #museum-confirm-popup, #reset-confirm-popup {
+        width: 90%;
+        padding: 12px;
+    }
+
+    #museum-confirm-header h2, #reset-confirm-header h2 {
+        font-size: 18px;
+        margin: 0 0 10px 0;
+    }
+
+    #museum-confirm-content, #reset-confirm-content {
+        padding: 10px;
+    }
+
+    #museum-confirm-content p, #reset-confirm-content p {
+        font-size: 12px;
+    }
+
+    #museum-confirm-buttons, #reset-confirm-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .museum-confirm-btn, .reset-confirm-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        width: 100%;
+        min-width: auto;
+    }
+
+    /* Minigame canvas */
+    #minigame-canvas {
+        width: 90% !important;
+        max-width: 400px !important;
+        height: auto !important;
+    }
+}
+
+/* Very small devices (max-width: 320px) */
+@media screen and (max-width: 320px) {
+    #system-time-display {
+        padding: 6px 10px;
+    }
+
+    #system-date {
+        font-size: 10px;
+    }
+
+    #system-time {
+        font-size: 14px;
+    }
+
+    #money-display, #time-display {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    #location-name {
+        font-size: 10px;
+    }
+
+    #museum-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+
+    .museum-fish-emoji {
+        font-size: 24px;
+    }
+
+    .museum-fish-name {
+        font-size: 9px;
+    }
 }
 
 
