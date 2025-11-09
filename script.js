@@ -3480,7 +3480,7 @@ function startMinigame() {
         // Calculate what percentage the current weight is of the max weight
         const weightPercentage = (currentFishWeight - currentFish.minWeight) / (currentFish.maxWeight - currentFish.minWeight);
         // Apply the same percentage to length
-        currentFishLength = Math.round((weightPercentage * (currentFish.maxLength - currentFish.minLength) + currentFish.minLength) * 10) / 10;
+    currentFishLength = Math.round((weightPercentage * (currentFish.maxLength - currentFish.minLength) + currentFish.minLength) * 100) / 100;
     } else {
         currentFishLength = 0;
     }
@@ -3936,11 +3936,11 @@ function endMinigame(success) {
                 museum[currentFish.name].longestLength = currentFishLength;
             }
             
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength}" long!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
         } else {
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength}" long!${perfectCatchBonus}${rarityText} But your inventory is full!`;
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText} But your inventory is full!`;
         }
     } else {
         statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
@@ -4334,18 +4334,18 @@ function displayFishInMuseum(inventoryIndex) {
     if (!museum[fish.type] || !museum[fish.type].discovered) {
         // New fish being added to museum
         const newRarity = getRarityText(fish.rarity || 'normal');
-        confirmMessage = `Add this ${fish.type} (${formatWeight(fish.weight)} lbs, ${fish.length || 0}") to the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory and displayed in the museum.`;
+    confirmMessage = `Add this ${fish.type} (${formatWeight(fish.weight)} lbs, ${(fish.length || 0).toFixed(2)}") to the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory and displayed in the museum.`;
     } else if (hasExistingDisplay) {
         // Replacing existing display
         const currentWeight = museum[fish.type].showcaseFish.weight;
         const currentLength = museum[fish.type].showcaseFish.length || 0;
         const currentRarity = getRarityText(museum[fish.type].showcaseFish.rarity || 'normal');
         const newRarity = getRarityText(fish.rarity || 'normal');
-        confirmMessage = `Replace the current museum display?\n\nCurrent: ${fish.type} (${formatWeight(currentWeight)} lbs, ${currentLength}") - ${currentRarity}\nNew: ${fish.type} (${formatWeight(fish.weight)} lbs, ${fish.length || 0}") - ${newRarity}\n\nThis fish will be removed from your inventory.`;
+    confirmMessage = `Replace the current museum display?\n\nCurrent: ${fish.type} (${formatWeight(currentWeight)} lbs, ${currentLength.toFixed(2)}") - ${currentRarity}\nNew: ${fish.type} (${formatWeight(fish.weight)} lbs, ${(fish.length || 0).toFixed(2)}") - ${newRarity}\n\nThis fish will be removed from your inventory.`;
     } else {
         // Adding display to discovered fish
         const newRarity = getRarityText(fish.rarity || 'normal');
-        confirmMessage = `Display this ${fish.type} (${formatWeight(fish.weight)} lbs, ${fish.length || 0}") in the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory.`;
+    confirmMessage = `Display this ${fish.type} (${formatWeight(fish.weight)} lbs, ${(fish.length || 0).toFixed(2)}") in the museum?\n\nRarity: ${newRarity}\n\nThis fish will be removed from your inventory.`;
     }
     
     // Show custom confirmation popup
