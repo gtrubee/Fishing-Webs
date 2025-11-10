@@ -3650,7 +3650,13 @@ function gameLoop() {
     if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
     
     // Apply 30% difficulty reduction (multiply speed by 0.7)
-    fishAngularSpeed = (angleDiff * currentFish.adjustedSpeed * 0.7 + (Math.random() - 0.5) * currentFish.adjustedRandomness * 0.1 * 0.7) * deltaMultiplier;
+    // Compute intended fish angular delta for this frame, then clamp so the fish
+    // cannot move faster than the player's maximum bar rotation speed per frame.
+    // This ensures the fish never outruns the player's maximum possible movement.
+    const rawFishAngularDelta = (angleDiff * currentFish.adjustedSpeed * 0.7 + (Math.random() - 0.5) * currentFish.adjustedRandomness * 0.1 * 0.7) * deltaMultiplier;
+    // maxRotationSpeed is the player's max angular speed (radians/frame factor before applying deltaMultiplier)
+    const maxFishAngularDelta = maxRotationSpeed * deltaMultiplier;
+    fishAngularSpeed = Math.max(-maxFishAngularDelta, Math.min(maxFishAngularDelta, rawFishAngularDelta));
     fishAngle += fishAngularSpeed;
     
     // Normalize fish angle
