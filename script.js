@@ -4357,7 +4357,7 @@ function displayFishInMuseum(inventoryIndex) {
     // Show custom confirmation popup
     showMuseumConfirmation(confirmMessage, () => {
         // User confirmed - proceed with museum display
-        
+
         // Initialize museum entry if it doesn't exist
         if (!museum[fish.type]) {
             museum[fish.type] = {
@@ -4367,29 +4367,55 @@ function displayFishInMuseum(inventoryIndex) {
                 showcaseFish: null
             };
         }
-        
-        // Store the fish data in museum showcase
+
+        // If there's an existing showcase fish, attempt to return it to the player's inventory
+        const existingShowcase = museum[fish.type].showcaseFish;
+        if (existingShowcase) {
+            // Check inventory space
+            if (inventory.length >= maxInventorySlots) {
+                const statusDiv = document.getElementById('status');
+                statusDiv.textContent = `📦 Not enough inventory space to swap out the displayed ${fish.type}. Free up a slot first.`;
+                statusDiv.style.opacity = '1';
+                setTimeout(() => { statusDiv.style.opacity = '0'; }, 3000);
+                return; // Abort operation
+            }
+
+            // Recreate the fish object from the showcased data and push to inventory
+            const returnedFish = {
+                type: fish.type,
+                weight: existingShowcase.weight,
+                length: existingShowcase.length || 0,
+                rarity: existingShowcase.rarity || 'normal',
+                rarityMultiplier: existingShowcase.rarityMultiplier || 1
+            };
+            inventory.push(returnedFish);
+        }
+
+        // Store the new fish data in museum showcase (overwrite existing)
         museum[fish.type].showcaseFish = {
             weight: fish.weight,
+            length: fish.length || 0,
             rarity: fish.rarity || 'normal',
             rarityMultiplier: fish.rarityMultiplier || 1
         };
-        
-        // Remove fish from inventory
-        inventory.splice(inventoryIndex, 1);
-        
+
+        // Remove fish from inventory (if it still exists at the given index)
+        // Note: inventory may have changed if we pushed returnedFish earlier, so find by reference
+        const idx = inventory.indexOf(fish);
+        if (idx !== -1) inventory.splice(idx, 1);
+
         // Check for museum completion
         checkMuseumCompletion();
-        
+
         // Update displays
         updateInventoryDisplay();
         saveGameData();
-        
+
         // Update museum display if it's currently open
         if (currentPage === 'museum') {
             updateMuseumDisplay();
         }
-        
+
         // Show confirmation message
         const statusDiv = document.getElementById('status');
         statusDiv.textContent = `🏛️ ${fish.type} is now displayed in the museum!`;
@@ -6161,6 +6187,18 @@ function updateMuseumDisplay() {
                 showcaseSection.appendChild(showcaseWeight);
                 showcaseSection.appendChild(showcaseLength);
                 showcaseSection.appendChild(showcaseRarity);
+                // Add retrieve button so player can take their display fish back into inventory
+                const retrieveBtn = document.createElement('button');
+                retrieveBtn.className = 'museum-retrieve-btn';
+                retrieveBtn.textContent = 'Retrieve';
+                retrieveBtn.title = 'Retrieve displayed fish into your inventory';
+                retrieveBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Attempt to retrieve the showcase fish
+                    retrieveShowcase(fishType.name);
+                });
+                showcaseSection.appendChild(retrieveBtn);
+
                 statsDiv.appendChild(showcaseSection);
             } else {
                 const noShowcase = document.createElement('div');
@@ -6179,6 +6217,50 @@ function updateMuseumDisplay() {
         
         entry.appendChild(statsDiv);
         museumGrid.appendChild(entry);
+    });
+}
+
+// Retrieve the showcased fish from the museum and return it to the player's inventory
+function retrieveShowcase(fishTypeName) {
+    const museumData = museum[fishTypeName];
+    if (!museumData || !museumData.showcaseFish) return;
+
+    const showcased = museumData.showcaseFish;
+    const rarityText = showcased.rarity === 'shiny' ? '✨ SHINY' : showcased.rarity === 'golden' ? '🌟 GOLDEN' : showcased.rarity === 'mutated' ? '🧬 MUTATED' : 'Normal';
+    const msg = `Retrieve this ${fishTypeName} (${formatWeight(showcased.weight)} lbs, ${showcased.length || 0}\" ) from the museum and return it to your inventory?\n\nRarity: ${rarityText}\n\nYou must have at least one free inventory slot.`;
+
+    // Ask for confirmation first
+    showMuseumConfirmation(msg, () => {
+        // On confirm: check inventory space, then retrieve
+        if (inventory.length >= maxInventorySlots) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = `📦 Not enough inventory space to retrieve the displayed ${fishTypeName}. Free up a slot first.`;
+            statusDiv.style.opacity = '1';
+            setTimeout(() => { statusDiv.style.opacity = '0'; }, 3000);
+            return;
+        }
+
+        const returnedFish = {
+            type: fishTypeName,
+            weight: showcased.weight,
+            length: showcased.length || 0,
+            rarity: showcased.rarity || 'normal',
+            rarityMultiplier: showcased.rarityMultiplier || 1
+        };
+
+        // Add to inventory and remove from museum showcase
+        inventory.push(returnedFish);
+        museumData.showcaseFish = null;
+
+        // Update displays and save
+        updateInventoryDisplay();
+        saveGameData();
+        if (currentPage === 'museum') updateMuseumDisplay();
+
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = `📦 Retrieved ${fishTypeName} from the museum.`;
+        statusDiv.style.opacity = '1';
+        setTimeout(() => { statusDiv.style.opacity = '0'; }, 3000);
     });
 }
 
