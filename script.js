@@ -2559,17 +2559,17 @@ const trinketTypes = {
     luckyCharm: {
         name: 'Lucky Charm',
         price: 50000,
-        description: 'Increases catch zone by 20%',
+        description: 'Increases catch zone by +5°',
         effect: 'catchZone',
-        bonus: 0.20,
+        bonus: 5,
         icon: '🍀'
     },
     goldenClover: {
         name: 'Golden Clover',
         price: 200000,
-        description: 'Increases catch zone by 40%',
+        description: 'Increases catch zone by +8°',
         effect: 'catchZone',
-        bonus: 0.40,
+        bonus: 8,
         icon: '☘️'
     },
     coinPurse: {
@@ -2636,16 +2636,16 @@ const boatPrice = 100000;
 
 // Fishing rods
 const fishingRods = [
-    { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true, color: '#808080' },
-    { name: 'Bamboo Rod', barSizeBonus: 10, price: 5000, owned: false, color: '#D2691E' },
-    { name: 'Rubber Rod', barSizeBonus: 20, price: 10000, owned: false, color: '#2F4F4F' },
-    { name: 'Iron Rod', barSizeBonus: 30, price: 100000, owned: false, color: '#708090' },
-    { name: 'Titanium Rod', barSizeBonus: 40, price: 1000000, owned: false, color: '#C0C0C0' },
-    { name: 'Diamond Rod', barSizeBonus: 50, price: 5000000, owned: false, color: '#00CED1' },
-    { name: 'Fire Rod', barSizeBonus: 60, price: 10000000, owned: false, color: '#FF4500' },
-    { name: 'Ice Rod', barSizeBonus: 70, price: 25000000, owned: false, color: '#87CEEB' },
-    { name: 'Wind Rod', barSizeBonus: 80, price: 50000000, owned: false, color: '#98FB98' },
-    { name: "Wizard's Rod", barSizeBonus: 100, price: 100000000, owned: false, color: '#9370DB' }
+    { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true, color: '#808080' },       // 40°
+    { name: 'Bamboo Rod', barSizeBonus: 5, price: 5000, owned: false, color: '#D2691E' },     // 42.5°
+    { name: 'Rubber Rod', barSizeBonus: 10, price: 10000, owned: false, color: '#2F4F4F' },   // 45°
+    { name: 'Iron Rod', barSizeBonus: 15, price: 100000, owned: false, color: '#708090' },    // 47.5°
+    { name: 'Titanium Rod', barSizeBonus: 20, price: 1000000, owned: false, color: '#C0C0C0' }, // 50°
+    { name: 'Diamond Rod', barSizeBonus: 26, price: 5000000, owned: false, color: '#00CED1' }, // 53°
+    { name: 'Fire Rod', barSizeBonus: 32, price: 10000000, owned: false, color: '#FF4500' },  // 56°
+    { name: 'Ice Rod', barSizeBonus: 38, price: 25000000, owned: false, color: '#87CEEB' },   // 59°
+    { name: 'Wind Rod', barSizeBonus: 44, price: 50000000, owned: false, color: '#98FB98' },  // 62°
+    { name: "Wizard's Rod", barSizeBonus: 50, price: 100000000, owned: false, color: '#9370DB' } // 65°
 ];
 
 let currentRodIndex = 0;
@@ -3374,6 +3374,16 @@ function drawScene() {
 }
 
 // Start the minigame
+// Get effective spawn weight adjusted by difficulty tier
+// Easy fish are much more common, Hard fish are genuinely rare
+function getEffectiveSpawnWeight(fish) {
+    const w = fish.spawnWeight;
+    if (fish.difficulty === 'Easy') return w * 1.6;
+    if (fish.difficulty === 'Average') return w * 0.7;
+    if (fish.difficulty === 'Hard') return w * 0.3;
+    return w;
+}
+
 function startMinigame() {
     console.log('startMinigame called');
     fishing = true;
@@ -3397,13 +3407,13 @@ function startMinigame() {
         if (Math.random() < 0.9) {
             // 90% chance: pick from boosted fish only
             const totalBoostedWeight = boostedFish.reduce((sum, key) => {
-                return fishPool[key] ? sum + fishPool[key].spawnWeight : sum;
+                return fishPool[key] ? sum + getEffectiveSpawnWeight(fishPool[key]) : sum;
             }, 0);
             
             let random = Math.random() * totalBoostedWeight;
             for (const key of boostedFish) {
                 if (fishPool[key]) {
-                    random -= fishPool[key].spawnWeight;
+                    random -= getEffectiveSpawnWeight(fishPool[key]);
                     if (random <= 0) {
                         selectedFish = key;
                         break;
@@ -3413,12 +3423,12 @@ function startMinigame() {
         } else {
             // 10% chance: normal weighted random from all fish
             const totalWeight = fishKeys.reduce((sum, key) => {
-                return sum + fishPool[key].spawnWeight;
+                return sum + getEffectiveSpawnWeight(fishPool[key]);
             }, 0);
             
             let random = Math.random() * totalWeight;
             for (const key of fishKeys) {
-                random -= fishPool[key].spawnWeight;
+                random -= getEffectiveSpawnWeight(fishPool[key]);
                 if (random <= 0) {
                     selectedFish = key;
                     break;
@@ -3428,12 +3438,12 @@ function startMinigame() {
     } else {
         // No bait equipped: normal weighted random
         const totalWeight = fishKeys.reduce((sum, key) => {
-            return sum + fishPool[key].spawnWeight;
+            return sum + getEffectiveSpawnWeight(fishPool[key]);
         }, 0);
         
         let random = Math.random() * totalWeight;
         for (const key of fishKeys) {
-            random -= fishPool[key].spawnWeight;
+            random -= getEffectiveSpawnWeight(fishPool[key]);
             if (random <= 0) {
                 selectedFish = key;
                 break;
@@ -3502,18 +3512,18 @@ function startMinigame() {
     
     // Define difficulty-based scaling factors to keep fish in their categories
     let difficultyScaling = {
-        speedMultiplier: 0.3,     // Easy fish: up to 30% speed increase
-        randomnessMultiplier: 0.4, // Easy fish: up to 40% randomness increase
-        intervalMultiplier: 0.25,  // Easy fish: up to 25% more frequent changes
-        barSizeReduction: 0.1      // Easy fish: up to 10% smaller bar
+        speedMultiplier: 0.15,    // Easy fish: up to 15% speed increase (relaxed)
+        randomnessMultiplier: 0.2, // Easy fish: up to 20% randomness increase (relaxed)
+        intervalMultiplier: 0.15,  // Easy fish: up to 15% more frequent changes (relaxed)
+        barSizeReduction: 0.05     // Easy fish: up to 5% smaller bar (relaxed)
     };
     
     if (currentFish.difficulty === 'Average') {
         difficultyScaling = {
-            speedMultiplier: 0.5,     // Average fish: up to 50% speed increase
-            randomnessMultiplier: 0.6, // Average fish: up to 60% randomness increase
-            intervalMultiplier: 0.35,  // Average fish: up to 35% more frequent changes
-            barSizeReduction: 0.15     // Average fish: up to 15% smaller bar
+            speedMultiplier: 0.3,     // Average fish: up to 30% speed increase (relaxed)
+            randomnessMultiplier: 0.4, // Average fish: up to 40% randomness increase (relaxed)
+            intervalMultiplier: 0.25,  // Average fish: up to 25% more frequent changes (relaxed)
+            barSizeReduction: 0.1      // Average fish: up to 10% smaller bar (relaxed)
         };
     } else if (currentFish.difficulty === 'Hard') {
         difficultyScaling = {
@@ -3569,10 +3579,10 @@ function startMinigame() {
     // Use constant bar size for all fish (no difficulty/weight adjustment)
     let barSizeInDegrees = (80 + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
     
-    // Apply catch zone bonus from equipped trinkets
+    // Apply catch zone bonus from equipped trinkets (flat degree increase)
     const catchZoneBonus = getTrinketBonus('catchZone');
     if (catchZoneBonus > 0) {
-        barSizeInDegrees *= (1 + catchZoneBonus);
+        barSizeInDegrees += catchZoneBonus;
     }
     
     barAngleSize = (barSizeInDegrees / 180) * Math.PI; // Convert to radians
@@ -3582,9 +3592,11 @@ function startMinigame() {
     fishAngularSpeed = 0;
     fishTargetAngle = 0;
     fishChangeTimer = 0;
-    progress = 15;
-    progressGainRate = currentFish.progressGainRate;
-    progressDecayRate = currentFish.progressDecayRate;
+    progress = 20;
+    // Consistent progress rates for all fish
+    progressGainRate = 0.22;
+    progressDecayRate = 0.22;
+    
     isPerfectCatch = true; // Reset perfect catch tracker
     lastProgress = progress; // Initialize last progress
     
