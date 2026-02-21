@@ -15,7 +15,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fishing Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -55,18 +55,29 @@
         <!-- Shop Page -->
         <div id="shop-page" style="display: none;">
             <canvas id="shop-canvas"></canvas>
-            <button id="back-to-fishing">← Back to Fishing</button>
             <div id="shop-interface">
-                <h1>Fish Shop</h1>
-                <div id="shop-money">💰 $<span id="shop-money-amount">0</span></div>
-                <div id="shop-time">⏱️ <span id="shop-time-amount">0:00:00</span></div>
-                <div id="shop-system-time">
-                    <div id="shop-system-date">Loading...</div>
-                    <div id="shop-system-clock">--:--:--</div>
-                </div>
-                <div id="shop-tabs">
-                    <button id="sell-tab" class="shop-tab active">Sell</button>
-                    <button id="buy-tab" class="shop-tab">Buy</button>
+                <div id="shop-header">
+                    <div id="shop-header-top">
+                        <div id="shop-header-left">
+                            <div id="shop-info-row">
+                                <div id="shop-money">💰 $<span id="shop-money-amount">0</span></div>
+                                <div id="shop-time">⏱️ <span id="shop-time-amount">0:00:00</span></div>
+                            </div>
+                            <button id="back-to-fishing">← Back to Fishing</button>
+                        </div>
+                        <div id="shop-header-right">
+                            <div id="shop-system-time">
+                                <div id="shop-system-date">Loading...</div>
+                                <div id="shop-system-clock">--:--:--</div>
+                            </div>
+                            <button id="shop-scroll-top">↑ Back to Top</button>
+                        </div>
+                    </div>
+                    <h1>Fish Shop</h1>
+                    <div id="shop-tabs">
+                        <button id="sell-tab" class="shop-tab active">Sell</button>
+                        <button id="buy-tab" class="shop-tab">Buy</button>
+                    </div>
                 </div>
                 <div id="shop-sections">
                     <div id="sell-section">
@@ -110,24 +121,29 @@
         <!-- Museum Page -->
         <div id="museum-page" style="display: none;">
             <canvas id="museum-canvas"></canvas>
-            <button id="back-from-museum">← Back to Fishing</button>
             <div id="museum-interface">
-                <h1>🏛️ Fish Museum</h1>
-                <div id="museum-search-container">
-                    <input type="text" id="museum-search-input" placeholder="Search discovered fish...">
-                    <button id="museum-search-button">🔍</button>
-                </div>
-                <div id="museum-section-buttons">
-                    <button id="freshwater-section-btn" class="museum-section-btn active">🏞️ Freshwater</button>
-                    <button id="saltwater-section-btn" class="museum-section-btn">🌊 Saltwater</button>
-                </div>
-                <div id="museum-stats">
-                    <div class="museum-stat">
-                        Species Discovered: <span id="species-count">0</span>/<span id="total-species">410</span>
-                        &nbsp;|&nbsp;
-                        Displays: <span id="display-count">0</span>/<span id="total-displays">410</span>
+                <div id="museum-header">
+                    <div id="museum-header-top">
+                        <button id="back-from-museum">← Back to Fishing</button>
+                        <button id="museum-scroll-top">↑ Back to Top</button>
                     </div>
-                    <div class="museum-stat">Total Fish Caught: <span id="total-caught">0</span></div>
+                    <h1>🏛️ Fish Museum</h1>
+                    <div id="museum-search-container">
+                        <input type="text" id="museum-search-input" placeholder="Search discovered fish...">
+                        <button id="museum-search-button">🔍</button>
+                    </div>
+                    <div id="museum-section-buttons">
+                        <button id="freshwater-section-btn" class="museum-section-btn active">🏞️ Freshwater</button>
+                        <button id="saltwater-section-btn" class="museum-section-btn">🌊 Saltwater</button>
+                    </div>
+                    <div id="museum-stats">
+                        <div class="museum-stat">
+                            Species Discovered: <span id="species-count">0</span>/<span id="total-species">410</span>
+                            &nbsp;|&nbsp;
+                            Displays: <span id="display-count">0</span>/<span id="total-displays">410</span>
+                        </div>
+                        <div class="museum-stat">Total Fish Caught: <span id="total-caught">0</span></div>
+                    </div>
                 </div>
                 <div id="museum-grid"></div>
             </div>

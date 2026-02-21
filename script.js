@@ -8,12 +8,95 @@ const snowCtx = snowCanvas.getContext('2d');
 const fishButton = document.getElementById('fish-button');
 const statusDiv = document.getElementById('status');
 
-sceneCanvas.width = window.innerWidth;
-sceneCanvas.height = window.innerHeight;
-minigameCanvas.width = 300;
-minigameCanvas.height = 500;
-snowCanvas.width = window.innerWidth;
-snowCanvas.height = window.innerHeight;
+// Fixed internal resolution for background canvases (16:9 ratio)
+// JS manually computes "cover" sizing since object-fit:cover is unreliable on iOS canvas
+const CANVAS_W = 1920;
+const CANVAS_H = 1080;
+
+function initBackgroundCanvas(canvas) {
+    if (!canvas) return;
+    canvas.width = CANVAS_W;
+    canvas.height = CANVAS_H;
+}
+
+// Calculate and apply "cover" sizing via inline styles on all background canvases
+// Uses CSS transform centering (reliable on iOS) instead of negative offsets
+function resizeBackgroundCanvases() {
+    const viewW = window.innerWidth;
+    const viewH = window.innerHeight;
+    const scaleX = viewW / CANVAS_W;
+    const scaleY = viewH / CANVAS_H;
+    const coverScale = Math.max(scaleX, scaleY);
+    const containScale = Math.min(scaleX, scaleY);
+
+    // On portrait screens, blend toward contain so more of the scene is visible
+    // This prevents the fisherman/dock from being cropped on tall narrow screens
+    let scale;
+    if (viewH > viewW) {
+        // Portrait: use 85% cover + 15% contain blend
+        scale = coverScale * 0.85 + containScale * 0.15;
+    } else {
+        scale = coverScale;
+    }
+
+    const displayW = Math.ceil(CANVAS_W * scale);
+    const displayH = Math.ceil(CANVAS_H * scale);
+
+    document.querySelectorAll('#scene-canvas, #snow-canvas, #shop-canvas, #museum-canvas').forEach(c => {
+        c.style.width = displayW + 'px';
+        c.style.height = displayH + 'px';
+    });
+}
+
+initBackgroundCanvas(sceneCanvas);
+initBackgroundCanvas(snowCanvas);
+resizeBackgroundCanvases();
+
+window.addEventListener('resize', resizeBackgroundCanvases);
+window.addEventListener('orientationchange', function() {
+    setTimeout(resizeBackgroundCanvases, 150);
+});
+
+// Resize minigame canvas (this one must match screen, it's interactive)
+function resizeMinigameCanvas() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    // Aspect ratio 3:5
+    const aspect = 0.6;
+    // Max canvas size
+    const maxW = 320;
+    const maxH = 530;
+    // Calculate available space with padding
+    const padX = 24; // 12px each side
+    const padY = 24;
+    const availW = w - padX;
+    const availH = h - padY;
+    // Fit to available space while maintaining 3:5 aspect
+    let cW, cH;
+    if (availW / availH < aspect) {
+        // Width-constrained
+        cW = Math.min(maxW, availW);
+        cH = Math.round(cW / aspect);
+    } else {
+        // Height-constrained
+        cH = Math.min(maxH, availH);
+        cW = Math.round(cH * aspect);
+    }
+    // Ensure minimum playable size
+    cW = Math.max(150, cW);
+    cH = Math.max(250, cH);
+    minigameCanvas.width = cW;
+    minigameCanvas.height = cH;
+    // Explicitly set CSS display size to match buffer — prevents CSS from
+    // rescaling the canvas and causing border/content mismatch
+    minigameCanvas.style.width  = cW + 'px';
+    minigameCanvas.style.height = cH + 'px';
+}
+resizeMinigameCanvas();
+window.addEventListener('resize', resizeMinigameCanvas);
+window.addEventListener('orientationchange', function() {
+    setTimeout(resizeMinigameCanvas, 150);
+});
 
 let fishing = false;
 let minigameActive = false;
@@ -2786,9 +2869,38 @@ let leftMouseDown = false;
 let rightMouseDown = false;
 let animationFrameId = null;
 
-// Ring properties
-const ringRadius = 120;
-const ringThickness = 40;
+// Ring properties — now computed dynamically from canvas size
+function getRingScale() {
+    const cW = minigameCanvas.width;
+    const cH = minigameCanvas.height;
+    const s = Math.min(cW / 300, cH / 500);
+
+    // Proportional thicknesses
+    const ringThickness   = 40 * s;
+    const progressRingOffset    = 15 * s;
+    const progressRingThickness = 10 * s;
+
+    // Derive ringRadius so the outermost edge of the progress ring
+    // fits inside the canvas with comfortable margin
+    const margin = 20;
+    const maxOuterRadius = (cW / 2) - margin;
+    const ringRadius = maxOuterRadius - ringThickness / 2 - progressRingOffset - progressRingThickness / 2;
+
+    return {
+        s,
+        ringRadius,
+        ringThickness,
+        fishSize: 15 * s,
+        glowSize: 40 * s,
+        progressRingOffset,
+        progressRingThickness,
+        fontPercent: Math.round(24 * s),
+        fontSmall: Math.round(16 * s),
+        fontControls: Math.round(11 * s),
+        sparkleSize: 3 * s,
+        eyeSize: 4 * s,
+    };
+}
 
 // Delta time variables for frame-rate independent movement
 let lastFrameTime = 0;
@@ -3568,7 +3680,7 @@ function startMinigame() {
     const weightAdjustedRandomness = currentFish.fishRandomness * (1 + weightFactor * difficultyScaling.randomnessMultiplier * absoluteSizeBonus);
     const weightAdjustedInterval = currentFish.fishChangeInterval * (1 - weightFactor * difficultyScaling.intervalMultiplier * Math.min(absoluteSizeBonus, 2.0));
     
-    statusDiv.textContent = 'Left click to move bar left, right click to move bar right!';
+    statusDiv.textContent = '';
     
     console.log('Hiding scene canvas, showing minigame canvas');
     sceneCanvas.style.display = 'none';
@@ -3722,111 +3834,99 @@ function gameLoop() {
     animationFrameId = requestAnimationFrame(gameLoop);
 }
 
-// Draw the minigame - Circular ring design
+// Draw the minigame - Circular ring design (fully scaled)
 function drawMinigame(fishInBar) {
+    const R = getRingScale();
+    
     // Background - match night water color
     minigameCtx.fillStyle = '#0d1b3a';
     minigameCtx.fillRect(0, 0, minigameCanvas.width, minigameCanvas.height);
     
     const centerX = minigameCanvas.width / 2;
-    const centerY = minigameCanvas.height / 2 - 30;
+    const centerY = minigameCanvas.height * 0.42;
     
     // Draw outer ring (white transparent)
     minigameCtx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-    minigameCtx.lineWidth = ringThickness;
+    minigameCtx.lineWidth = R.ringThickness;
     minigameCtx.beginPath();
-    minigameCtx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
+    minigameCtx.arc(centerX, centerY, R.ringRadius, 0, Math.PI * 2);
     minigameCtx.stroke();
     
     // Draw green bar arc
-    const barStartAngle = barAngle - barAngleSize / 2 - Math.PI / 2; // Adjust for canvas coordinate system
+    const barStartAngle = barAngle - barAngleSize / 2 - Math.PI / 2;
     const barEndAngle = barAngle + barAngleSize / 2 - Math.PI / 2;
     
     minigameCtx.strokeStyle = fishInBar ? '#4CAF50' : '#2E7D32';
-    minigameCtx.lineWidth = ringThickness;
+    minigameCtx.lineWidth = R.ringThickness;
     minigameCtx.beginPath();
-    minigameCtx.arc(centerX, centerY, ringRadius, barStartAngle, barEndAngle);
+    minigameCtx.arc(centerX, centerY, R.ringRadius, barStartAngle, barEndAngle);
     minigameCtx.stroke();
     
     // Draw fish on the ring
-    const fishX = centerX + Math.cos(fishAngle - Math.PI / 2) * ringRadius;
-    const fishY = centerY + Math.sin(fishAngle - Math.PI / 2) * ringRadius;
+    const fishX = centerX + Math.cos(fishAngle - Math.PI / 2) * R.ringRadius;
+    const fishY = centerY + Math.sin(fishAngle - Math.PI / 2) * R.ringRadius;
     
     // Add glow effect for rare fish
     if (currentFishRarity === 'shiny') {
-        // Shiny: Rainbow sparkle glow
-        const glowSize = 40;
-        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, glowSize);
+        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, R.glowSize);
         gradient.addColorStop(0, 'rgba(255, 215, 0, 0.6)');
         gradient.addColorStop(0.3, 'rgba(255, 215, 0, 0.5)');
         gradient.addColorStop(0.6, 'rgba(255, 105, 180, 0.4)');
         gradient.addColorStop(1, 'rgba(138, 43, 226, 0)');
         minigameCtx.fillStyle = gradient;
         minigameCtx.beginPath();
-        minigameCtx.arc(fishX, fishY, glowSize, 0, Math.PI * 2);
+        minigameCtx.arc(fishX, fishY, R.glowSize, 0, Math.PI * 2);
         minigameCtx.fill();
-        
-        // Add sparkle particles
         for (let i = 0; i < 3; i++) {
             const sparkleAngle = (Date.now() / 500 + i * (Math.PI * 2 / 3)) % (Math.PI * 2);
-            const sparkleDistance = 20 + Math.sin(Date.now() / 300 + i) * 5;
+            const sparkleDistance = (20 + Math.sin(Date.now() / 300 + i) * 5) * R.s;
             const sparkleX = fishX + Math.cos(sparkleAngle) * sparkleDistance;
             const sparkleY = fishY + Math.sin(sparkleAngle) * sparkleDistance;
             minigameCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
             minigameCtx.beginPath();
-            minigameCtx.arc(sparkleX, sparkleY, 3, 0, Math.PI * 2);
+            minigameCtx.arc(sparkleX, sparkleY, R.sparkleSize, 0, Math.PI * 2);
             minigameCtx.fill();
         }
     } else if (currentFishRarity === 'golden') {
-        // Golden: Bright gold glow
-        const glowSize = 40;
-        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, glowSize);
+        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, R.glowSize);
         gradient.addColorStop(0, 'rgba(255, 215, 0, 0.7)');
         gradient.addColorStop(0.4, 'rgba(255, 223, 0, 0.5)');
         gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
         minigameCtx.fillStyle = gradient;
         minigameCtx.beginPath();
-        minigameCtx.arc(fishX, fishY, glowSize, 0, Math.PI * 2);
+        minigameCtx.arc(fishX, fishY, R.glowSize, 0, Math.PI * 2);
         minigameCtx.fill();
     } else if (currentFishRarity === 'mutated') {
-        // Mutated: Purple/pink glow
-        const glowSize = 40;
-        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, glowSize);
+        const gradient = minigameCtx.createRadialGradient(fishX, fishY, 0, fishX, fishY, R.glowSize);
         gradient.addColorStop(0, 'rgba(156, 39, 176, 0.7)');
         gradient.addColorStop(0.4, 'rgba(233, 30, 99, 0.5)');
         gradient.addColorStop(1, 'rgba(156, 39, 176, 0)');
         minigameCtx.fillStyle = gradient;
         minigameCtx.beginPath();
-        minigameCtx.arc(fishX, fishY, glowSize, 0, Math.PI * 2);
+        minigameCtx.arc(fishX, fishY, R.glowSize, 0, Math.PI * 2);
         minigameCtx.fill();
     }
     
     // Fish icon (circular) - use rarity color if rare
     let fishColor = currentFish.color;
-    if (currentFishRarity === 'shiny') {
-        fishColor = '#FFD700'; // Gold
-    } else if (currentFishRarity === 'golden') {
-        fishColor = '#FFD700'; // Gold
-    } else if (currentFishRarity === 'mutated') {
-        fishColor = '#9C27B0'; // Purple
-    }
+    if (currentFishRarity === 'shiny') fishColor = '#FFD700';
+    else if (currentFishRarity === 'golden') fishColor = '#FFD700';
+    else if (currentFishRarity === 'mutated') fishColor = '#9C27B0';
     
     minigameCtx.fillStyle = fishColor;
     minigameCtx.beginPath();
-    minigameCtx.arc(fishX, fishY, 15, 0, Math.PI * 2);
+    minigameCtx.arc(fishX, fishY, R.fishSize, 0, Math.PI * 2);
     minigameCtx.fill();
     
     // Fish eye
     minigameCtx.fillStyle = '#FFFFFF';
     minigameCtx.beginPath();
-    minigameCtx.arc(fishX + 3, fishY - 3, 4, 0, Math.PI * 2);
+    minigameCtx.arc(fishX + 3 * R.s, fishY - 3 * R.s, R.eyeSize, 0, Math.PI * 2);
     minigameCtx.fill();
     
-    // Progress ring (outer ring around the fishing ring)
-    const progressRingRadius = ringRadius + ringThickness / 2 + 15;
-    const progressRingThickness = 10;
+    // Progress ring
+    const progressRingRadius = R.ringRadius + R.ringThickness / 2 + R.progressRingOffset;
     
-    // Determine progress color
     let progressColor;
     if (progress < 20) {
         progressColor = '#FF6B6B';
@@ -3844,38 +3944,52 @@ function drawMinigame(fishInBar) {
         progressColor = `rgb(${r}, ${g}, ${b})`;
     }
     
-    // Draw progress ring background (grey)
     minigameCtx.strokeStyle = 'rgba(85, 85, 85, 0.5)';
-    minigameCtx.lineWidth = progressRingThickness;
+    minigameCtx.lineWidth = R.progressRingThickness;
     minigameCtx.beginPath();
     minigameCtx.arc(centerX, centerY, progressRingRadius, 0, Math.PI * 2);
     minigameCtx.stroke();
     
-    // Draw progress ring fill (colored based on progress)
     const progressAngle = (progress / maxProgress) * Math.PI * 2;
     minigameCtx.strokeStyle = progressColor;
-    minigameCtx.lineWidth = progressRingThickness;
+    minigameCtx.lineWidth = R.progressRingThickness;
     minigameCtx.beginPath();
     minigameCtx.arc(centerX, centerY, progressRingRadius, -Math.PI / 2, -Math.PI / 2 + progressAngle);
     minigameCtx.stroke();
     
     // Progress text in center
     minigameCtx.fillStyle = '#FFFFFF';
-    minigameCtx.font = 'bold 24px Arial';
+    minigameCtx.font = `bold ${R.fontPercent}px Arial`;
     minigameCtx.textAlign = 'center';
-    minigameCtx.fillText(Math.floor(progress) + '%', centerX, centerY + 10);
+    minigameCtx.textBaseline = 'middle';
+    minigameCtx.fillText(Math.floor(progress) + '%', centerX, centerY + 8 * R.s);
     
     // Perfect catch indicator
     if (isPerfectCatch) {
         minigameCtx.fillStyle = '#FFD700';
-        minigameCtx.font = 'bold 16px Arial';
-        minigameCtx.fillText('⭐ PERFECT ⭐', centerX, centerY - 20);
+        minigameCtx.font = `bold ${R.fontSmall}px Arial`;
+        minigameCtx.fillText('⭐ PERFECT ⭐', centerX, centerY - 16 * R.s);
     }
     
-    // Instructions
-    minigameCtx.fillStyle = '#FFFFFF';
-    minigameCtx.font = '14px Arial';
-    minigameCtx.fillText('Left click = Counter-clockwise | Right click = Clockwise', minigameCanvas.width / 2, minigameCanvas.height - 10);
+    // --- Controls display at the bottom ---
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const controlsY = minigameCanvas.height - 8 * R.s;
+    const lineH = R.fontControls + 3 * R.s;
+    
+    minigameCtx.textAlign = 'center';
+    minigameCtx.textBaseline = 'bottom';
+    
+    if (isTouchDevice) {
+        // Mobile: show touch + simple instructions
+        minigameCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        minigameCtx.font = `bold ${R.fontControls}px Arial`;
+        minigameCtx.fillText('⬅ Tap Left Side | Tap Right Side ➡', centerX, controlsY);
+    } else {
+        // Desktop: show all control methods
+        minigameCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        minigameCtx.font = `${R.fontControls}px Arial`;
+        minigameCtx.fillText('🖱 L-Click / A / ← = Left  |  R-Click / D / → = Right', centerX, controlsY);
+    }
 }
 
 // End the minigame
@@ -4059,24 +4173,50 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
-// Touch controls for mobile - left/right side of screen
-document.addEventListener('touchstart', (e) => {
-    if (minigameActive) {
-        const touch = e.touches[0];
-        if (touch.clientX < window.innerWidth / 2) {
+// Touch controls for mobile - left/right side of screen with multitouch support
+function updateTouchState(touches) {
+    leftMouseDown = false;
+    rightMouseDown = false;
+    const halfWidth = window.innerWidth / 2;
+    for (let i = 0; i < touches.length; i++) {
+        if (touches[i].clientX < halfWidth) {
             leftMouseDown = true;
         } else {
             rightMouseDown = true;
         }
+    }
+}
+
+document.addEventListener('touchstart', (e) => {
+    if (minigameActive) {
+        updateTouchState(e.touches);
         e.preventDefault();
     }
-});
+}, { passive: false });
+
+document.addEventListener('touchmove', (e) => {
+    if (minigameActive) {
+        updateTouchState(e.touches);
+        e.preventDefault();
+    }
+}, { passive: false });
 
 document.addEventListener('touchend', (e) => {
     if (minigameActive) {
+        if (e.touches.length === 0) {
+            leftMouseDown = false;
+            rightMouseDown = false;
+        } else {
+            updateTouchState(e.touches);
+        }
+        e.preventDefault();
+    }
+}, { passive: false });
+
+document.addEventListener('touchcancel', (e) => {
+    if (minigameActive) {
         leftMouseDown = false;
         rightMouseDown = false;
-        e.preventDefault();
     }
 });
 
@@ -4713,8 +4853,7 @@ document.getElementById('close-rod-popup').addEventListener('click', () => {
 // Shop navigation
 const shopCanvas = document.getElementById('shop-canvas');
 const shopCtx = shopCanvas.getContext('2d');
-shopCanvas.width = window.innerWidth;
-shopCanvas.height = window.innerHeight;
+initBackgroundCanvas(shopCanvas);
 
 // Scene canvas click handler for boat
 sceneCanvas.addEventListener('click', (e) => {
@@ -4812,11 +4951,14 @@ document.getElementById('back-to-fishing').addEventListener('click', () => {
     document.getElementById('fishing-page').style.display = 'block';
 });
 
+document.getElementById('shop-scroll-top').addEventListener('click', () => {
+    document.getElementById('shop-interface').scrollTo({ top: 0, behavior: 'smooth' });
+});
+
 // Museum navigation
 const museumCanvas = document.getElementById('museum-canvas');
 const museumCtx = museumCanvas.getContext('2d');
-museumCanvas.width = window.innerWidth;
-museumCanvas.height = window.innerHeight;
+initBackgroundCanvas(museumCanvas);
 
 document.getElementById('museum-button').addEventListener('click', () => {
     currentPage = 'museum';
@@ -4830,6 +4972,10 @@ document.getElementById('back-from-museum').addEventListener('click', () => {
     currentPage = 'fishing';
     document.getElementById('museum-page').style.display = 'none';
     document.getElementById('fishing-page').style.display = 'block';
+});
+
+document.getElementById('museum-scroll-top').addEventListener('click', () => {
+    document.getElementById('museum-interface').scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // Reset progress button
@@ -4956,6 +5102,7 @@ document.getElementById('sell-tab').addEventListener('click', () => {
     document.getElementById('buy-tab').classList.remove('active');
     document.getElementById('sell-section').classList.add('active');
     document.getElementById('buy-section').classList.remove('active');
+    document.getElementById('shop-interface').scrollTo({ top: 0 });
 });
 
 document.getElementById('buy-tab').addEventListener('click', () => {
@@ -4963,6 +5110,7 @@ document.getElementById('buy-tab').addEventListener('click', () => {
     document.getElementById('sell-tab').classList.remove('active');
     document.getElementById('buy-section').classList.add('active');
     document.getElementById('sell-section').classList.remove('active');
+    document.getElementById('shop-interface').scrollTo({ top: 0 });
 });
 
 // Draw shop scene
@@ -5835,12 +5983,9 @@ function animateScene() {
 }
 animateScene();
 
-// Handle window resize
+// Handle window resize — redraw scenes (canvas resolution is fixed, CSS handles display)
 window.addEventListener('resize', () => {
-    sceneCanvas.width = window.innerWidth;
-    sceneCanvas.height = window.innerHeight;
-    shopCanvas.width = window.innerWidth;
-    shopCanvas.height = window.innerHeight;
+    resizeBackgroundCanvases();
     if (currentPage === 'fishing') {
         drawScene();
     } else {
@@ -6340,8 +6485,4 @@ function snowGameLoop() {
 }
 snowGameLoop();
 
-// Handle window resize for snow canvas
-window.addEventListener('resize', () => {
-    snowCanvas.width = window.innerWidth;
-    snowCanvas.height = window.innerHeight;
-});
+// Snow canvas resize handled by resizeBackgroundCanvases()

@@ -41,6 +41,13 @@ body {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
+    /* Mobile: prevent pull-to-refresh and overscroll */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent text selection during gameplay */
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
 }
 
 #game-container {
@@ -50,32 +57,51 @@ body {
     height: 100%;
 }
 
-#snow-canvas {
+/* Page wrappers — each fills the container so canvases position correctly */
+#fishing-page,
+#shop-page,
+#museum-page {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+#snow-canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 1000;
     display: none;
+    /* width, height set by JS resizeBackgroundCanvases() */
 }
 
 #scene-canvas {
     display: block;
-    width: 100%;
-    height: 100%;
     border: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* width, height set by JS resizeBackgroundCanvases() */
 }
 
 #shop-canvas {
     display: block;
-    width: 100%;
-    height: 100%;
     border: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* width, height set by JS resizeBackgroundCanvases() */
 }
 
 #minigame-canvas {
+    box-sizing: content-box;
     border: 3px solid #333;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -145,12 +171,15 @@ button {
 }
 
 #back-to-fishing {
-    position: absolute;
-    top: 30px;
-    left: 30px;
     font-size: 18px;
     padding: 12px 24px;
-    z-index: 10;
+    z-index: 20;
+}
+
+#shop-scroll-top {
+    font-size: 16px;
+    padding: 12px 20px;
+    z-index: 20;
 }
 
 #money-display {
@@ -184,9 +213,6 @@ button {
 }
 
 #shop-money {
-    position: absolute;
-    top: 15px;
-    left: 15px;
     background: rgba(255, 215, 0, 0.9);
     color: #8B4513;
     font-size: 20px;
@@ -198,10 +224,6 @@ button {
 }
 
 #shop-time {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.8);
     color: #000;
     font-size: 18px;
@@ -246,13 +268,11 @@ button {
 }
 
 #shop-system-time {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 180px;
+    width: auto;
+    min-width: 120px;
     background: linear-gradient(135deg, rgba(139, 69, 19, 0.85), rgba(101, 67, 33, 0.9));
     color: #FFF8DC;
-    padding: 12px 20px;
+    padding: 8px 14px;
     border-radius: 12px;
     border: 3px solid #8B4513;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 1px 3px rgba(255, 248, 220, 0.2);
@@ -312,7 +332,9 @@ button {
 #shop-tabs {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    margin-top: 6px;
+    padding-bottom: 10px;
     justify-content: center;
 }
 
@@ -464,6 +486,7 @@ button {
     max-height: 80vh;
     z-index: 100;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
 }
 
 #trinket-popup {
@@ -480,6 +503,7 @@ button {
     max-height: 80vh;
     z-index: 100;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
 }
 
 #rod-popup {
@@ -496,6 +520,7 @@ button {
     max-height: 80vh;
     z-index: 100;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
 }
 
 #inventory-header, #bait-popup-header, #trinket-popup-header, #rod-popup-header {
@@ -833,39 +858,73 @@ button {
 /* Shop Styles */
 #shop-interface {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 5px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    padding-top: 80px;
+    padding: 0;
     border-radius: 15px;
     border: 4px solid #8B4513;
     width: 90%;
     max-width: 1200px;
-    height: 80%;
-    max-height: 900px;
+    height: calc(100% - 5px);
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 10;
     box-sizing: border-box;
 }
 
-#shop-interface > #shop-money,
-#shop-interface > #shop-time {
-    position: absolute;
+#shop-header {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background: rgba(255, 255, 255, 0.97);
+    padding: 12px 20px 0 20px;
+    border-bottom: 2px solid rgba(139, 69, 19, 0.2);
+    border-radius: 12px 12px 0 0;
+}
+
+#shop-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 0;
+}
+
+#shop-header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+#shop-info-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+#shop-header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
 }
 
 #shop-interface h1 {
     color: #8B4513;
     text-align: center;
-    margin: 0 0 20px 0;
+    margin: 10px 0 4px 0;
     font-size: 36px;
 }
 
 #shop-sections {
     display: flex;
     gap: 20px;
+    padding: 15px 30px;
 }
 
 #sell-section, #buy-section {
@@ -889,20 +948,17 @@ button {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
-    max-height: 500px;
-    overflow-y: auto;
-    overflow-x: hidden;
     justify-content: center;
-    width: 98%;
+    width: 100%;
     margin: 0 auto;
     padding: 5px;
+    box-sizing: border-box;
 }
 
 .sell-slot {
     width: 100%;
     min-width: 120px;
     max-width: 180px;
-    height: 140px;
     border: 3px solid #8B4513;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.8);
@@ -913,9 +969,10 @@ button {
     position: relative;
     cursor: pointer;
     transition: transform 0.2s;
-    overflow: visible;
-    padding: 5px;
+    overflow: hidden;
+    padding: 8px 5px;
     box-sizing: border-box;
+    gap: 2px;
 }
 
 .sell-slot:hover {
@@ -946,16 +1003,14 @@ button {
 }
 
 .sell-price {
-    position: absolute;
-    bottom: -18px;
     background: #FFD700;
     color: #8B4513;
     font-size: 13px;
     font-weight: bold;
-    padding: 4px 10px;
+    padding: 3px 10px;
     border-radius: 8px;
     border: 2px solid #8B4513;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-top: 3px;
 }
 
 .shop-item {
@@ -1100,58 +1155,72 @@ button {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
-#museum-page {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-}
-
 #museum-canvas {
     display: block;
-    width: 100%;
-    height: 100%;
     border: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* width, height set by JS resizeBackgroundCanvases() */
 }
 
 #back-from-museum {
-    position: absolute;
-    top: 30px;
-    left: 30px;
     font-size: 18px;
     padding: 12px 24px;
-    z-index: 10;
-    background: linear-gradient(to bottom, #FF6B6B, #FF5252);
-    color: white;
-    border: 2px solid #8B4513;
-    border-radius: 8px;
-    cursor: pointer;
+    z-index: 20;
 }
 
 #back-from-museum:hover {
-    background: linear-gradient(to bottom, #FF5252, #E64545);
+    background: linear-gradient(to bottom, #FFE55C, #FFB84D);
+}
+
+#museum-scroll-top {
+    font-size: 16px;
+    padding: 12px 20px;
+    z-index: 20;
 }
 
 #museum-interface {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 5px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     width: 90%;
     max-width: 1200px;
-    height: 85%;
+    height: calc(100% - 5px);
     background: rgba(255, 248, 220, 0.95);
     border: 5px solid #8B4513;
     border-radius: 15px;
-    padding: 20px;
+    padding: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     z-index: 5;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+}
+
+#museum-header {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background: rgba(255, 248, 220, 0.97);
+    padding: 12px 20px 0 20px;
+    border-bottom: 2px solid rgba(139, 69, 19, 0.2);
+    border-radius: 12px 12px 0 0;
+}
+
+#museum-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 0;
 }
 
 #museum-interface h1 {
-    margin: 0 0 20px 0;
+    margin: 10px 0 4px 0;
     color: #654321;
     font-size: 32px;
     text-align: center;
@@ -1161,7 +1230,7 @@ button {
 #museum-search-container {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     justify-content: center;
     align-items: center;
 }
@@ -1196,12 +1265,24 @@ button {
     background: #654321;
 }
 
+#museum-section-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.museum-section-btn {
+    padding: 8px 20px;
+    font-size: 16px;
+}
+
 #museum-stats {
     display: flex;
     justify-content: space-around;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding: 10px 15px;
     background: rgba(139, 69, 19, 0.2);
     border-radius: 10px;
 }
@@ -1214,9 +1295,9 @@ button {
 
 #museum-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    padding: 10px;
+    padding: 10px 20px;
 }
 
 .museum-entry {
@@ -1547,24 +1628,50 @@ button {
     }
 }
 
-/* Tablets and smaller (max-width: 768px) */
-@media screen and (max-width: 768px) {
-    /* Make background canvases fill the screen on tablet */
-    #scene-canvas, #shop-canvas, #museum-canvas {
-        width: 100vw;
-        height: 80vh;
-        max-width: 100vw;
-        max-height: 80vh;
-        display: block;
-        margin: 0 auto;
-        position: relative;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        border: none;
+@media screen and (min-width: 769px) and (max-width: 1366px) and (orientation: landscape) {
+    #museum-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1366px) and (orientation: portrait) {
+    #museum-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
+
+/* Tablets / iPad-sized screens — fish button on left side, vertically centered */
+@media screen and (min-width: 769px) and (max-width: 1366px) {
+
+    #fish-button {
+        left: 30px;
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+        padding: 14px 28px;
+        font-size: 18px;
+        z-index: 10;
     }
 
+    #fish-button:hover {
+        transform: translateY(-50%) translateX(2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    #fish-button:active {
+        transform: translateY(-50%);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    #fish-button:disabled {
+        transform: translateY(-50%);
+    }
+}
+
+/* Tablets and smaller (max-width: 768px) */
+@media screen and (max-width: 768px) {
     /* General button adjustments */
     button {
         padding: 10px 20px;
@@ -1573,9 +1680,26 @@ button {
 
     /* Main fishing page buttons */
     #fish-button {
-        bottom: 20px;
+        left: 15px;
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
         padding: 12px 24px;
         font-size: 18px;
+    }
+
+    #fish-button:hover {
+        transform: translateY(-50%) translateX(2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    #fish-button:active {
+        transform: translateY(-50%);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    #fish-button:disabled {
+        transform: translateY(-50%);
     }
 
     #shop-button, #museum-button, #reset-button {
@@ -1689,45 +1813,49 @@ button {
 
     /* Shop page */
     #back-to-fishing, #back-from-museum {
-        top: 15px;
-        left: 15px;
         font-size: 14px;
         padding: 8px 16px;
     }
 
+    #shop-scroll-top {
+        font-size: 13px;
+        padding: 8px 14px;
+    }
+
+    #shop-header {
+        padding: 10px 15px 0 15px;
+    }
+
     #shop-interface {
-        padding: 15px;
+        padding: 0;
         max-width: 95%;
     }
 
     #shop-interface h1 {
-        font-size: 28px;
+        font-size: 24px;
+        margin: 8px 0 2px 0;
     }
 
     #shop-interface h2 {
         font-size: 20px;
     }
 
+    #shop-info-row {
+        gap: 6px;
+    }
+
     #shop-money {
         font-size: 14px;
         padding: 5px 10px;
-        top: 15px;
-        left: 15px;
     }
 
     #shop-time {
         font-size: 12px;
         padding: 4px 8px;
-        top: 50px;
-        left: 15px;
-        transform: none;
     }
 
     #shop-system-time {
-        top: 15px;
-        right: 15px;
         padding: 3px 6px;
-        width: auto;
         min-width: 80px;
     }
 
@@ -1754,10 +1882,11 @@ button {
 
     #sell-inventory-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        max-height: none;
     }
 
     .sell-slot {
-        padding: 8px;
+        padding: 6px 5px;
         max-width: 150px;
     }
 
@@ -1775,7 +1904,6 @@ button {
 
     .sell-price {
         font-size: 11px;
-        bottom: -20px;
     }
 
     .sell-all-button {
@@ -1806,12 +1934,22 @@ button {
 
     /* Museum page */
     #museum-interface {
-        padding: 15px;
+        padding: 0;
         max-width: 95%;
+    }
+
+    #museum-header {
+        padding: 10px 15px 0 15px;
+    }
+
+    #museum-scroll-top {
+        font-size: 13px;
+        padding: 8px 14px;
     }
 
     #museum-interface h1 {
         font-size: 24px;
+        margin: 8px 0 2px 0;
     }
 
     #museum-search-input {
@@ -1841,7 +1979,7 @@ button {
     }
 
     #museum-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
     }
 
@@ -1920,59 +2058,141 @@ button {
 
 /* Mobile phones (max-width: 480px) */
 @media screen and (max-width: 480px) {
-    /* Make background canvases fill the screen on mobile */
-    #scene-canvas, #shop-canvas, #museum-canvas {
-        width: 100vw;
-        height: 100vh;
-        max-width: 100vw;
-        max-height: 100vh;
-        display: block;
-        margin: 0 auto;
-        position: relative;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        border: none;
-    }
-
-    /* Further reduce button sizes */
+    /* Base button sizing — touch-friendly minimum 44px tap targets */
     button {
-        padding: 8px 16px;
+        padding: 10px 18px;
         font-size: 14px;
+        min-height: 44px;
+        border-radius: 8px;
     }
 
+    /* ===== FISHING PAGE ===== */
+
+    /* Cast button — bottom center, clear of other buttons */
     #fish-button {
-        bottom: 15px;
-        padding: 10px 20px;
+        bottom: 14px;
+        left: 50%;
+        top: auto;
+        transform: translateX(-50%);
+        padding: 12px 28px;
         font-size: 16px;
+        min-height: 48px;
     }
 
-    #shop-button, #museum-button, #reset-button {
-        font-size: 12px;
-        padding: 8px 12px;
-        bottom: 15px;
+    #fish-button:hover {
+        transform: translateX(-50%) translateY(-2px);
     }
 
+    #fish-button:active {
+        transform: translateX(-50%);
+    }
+
+    #fish-button:disabled {
+        transform: translateX(-50%);
+    }
+
+    /* Bottom-left: shop + museum stacked */
     #shop-button {
-        left: 10px;
-        bottom: 60px;
-    }
-
-    #reset-button {
-        right: 10px;
+        left: 6px;
+        bottom: 108px;
+        font-size: 11px;
+        padding: 6px 10px;
+        min-height: 36px;
     }
 
     #museum-button {
-        left: 10px;
-        bottom: 15px;
+        left: 6px;
+        bottom: 66px;
         right: auto;
+        font-size: 11px;
+        padding: 6px 10px;
+        min-height: 36px;
     }
 
-    /* Compact toolbar buttons */
-    #bait-button, #trinket-button, #rod-button {
-        font-size: 12px;
+    /* Bottom-right: reset */
+    #reset-button {
+        right: 6px;
+        bottom: 66px;
+        font-size: 11px;
         padding: 6px 10px;
+        min-height: 36px;
+    }
+
+    /* === TOP-LEFT: money + time + location — tighter stacking === */
+    #money-display {
+        top: 6px;
+        left: 6px;
+        font-size: 13px;
+        padding: 4px 8px;
+        border-width: 2px;
+        border-radius: 6px;
+    }
+
+    #time-display {
+        top: 40px;
+        left: 6px;
+        font-size: 11px;
+        padding: 3px 8px;
+        border-width: 2px;
+        border-radius: 6px;
+    }
+
+    #location-display {
+        top: 72px;
+        left: 6px;
+        right: auto;
+        padding: 3px 8px;
+        gap: 4px;
+        border-width: 2px;
+        border-radius: 6px;
+    }
+
+    #location-icon {
+        font-size: 14px;
+    }
+
+    #location-name {
+        font-size: 11px;
+        letter-spacing: 0.5px;
+    }
+
+    /* === TOP-CENTER: system clock — smaller on mobile === */
+    #system-time-display {
+        top: 6px;
+        padding: 4px 10px;
+        border-radius: 8px;
+        border-width: 2px;
+    }
+
+    #system-date {
+        font-size: 9px;
+        margin-bottom: 1px;
+    }
+
+    #system-time {
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+
+    /* === TOP-RIGHT: backpack + toolbar buttons — compact column === */
+    #backpack-icon {
+        top: 6px;
+        bottom: auto;
+        right: 6px;
+        font-size: 26px;
+        padding: 4px 8px;
+    }
+
+    #fish-count {
+        font-size: 9px;
+        padding: 1px 4px;
+        border-width: 1.5px;
+    }
+
+    #bait-button, #trinket-button, #rod-button {
+        font-size: 11px;
+        padding: 6px 8px;
+        min-height: 34px;
         top: auto;
         bottom: auto;
         right: auto;
@@ -1980,132 +2200,110 @@ button {
     }
 
     #bait-button {
-        top: 65px;
-        right: 10px;
+        top: 58px;
+        right: 6px;
     }
 
     #trinket-button {
-        top: 110px;
-        right: 10px;
+        top: 98px;
+        right: 6px;
     }
 
     #rod-button {
-        top: 155px;
-        right: 10px;
+        top: 138px;
+        right: 6px;
     }
 
-    /* Compact displays */
-    #money-display {
-        top: 10px;
-        left: 10px;
-        font-size: 16px;
-        padding: 6px 12px;
-    }
-
-    #time-display {
-        top: 60px;
-        left: 10px;
-        font-size: 14px;
-        padding: 5px 10px;
-    }
-
-    #system-time-display {
-        top: 10px;
-        padding: 8px 15px;
-    }
-
-    #system-date {
-        font-size: 12px;
-    }
-
-    #system-time {
-        font-size: 16px;
-    }
-
-    #location-display {
-        top: 105px;
-        left: 10px;
-        right: auto;
-        padding: 6px 10px;
-    }
-
-    #location-icon {
-        font-size: 20px;
-    }
-
-    #location-name {
-        font-size: 12px;
-    }
-
-    #backpack-icon {
-        top: 10px;
-        bottom: auto;
-        right: 10px;
-        font-size: 28px;
-        padding: 6px 10px;
-    }
-
-    #fish-count {
-        font-size: 10px;
-        padding: 2px 4px;
-    }
-
-    /* Status */
+    /* Status message — above bottom buttons */
     #status {
         font-size: 12px;
         padding: 6px 12px;
-        max-width: 80%;
-        bottom: 70px;
+        max-width: 75%;
+        bottom: 150px;
+        border-radius: 8px;
     }
 
-    /* Shop page mobile */
+    /* ===== MINIGAME ===== */
+    /* JS fully controls canvas sizing — no CSS overrides needed */
+
+    /* ===== SHOP PAGE ===== */
     #back-to-fishing, #back-from-museum {
-        top: 10px;
-        left: 10px;
-        font-size: 12px;
-        padding: 6px 12px;
+        font-size: 11px;
+        padding: 5px 10px;
+        min-height: 32px;
     }
 
-    #shop-interface {
-        padding: 10px;
-        max-width: 98%;
+    #shop-scroll-top {
+        font-size: 11px;
+        padding: 5px 10px;
+        min-height: 32px;
+    }
+
+    #shop-header {
+        padding: 8px 8px 0 8px;
+    }
+
+    #shop-header-top {
+        gap: 6px;
+        margin-bottom: 0;
+    }
+
+    #shop-header-left {
+        gap: 4px;
+    }
+
+    #shop-info-row {
+        gap: 4px;
     }
 
     #shop-interface h1 {
-        font-size: 24px;
-        margin: 10px 0;
+        font-size: 16px;
+        margin: 6px 0 2px 0;
+    }
+
+    #shop-header-right {
+        gap: 4px;
+    }
+
+    #shop-interface {
+        padding: 0;
+        max-width: 100%;
+        width: 98%;
+        height: calc(100% - 3px);
+        top: 3px;
+    }
+
+    #shop-sections {
+        padding: 8px 10px;
     }
 
     #shop-interface h2 {
-        font-size: 18px;
-        margin: 10px 0;
+        font-size: 15px;
+        margin: 8px 0 6px 0;
+        padding-bottom: 6px;
     }
 
     #shop-money {
-        font-size: 12px;
-        padding: 4px 8px;
-        left: 10px;
-        top: 10px;
+        font-size: 10px;
+        padding: 3px 6px;
+        border-width: 2px;
     }
 
     #shop-time {
-        font-size: 11px;
-        padding: 3px 6px;
-        top: 45px;
-        left: 10px;
-        transform: none;
+        font-size: 9px;
+        padding: 2px 5px;
+        border-width: 2px;
     }
 
     #shop-system-time {
-        top: 10px;
-        right: 10px;
         padding: 2px 5px;
-        width: auto;
-        min-width: 70px;
+        min-width: auto;
+        border-width: 2px;
     }
 
     #shop-system-date {
         font-size: 7px;
+        margin-bottom: 1px;
     }
 
     #shop-system-clock {
@@ -2113,65 +2311,75 @@ button {
     }
 
     .shop-tab {
-        padding: 8px 16px;
-        font-size: 14px;
+        padding: 7px 20px !important;
+        font-size: 13px !important;
+        min-height: 36px;
     }
 
     #shop-tabs {
-        margin-top: 15px;
+        margin-top: 3px;
+        gap: 6px;
+        padding-bottom: 6px;
     }
 
+    /* Sell grid — 2 columns on phone */
     #sell-inventory-grid {
-        gap: 6px;
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        padding: 5px;
+        gap: 8px;
+        grid-template-columns: repeat(2, 1fr);
+        padding: 4px;
         width: 100%;
+        max-height: none;
+        box-sizing: border-box;
     }
 
     .sell-slot {
-        padding: 5px;
-        max-width: 95px;
-        min-width: 80px;
+        padding: 5px 4px;
+        max-width: none;
+        min-width: 0;
     }
 
-    .sell-fish-emoji {
-        font-size: 22px;
+    .sell-slot .fish-icon, .sell-fish-emoji {
+        font-size: 24px;
     }
 
-    .sell-fish-name {
-        font-size: 9px;
+    .sell-slot .fish-name, .sell-fish-name {
+        font-size: 10px;
     }
 
-    .sell-fish-weight, .sell-fish-length {
-        font-size: 7px;
+    .sell-slot .fish-weight, .sell-fish-weight,
+    .sell-slot .fish-length, .sell-fish-length {
+        font-size: 8px;
     }
 
     .sell-price {
-        font-size: 9px;
-        bottom: -20px;
+        font-size: 10px;
+        padding: 2px 6px;
     }
 
     .sell-all-button {
-        padding: 8px 16px;
-        font-size: 12px;
+        padding: 10px 16px;
+        font-size: 13px;
         margin-bottom: 10px;
+        min-height: 44px;
     }
 
     .shop-item {
         flex-direction: column;
         text-align: center;
-        padding: 10px;
+        padding: 8px;
+        gap: 6px;
+        margin-bottom: 8px;
     }
 
     .shop-item-info {
-        flex-direction: column;
-        text-align: center;
-        margin-bottom: 10px;
+        flex-direction: row;
+        text-align: left;
+        gap: 8px;
+        align-items: center;
     }
 
     .shop-item-icon {
         font-size: 28px;
-        margin-bottom: 8px;
     }
 
     .shop-item-name {
@@ -2179,200 +2387,267 @@ button {
     }
 
     .shop-item-desc {
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .buy-button {
-        padding: 8px 14px;
-        font-size: 12px;
+        padding: 10px 14px !important;
+        font-size: 13px !important;
         width: 100%;
+        min-height: 44px;
     }
 
-    /* Museum mobile */
+    /* ===== MUSEUM PAGE ===== */
     #museum-interface {
-        padding: 10px;
+        padding: 0;
+        width: 98%;
+        height: calc(100% - 3px);
+        top: 3px;
+    }
+
+    #museum-header {
+        padding: 8px 8px 0 8px;
+    }
+
+    #museum-scroll-top {
+        font-size: 11px;
+        padding: 5px 10px;
+        min-height: 32px;
     }
 
     #museum-interface h1 {
         font-size: 16px;
-        margin: 5px 0;
+        margin: 6px 0 2px 0;
     }
 
     #museum-search-container {
         flex-direction: row;
-        gap: 4px;
+        gap: 6px;
         margin-bottom: 8px;
     }
 
     #museum-search-input {
-        max-width: 70%;
-        width: 70%;
-        padding: 3px 5px;
-        font-size: 9px;
+        max-width: 72%;
+        width: 72%;
+        padding: 6px 10px;
+        font-size: 13px;
+        min-height: 36px;
     }
 
     #museum-search-button {
-        padding: 3px 6px;
-        font-size: 9px;
-        width: auto;
-        flex: 1;
+        padding: 6px 12px;
+        font-size: 14px;
+        min-height: 36px;
+    }
+
+    #museum-section-buttons {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 6px;
+        justify-content: center;
     }
 
     .museum-section-btn {
-        padding: 3px 6px;
-        font-size: 9px;
+        padding: 6px 12px;
+        font-size: 12px;
+        min-height: 36px;
     }
 
     #museum-stats {
-        padding: 4px;
+        padding: 6px;
         margin-bottom: 8px;
-        gap: 4px;
+        gap: 2px;
+        flex-direction: column;
     }
 
     .museum-stat {
-        font-size: 9px;
+        font-size: 11px;
     }
 
+    /* Museum grid — 2 columns for readability on phone */
     #museum-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 3px;
-        padding: 2px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        padding: 8px 10px;
     }
 
     .museum-entry {
-        padding: 2px;
+        padding: 6px;
         min-height: auto;
-        height: auto;
-    }
-
-    .museum-fish-emoji {
-        font-size: 14px;
-        margin: 1px 0;
-    }
-
-    .museum-fish-icon {
-        font-size: 14px;
-    }
-
-    .museum-fish-name {
-        font-size: 6px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        line-height: 1.0;
-        margin: 1px 0;
-    }
-
-    .museum-count {
-        font-size: 6px;
-        margin: 1px 0;
-    }
-
-    .museum-stat-row {
-        font-size: 6px;
-    }
-
-    .museum-stat-label {
-        font-size: 6px;
-    }
-
-    .museum-stat-value {
-        font-size: 6px;
+        position: relative;
     }
 
     .museum-entry-header {
-        margin-bottom: 2px;
-        padding-bottom: 2px;
+        margin-bottom: 3px;
+        padding-bottom: 3px;
+    }
+
+    .museum-fish-emoji, .museum-fish-icon {
+        font-size: 22px;
+        margin: 2px 0;
+    }
+
+    .museum-fish-name {
+        font-size: 10px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.4;
+        margin: 2px 0;
+    }
+
+    .museum-count {
+        font-size: 9px;
+        margin: 2px 0;
+        line-height: 1.4;
+    }
+
+    .museum-stat-row {
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+    .museum-stat-label {
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+    .museum-stat-value {
+        font-size: 9px;
+        line-height: 1.4;
     }
 
     .museum-entry-stats {
-        gap: 2px;
+        gap: 3px;
     }
 
     .museum-showcase {
-        margin-top: 3px;
-        padding: 3px;
-        border-width: 1px;
+        margin-top: 5px;
+        padding: 5px;
+        border-width: 2px;
     }
 
     .museum-showcase-title {
-        font-size: 6px;
+        font-size: 9px;
         margin-bottom: 2px;
     }
 
     .museum-showcase-weight {
-        font-size: 6px;
+        font-size: 11px;
         margin-bottom: 2px;
     }
 
     .museum-showcase-length {
-        font-size: 6px;
+        font-size: 9px;
         margin-bottom: 2px;
     }
 
     .museum-showcase-rarity {
-        font-size: 6px;
+        font-size: 9px;
     }
 
     .museum-no-showcase {
-        margin-top: 3px;
-        padding: 3px;
-        font-size: 6px;
+        margin-top: 5px;
+        padding: 5px;
+        font-size: 9px;
         border-top-width: 1px;
     }
 
     .museum-display-btn {
-        font-size: 6px;
-        padding: 2px 4px;
-        border-width: 1px;
+        font-size: 9px;
+        padding: 3px 6px;
+        border-width: 1.5px;
         top: 2px;
         right: 2px;
+        min-height: 26px;
     }
 
-    /* Popups mobile */
+    /* ===== POPUPS ===== */
     #inventory-popup, #bait-popup, #trinket-popup, #rod-popup {
-        width: 95%;
+        width: 92%;
         max-height: 85vh;
+        padding: 8px;
+        box-sizing: border-box;
     }
 
     #inventory-header, #bait-popup-header, #trinket-popup-header, #rod-popup-header {
-        padding: 10px;
+        padding: 8px;
     }
 
     #inventory-header h2, #bait-popup-header h2, #trinket-popup-header h2, #rod-popup-header h2 {
-        font-size: 18px;
+        font-size: 17px;
     }
 
     #close-inventory, #close-bait-popup, #close-trinket-popup, #close-rod-popup {
-        font-size: 18px;
+        font-size: 16px;
         padding: 4px 8px;
+        min-width: 32px;
+        min-height: 32px;
     }
 
-    #inventory-grid, #bait-popup-grid, #trinket-popup-grid, #rod-popup-grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    /* Inventory grids — 3 columns on phone */
+    #inventory-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 4px;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    /* Bait/trinket/rod grids — full width single column on phone */
+    #bait-popup-grid, #trinket-popup-grid, #rod-popup-grid {
+        grid-template-columns: 1fr;
         gap: 8px;
-        padding: 8px;
+        padding: 6px;
     }
 
-    .inventory-slot, .bait-slot, .trinket-slot, .rod-slot {
-        padding: 8px;
+    .inventory-slot {
+        padding: 4px;
+        height: 90px;
+        min-width: 0;
+        box-sizing: border-box;
     }
 
-    .inventory-emoji, .bait-emoji, .trinket-emoji, .rod-emoji {
-        font-size: 20px;
+    .bait-slot, .trinket-slot, .rod-slot {
+        padding: 10px;
     }
 
-    .inventory-name, .bait-name, .trinket-name, .rod-name {
+    .inventory-slot .fish-icon {
+        font-size: 24px;
+        margin-bottom: 2px;
+    }
+
+    .inventory-slot .fish-name, .inventory-name {
         font-size: 8px;
     }
 
     .inventory-weight, .inventory-length {
-        font-size: 9px;
+        font-size: 8px;
     }
 
-    /* Confirmation popups mobile */
+    .bait-slot-icon, .trinket-slot-icon, .rod-slot-icon {
+        font-size: 28px;
+    }
+
+    .bait-slot-name, .trinket-slot-name, .rod-slot-name {
+        font-size: 14px;
+    }
+
+    .bait-slot-count {
+        font-size: 12px;
+    }
+
+    .bait-slot-desc, .trinket-slot-desc, .rod-slot-desc {
+        font-size: 10px;
+    }
+
+    .trinket-slot-status, .rod-slot-status {
+        font-size: 12px;
+    }
+
+    /* Confirmation popups */
     #museum-confirm-popup, #reset-confirm-popup {
-        width: 90%;
-        padding: 12px;
+        width: 92%;
+        padding: 14px;
     }
 
     #museum-confirm-header h2, #reset-confirm-header h2 {
@@ -2385,7 +2660,7 @@ button {
     }
 
     #museum-confirm-content p, #reset-confirm-content p {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     #museum-confirm-buttons, #reset-confirm-buttons {
@@ -2394,53 +2669,727 @@ button {
     }
 
     .museum-confirm-btn, .reset-confirm-btn {
-        padding: 10px 16px;
-        font-size: 13px;
+        padding: 12px 18px;
+        font-size: 14px;
         width: 100%;
         min-width: auto;
+        min-height: 46px;
     }
 
-    /* Minigame canvas */
-    #minigame-canvas {
-        width: 90% !important;
-        max-width: 400px !important;
-        height: auto !important;
+    /* Travel popup */
+    #travel-confirm-popup {
+        min-width: 240px;
+        max-width: 92vw;
+        padding: 16px;
+    }
+
+    #travel-confirm-header h2 {
+        font-size: 1.4rem;
+    }
+
+    #travel-confirm-content p {
+        font-size: 1rem;
+    }
+}
+
+/* =============================================
+   Landscape phones — short height, wide screen
+   Catches all iPhones (SE through Pro Max) in landscape
+   ============================================= */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    /* Base button sizing — compact for short screens */
+    button {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-height: 32px;
+        border-radius: 6px;
+    }
+
+    /* ===== FISHING PAGE ===== */
+
+    /* Cast button — left side, vertically centered (like tablet) */
+    #fish-button {
+        left: 10px;
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+        padding: 10px 18px;
+        font-size: 14px;
+        min-height: 42px;
+    }
+
+    #fish-button:hover {
+        transform: translateY(-50%) translateX(2px);
+    }
+
+    #fish-button:active,
+    #fish-button:disabled {
+        transform: translateY(-50%);
+    }
+
+    /* Bottom row: shop, museum, reset — horizontal bar along bottom */
+    #shop-button {
+        left: 10px;
+        bottom: 6px;
+        font-size: 10px;
+        padding: 5px 10px;
+        min-height: 30px;
+    }
+
+    #museum-button {
+        left: 90px;
+        bottom: 6px;
+        right: auto;
+        font-size: 10px;
+        padding: 5px 10px;
+        min-height: 30px;
+    }
+
+    #reset-button {
+        right: 6px;
+        bottom: 6px;
+        font-size: 10px;
+        padding: 5px 10px;
+        min-height: 30px;
+    }
+
+    /* === TOP-LEFT: money + time + location — very compact vertical stack === */
+    #money-display {
+        top: 4px;
+        left: 4px;
+        font-size: 12px;
+        padding: 3px 7px;
+        border-width: 2px;
+        border-radius: 5px;
+    }
+
+    #time-display {
+        top: 30px;
+        left: 4px;
+        font-size: 10px;
+        padding: 2px 7px;
+        border-width: 2px;
+        border-radius: 5px;
+    }
+
+    #location-display {
+        top: 52px;
+        left: 4px;
+        right: auto;
+        padding: 2px 7px;
+        gap: 3px;
+        border-width: 2px;
+        border-radius: 5px;
+    }
+
+    #location-icon {
+        font-size: 12px;
+    }
+
+    #location-name {
+        font-size: 10px;
+        letter-spacing: 0;
+    }
+
+    /* === TOP-CENTER: system clock — small === */
+    #system-time-display {
+        top: 4px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        border-width: 2px;
+    }
+
+    #system-date {
+        font-size: 8px;
+        margin-bottom: 0;
+    }
+
+    #system-time {
+        font-size: 11px;
+        letter-spacing: 0.5px;
+    }
+
+    /* === TOP-RIGHT: backpack + toolbar — tight column === */
+    #backpack-icon {
+        top: 4px;
+        right: 6px;
+        bottom: auto;
+        font-size: 24px;
+        padding: 3px 6px;
+    }
+
+    #fish-count {
+        font-size: 8px;
+        padding: 1px 3px;
+        border-width: 1.5px;
+    }
+
+    #bait-button, #trinket-button, #rod-button {
+        right: 6px;
+        font-size: 10px;
+        padding: 4px 7px;
+        min-height: 28px;
+        top: auto;
+        bottom: auto;
+        left: auto;
+    }
+
+    #bait-button {
+        top: 48px;
+    }
+
+    #trinket-button {
+        top: 80px;
+    }
+
+    #rod-button {
+        top: 112px;
+    }
+
+    /* Status message — centered, above bottom bar */
+    #status {
+        font-size: 11px;
+        padding: 4px 10px;
+        max-width: 45%;
+        bottom: 42px;
+        border-radius: 6px;
+    }
+
+    /* ===== MINIGAME — height-constrained ===== */
+    /* JS fully controls canvas sizing — no CSS overrides needed */
+
+    /* ===== SHOP PAGE ===== */
+    #back-to-fishing, #back-from-museum {
+        font-size: 11px;
+        padding: 4px 10px;
+        min-height: 28px;
+    }
+
+    #shop-scroll-top {
+        font-size: 10px;
+        padding: 3px 8px;
+        min-height: 28px;
+    }
+
+    #shop-header {
+        padding: 3px 6px 0 6px;
+    }
+
+    #shop-header-top {
+        gap: 4px;
+        margin-bottom: 1px;
+    }
+
+    #shop-interface {
+        padding: 0;
+        width: 97%;
+        height: 100%;
+    }
+
+    #shop-sections {
+        padding: 4px 6px;
+    }
+
+    #shop-interface h1 {
+        font-size: 14px;
+        margin: 4px 0 1px 0;
+    }
+
+    #shop-interface h2 {
+        font-size: 14px;
+        margin: 4px 0;
+    }
+
+    #shop-money {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-width: 2px;
+    }
+
+    #shop-time {
+        font-size: 9px;
+        padding: 2px 5px;
+        border-width: 2px;
+    }
+
+    #shop-system-time {
+        padding: 2px 5px;
+        min-width: 60px;
+        border-width: 2px;
+    }
+
+    #shop-system-date {
+        font-size: 7px;
+    }
+
+    #shop-system-clock {
+        font-size: 9px;
+    }
+
+    .shop-tab {
+        padding: 5px 12px !important;
+        font-size: 12px !important;
+        min-height: 30px;
+    }
+
+    #shop-tabs {
+        margin-top: 2px;
+        gap: 4px;
+    }
+
+    #sell-inventory-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 6px;
+        padding: 2px;
+        max-height: none;
+    }
+
+    .sell-slot {
+        padding: 4px 3px;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .sell-slot .fish-icon, .sell-fish-emoji {
+        font-size: 24px;
+    }
+
+    .sell-slot .fish-name, .sell-fish-name {
+        font-size: 9px;
+    }
+
+    .sell-slot .fish-weight, .sell-fish-weight,
+    .sell-slot .fish-length, .sell-fish-length {
+        font-size: 8px;
+    }
+
+    .sell-price {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+
+    .sell-all-button {
+        padding: 8px 14px;
+        font-size: 12px;
+        min-height: 34px;
+        margin-bottom: 6px;
+    }
+
+    .shop-item {
+        flex-direction: row;
+        text-align: left;
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .shop-item-info {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .shop-item-icon {
+        font-size: 26px;
+    }
+
+    .shop-item-name {
+        font-size: 13px;
+    }
+
+    .shop-item-desc {
+        font-size: 10px;
+    }
+
+    .buy-button {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+        min-height: 32px;
+        width: auto;
+    }
+
+    /* ===== MUSEUM PAGE ===== */
+    #museum-interface {
+        padding: 0;
+        width: 97%;
+        height: 100%;
+    }
+
+    #museum-header {
+        padding: 3px 6px 0 6px;
+    }
+
+    #museum-scroll-top {
+        font-size: 10px;
+        padding: 3px 8px;
+        min-height: 28px;
+    }
+
+    #museum-interface h1 {
+        font-size: 14px;
+        margin: 4px 0 1px 0;
+    }
+
+    #museum-search-container {
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    #museum-search-input {
+        font-size: 12px;
+        padding: 4px 8px;
+        min-height: 28px;
+    }
+
+    #museum-search-button {
+        padding: 4px 10px;
+        font-size: 13px;
+        min-height: 28px;
+    }
+
+    #museum-section-buttons {
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    .museum-section-btn {
+        padding: 4px 10px;
+        font-size: 11px;
+        min-height: 28px;
+    }
+
+    #museum-stats {
+        padding: 4px;
+        margin-bottom: 4px;
+        gap: 2px;
+    }
+
+    .museum-stat {
+        font-size: 10px;
+    }
+
+    #museum-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 2px;
+    }
+
+    .museum-entry {
+        padding: 4px;
+        min-height: auto;
+    }
+
+    .museum-entry-header {
+        margin-bottom: 2px;
+        padding-bottom: 2px;
+    }
+
+    .museum-fish-emoji, .museum-fish-icon {
+        font-size: 20px;
+        margin: 1px 0;
+    }
+
+    .museum-fish-name {
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+    .museum-count {
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .museum-stat-row,
+    .museum-stat-label,
+    .museum-stat-value {
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .museum-entry-stats {
+        gap: 2px;
+    }
+
+    .museum-showcase {
+        margin-top: 3px;
+        padding: 3px;
+        border-width: 2px;
+    }
+
+    .museum-showcase-title {
+        font-size: 8px;
+    }
+
+    .museum-showcase-weight {
+        font-size: 10px;
+    }
+
+    .museum-showcase-length,
+    .museum-showcase-rarity {
+        font-size: 8px;
+    }
+
+    .museum-no-showcase {
+        margin-top: 3px;
+        padding: 3px;
+        font-size: 8px;
+    }
+
+    .museum-display-btn {
+        font-size: 8px;
+        padding: 2px 5px;
+        min-height: 22px;
+    }
+
+    /* ===== POPUPS — constrained by short height ===== */
+    #inventory-popup, #bait-popup, #trinket-popup, #rod-popup {
+        width: 85%;
+        max-height: 90vh;
+        max-height: 90dvh;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    #inventory-header, #bait-popup-header, #trinket-popup-header, #rod-popup-header {
+        padding: 4px 8px;
+    }
+
+    #inventory-header h2, #bait-popup-header h2, #trinket-popup-header h2, #rod-popup-header h2 {
+        font-size: 15px;
+    }
+
+    #close-inventory, #close-bait-popup, #close-trinket-popup, #close-rod-popup {
+        font-size: 14px;
+        padding: 3px 7px;
+        min-width: 28px;
+        min-height: 28px;
+    }
+
+    #inventory-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 4px;
+        padding: 4px;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .inventory-slot {
+        height: 80px;
+        padding: 3px;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .inventory-slot .fish-icon {
+        font-size: 22px;
+        margin-bottom: 1px;
+    }
+
+    .inventory-slot .fish-name, .inventory-name {
+        font-size: 7px;
+    }
+
+    .inventory-weight, .inventory-length {
+        font-size: 7px;
+    }
+
+    #bait-popup-grid, #trinket-popup-grid, #rod-popup-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        padding: 4px;
+    }
+
+    .bait-slot, .trinket-slot, .rod-slot {
+        padding: 8px;
+    }
+
+    .bait-slot-icon, .trinket-slot-icon, .rod-slot-icon {
+        font-size: 24px;
+    }
+
+    .bait-slot-name, .trinket-slot-name, .rod-slot-name {
+        font-size: 12px;
+    }
+
+    .bait-slot-count {
+        font-size: 10px;
+    }
+
+    .bait-slot-desc, .trinket-slot-desc, .rod-slot-desc {
+        font-size: 9px;
+    }
+
+    .trinket-slot-status, .rod-slot-status {
+        font-size: 10px;
+    }
+
+    /* Confirmation popups */
+    #museum-confirm-popup, #reset-confirm-popup {
+        width: 70%;
+        padding: 12px;
+    }
+
+    #museum-confirm-header h2, #reset-confirm-header h2 {
+        font-size: 16px;
+        margin: 0 0 8px 0;
+    }
+
+    #museum-confirm-content, #reset-confirm-content {
+        padding: 8px;
+    }
+
+    #museum-confirm-content p, #reset-confirm-content p {
+        font-size: 12px;
+    }
+
+    .museum-confirm-btn, .reset-confirm-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+        min-height: 34px;
+    }
+
+    /* Travel popup */
+    #travel-confirm-popup {
+        min-width: 200px;
+        max-width: 70vw;
+        padding: 12px;
+    }
+
+    #travel-confirm-header h2 {
+        font-size: 1.2rem;
+    }
+
+    #travel-confirm-content p {
+        font-size: 0.9rem;
     }
 }
 
 /* Very small devices (max-width: 320px) */
 @media screen and (max-width: 320px) {
+    /* System clock — even smaller */
     #system-time-display {
-        padding: 6px 10px;
+        padding: 3px 6px;
     }
 
     #system-date {
-        font-size: 10px;
+        font-size: 8px;
     }
 
     #system-time {
-        font-size: 14px;
+        font-size: 11px;
+        letter-spacing: 0.5px;
     }
 
-    #money-display, #time-display {
+    /* Top-left displays — tighter */
+    #money-display {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+
+    #time-display {
+        top: 36px;
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    #location-display {
+        top: 62px;
+        padding: 2px 6px;
+    }
+
+    #location-icon {
         font-size: 12px;
-        padding: 4px 8px;
     }
 
     #location-name {
         font-size: 10px;
     }
 
-    #museum-grid {
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    /* Top-right — tighter stacking */
+    #backpack-icon {
+        font-size: 22px;
+        padding: 3px 6px;
     }
 
-    .museum-fish-emoji {
-        font-size: 24px;
+    #bait-button {
+        top: 50px;
+        font-size: 10px;
+        padding: 5px 6px;
+        min-height: 30px;
+    }
+
+    #trinket-button {
+        top: 86px;
+        font-size: 10px;
+        padding: 5px 6px;
+        min-height: 30px;
+    }
+
+    #rod-button {
+        top: 122px;
+        font-size: 10px;
+        padding: 5px 6px;
+        min-height: 30px;
+    }
+
+    /* Fish button */
+    #fish-button {
+        padding: 10px 22px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+
+    /* Bottom buttons — smaller */
+    #shop-button, #museum-button, #reset-button {
+        font-size: 10px;
+        padding: 5px 8px;
+        min-height: 32px;
+    }
+
+    #shop-button {
+        bottom: 108px;
+    }
+
+    #museum-button {
+        bottom: 70px;
+    }
+
+    #reset-button {
+        bottom: 70px;
+    }
+
+    #status {
+        font-size: 11px;
+        bottom: 66px;
+        max-width: 70%;
+    }
+
+    /* Museum grid tighter */
+    #museum-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+    }
+
+    .museum-fish-emoji, .museum-fish-icon {
+        font-size: 20px;
     }
 
     .museum-fish-name {
         font-size: 9px;
+    }
+
+    .shop-tab {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+
+    #museum-search-input {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    /* Sell grid — single column on tiny screens */
+    #sell-inventory-grid {
+        grid-template-columns: 1fr;
     }
 }
 
