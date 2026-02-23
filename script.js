@@ -2372,6 +2372,14 @@ let playerLevel = 1;
 let playerXP = 0;
 const MAX_LEVEL = 10;
 
+// Perfect Catch Streak & Double XP
+let perfectCatchStreak = 0;
+let doubleXPActive = false;
+let doubleXPEndTime = 0;
+let doubleXPTimerInterval = null;
+const DOUBLE_XP_DURATION = 60000; // 1 minute in ms
+const PERFECT_STREAK_REQUIRED = 3;
+
 // XP required to advance FROM each level (index 0 = level 1→2, index 8 = level 9→10)
 const xpPerLevel = [250, 750, 2000, 5000, 10000, 17000, 27000, 38000, 50000];
 // Total XP to reach max level: 150,000 (~10,000 catches)
@@ -2392,6 +2400,10 @@ function getXPForNextLevel() {
 // Award XP and handle level-ups; returns { xpGained, levelsGained }
 function awardXP(amount) {
     if (playerLevel >= MAX_LEVEL) return { xpGained: 0, levelsGained: 0 };
+    // Apply double XP if active
+    if (doubleXPActive && Date.now() < doubleXPEndTime) {
+        amount *= 2;
+    }
     let levelsGained = 0;
     playerXP += amount;
     while (playerLevel < MAX_LEVEL && playerXP >= getXPForNextLevel()) {
@@ -4205,8 +4217,19 @@ function endMinigame(success) {
         } else {
             statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText} But your inventory is full!`;
         }
+        // Track perfect catch streak
+        if (isPerfectCatch) {
+            perfectCatchStreak++;
+            if (perfectCatchStreak >= PERFECT_STREAK_REQUIRED) {
+                activateDoubleXP();
+                perfectCatchStreak = 0;
+            }
+        } else {
+            perfectCatchStreak = 0;
+        }
     } else {
         statusDiv.textContent = `❌ The ${currentFish.name} got away... Try again!`;
+        perfectCatchStreak = 0; // Reset streak on failed catch
     }
     
     // Fade out after 5 seconds
@@ -4214,6 +4237,67 @@ function endMinigame(success) {
         statusDiv.style.transition = 'opacity 1s ease-out';
         statusDiv.style.opacity = '0';
     }, 5000);
+}
+
+// Double XP Timer Functions
+function activateDoubleXP() {
+    const wasAlreadyActive = doubleXPActive;
+    doubleXPActive = true;
+    doubleXPEndTime = Date.now() + DOUBLE_XP_DURATION;
+    
+    const timerEl = document.getElementById('double-xp-timer');
+    if (timerEl) timerEl.style.display = 'flex';
+    
+    // Show activation message
+    const statusDiv = document.getElementById('status');
+    statusDiv.style.opacity = '1';
+    statusDiv.style.transition = 'none';
+    if (wasAlreadyActive) {
+        statusDiv.textContent = '🔥 3 MORE PERFECT CATCHES! Double XP timer refilled! 🔥';
+    } else {
+        statusDiv.textContent = '🔥 3 PERFECT CATCHES! DOUBLE XP for 1 minute! 🔥';
+    }
+    setTimeout(() => {
+        statusDiv.style.transition = 'opacity 1s ease-out';
+        statusDiv.style.opacity = '0';
+    }, 3000);
+    
+    // Start the visual timer update loop
+    updateDoubleXPTimer();
+    doubleXPTimerInterval = setInterval(updateDoubleXPTimer, 50);
+}
+
+function updateDoubleXPTimer() {
+    const now = Date.now();
+    const remaining = Math.max(0, doubleXPEndTime - now);
+    const fraction = remaining / DOUBLE_XP_DURATION;
+    
+    // Update SVG circle
+    const circle = document.getElementById('double-xp-circle');
+    if (circle) {
+        const circumference = 2 * Math.PI * 22; // r=22
+        circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDashoffset = `${circumference * (1 - fraction)}`;
+    }
+    
+    // Update seconds text
+    const textEl = document.getElementById('double-xp-seconds');
+    if (textEl) textEl.textContent = Math.ceil(remaining / 1000);
+    
+    if (remaining <= 0) {
+        deactivateDoubleXP();
+    }
+}
+
+function deactivateDoubleXP() {
+    doubleXPActive = false;
+    doubleXPEndTime = 0;
+    if (doubleXPTimerInterval) {
+        clearInterval(doubleXPTimerInterval);
+        doubleXPTimerInterval = null;
+    }
+    const timerEl = document.getElementById('double-xp-timer');
+    if (timerEl) timerEl.style.display = 'none';
 }
 
 // Event listeners
