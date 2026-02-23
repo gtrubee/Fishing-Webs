@@ -50,6 +50,7 @@
             <button id="reset-button">🔄 Reset</button>
             <div id="money-display">💰 $<span id="money-amount">0</span></div>
             <div id="time-display">⏱️ <span id="time-amount">0:00:00</span></div>
+            <button id="stats-button">📊 Lv. 1</button>
         </div>
 
         <!-- Shop Page -->
@@ -196,6 +197,52 @@
             <div id="museum-confirm-buttons">
                 <button id="museum-confirm-yes" class="museum-confirm-btn yes-btn">Confirm</button>
                 <button id="museum-confirm-no" class="museum-confirm-btn no-btn">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Stats Popup -->
+        <div id="stats-popup" style="display: none;">
+            <div id="stats-popup-header">
+                <h2>📊 Player Stats</h2>
+                <button id="close-stats-popup">✕</button>
+            </div>
+            <div id="stats-popup-content">
+                <div class="stats-section">
+                    <h3>Fishing Level</h3>
+                    <div class="stats-row">
+                        <span class="stats-label">Level</span>
+                        <span class="stats-value" id="stats-level-value">1 / 10</span>
+                    </div>
+                    <div id="stats-xp-bar-container">
+                        <div id="stats-xp-bar">
+                            <div id="stats-xp-bar-fill"></div>
+                        </div>
+                        <div id="stats-xp-text">0 / 250 XP</div>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">Total XP Earned</span>
+                        <span class="stats-value" id="stats-total-xp">0</span>
+                    </div>
+                </div>
+                <div class="stats-section">
+                    <h3>Fishing Stats</h3>
+                    <div class="stats-row">
+                        <span class="stats-label">Total Fish Caught</span>
+                        <span class="stats-value" id="stats-total-caught">0</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">Species Discovered</span>
+                        <span class="stats-value" id="stats-species">0 / 0</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">Money</span>
+                        <span class="stats-value" id="stats-money">$0</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">Time Played</span>
+                        <span class="stats-value" id="stats-time">0:00:00</span>
+                    </div>
+                </div>
             </div>
         </div>
 

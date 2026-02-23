@@ -212,6 +212,138 @@ button {
     user-select: none;
 }
 
+/* Stats Button */
+#stats-button {
+    position: absolute;
+    top: 140px;
+    left: 20px;
+    font-size: 18px;
+    padding: 10px 20px;
+    z-index: 10;
+    background: linear-gradient(to bottom, #9B59B6, #8E44AD);
+    border: 3px solid #6C3483;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#stats-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(to bottom, #AF7AC5, #9B59B6);
+}
+
+/* Stats Popup */
+#stats-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(75, 0, 130, 0.97), rgba(106, 13, 173, 0.97));
+    padding: 20px;
+    border-radius: 15px;
+    border: 4px solid #9B59B6;
+    width: 90%;
+    max-width: 420px;
+    max-height: 80vh;
+    z-index: 200;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    color: #fff;
+    overflow-y: auto;
+}
+
+#stats-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+#stats-popup-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #FFD700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#close-stats-popup {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 18px;
+    padding: 6px 12px;
+    min-height: auto;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#close-stats-popup:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.stats-section {
+    margin-bottom: 18px;
+}
+
+.stats-section h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #E8DAEF;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 6px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.stats-label {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.stats-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+#stats-xp-bar-container {
+    margin: 8px 0 12px 0;
+}
+
+#stats-xp-bar {
+    width: 100%;
+    height: 14px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 7px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+#stats-xp-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #9B59B6, #E74CFC);
+    border-radius: 7px;
+    transition: width 0.4s ease;
+}
+
+#stats-xp-text {
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.9;
+}
+
 #shop-money {
     background: rgba(255, 215, 0, 0.9);
     color: #8B4513;
@@ -300,7 +432,7 @@ button {
 /* Location Display - Lake/Ocean Indicator */
 #location-display {
     position: absolute;
-    top: 140px;
+    top: 200px;
     left: 20px;
     background: linear-gradient(135deg, rgba(33, 150, 243, 0.9), rgba(30, 136, 229, 0.95));
     color: white;
@@ -1777,7 +1909,7 @@ button {
     }
 
     #location-display {
-        top: 120px;
+        top: 178px;
         left: 15px;
         right: auto;
         padding: 8px 12px;
@@ -1789,6 +1921,13 @@ button {
 
     #location-name {
         font-size: 14px;
+    }
+
+    #stats-button {
+        top: 120px;
+        left: 15px;
+        font-size: 14px;
+        padding: 8px 14px;
     }
 
     #backpack-icon {
@@ -2138,7 +2277,7 @@ button {
     }
 
     #location-display {
-        top: 72px;
+        top: 104px;
         left: 6px;
         right: auto;
         padding: 3px 8px;
@@ -2154,6 +2293,16 @@ button {
     #location-name {
         font-size: 11px;
         letter-spacing: 0.5px;
+    }
+
+    #stats-button {
+        top: 72px;
+        left: 6px;
+        font-size: 11px;
+        padding: 3px 8px;
+        border-width: 2px;
+        border-radius: 6px;
+        min-height: 28px;
     }
 
     /* === TOP-CENTER: system clock — smaller on mobile === */
@@ -2773,7 +2922,7 @@ button {
     }
 
     #location-display {
-        top: 52px;
+        top: 78px;
         left: 4px;
         right: auto;
         padding: 2px 7px;
@@ -2789,6 +2938,16 @@ button {
     #location-name {
         font-size: 10px;
         letter-spacing: 0;
+    }
+
+    #stats-button {
+        top: 52px;
+        left: 4px;
+        font-size: 10px;
+        padding: 2px 7px;
+        border-width: 2px;
+        border-radius: 5px;
+        min-height: 24px;
     }
 
     /* === TOP-CENTER: system clock — small === */
@@ -3292,8 +3451,15 @@ button {
     }
 
     #location-display {
-        top: 62px;
+        top: 88px;
         padding: 2px 6px;
+    }
+
+    #stats-button {
+        top: 62px;
+        font-size: 10px;
+        padding: 2px 6px;
+        min-height: 22px;
     }
 
     #location-icon {

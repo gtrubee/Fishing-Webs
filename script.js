@@ -2367,6 +2367,107 @@ let timePlayed = 0; // in seconds
 let gameStartTime = Date.now();
 let lastUpdateTime = Date.now();
 
+// Fishing Level System
+let playerLevel = 1;
+let playerXP = 0;
+const MAX_LEVEL = 10;
+
+// XP required to advance FROM each level (index 0 = level 1→2, index 8 = level 9→10)
+const xpPerLevel = [250, 750, 2000, 5000, 10000, 17000, 27000, 38000, 50000];
+// Total XP to reach max level: 150,000 (~10,000 catches)
+
+// XP awarded per fish difficulty tier
+const xpByDifficulty = {
+    'Easy': 5,
+    'Average': 15,
+    'Hard': 40
+};
+
+// Get total XP needed from current level to next
+function getXPForNextLevel() {
+    if (playerLevel >= MAX_LEVEL) return 0;
+    return xpPerLevel[playerLevel - 1];
+}
+
+// Award XP and handle level-ups; returns { xpGained, levelsGained }
+function awardXP(amount) {
+    if (playerLevel >= MAX_LEVEL) return { xpGained: 0, levelsGained: 0 };
+    let levelsGained = 0;
+    playerXP += amount;
+    while (playerLevel < MAX_LEVEL && playerXP >= getXPForNextLevel()) {
+        playerXP -= getXPForNextLevel();
+        playerLevel++;
+        levelsGained++;
+    }
+    // Clamp XP at max level
+    if (playerLevel >= MAX_LEVEL) playerXP = 0;
+    updateLevelDisplay();
+    return { xpGained: amount, levelsGained };
+}
+
+// Compute total XP earned across all levels
+function getTotalXP() {
+    let total = 0;
+    for (let i = 0; i < playerLevel - 1; i++) {
+        total += xpPerLevel[i];
+    }
+    total += playerXP;
+    return total;
+}
+
+// Update the level/XP displays wherever they appear
+function updateLevelDisplay() {
+    // Update stats button label
+    const statsBtn = document.getElementById('stats-button');
+    if (statsBtn) {
+        statsBtn.textContent = `📊 Lv. ${playerLevel}`;
+    }
+    // Update stats popup content if it exists
+    const popupLevel = document.getElementById('stats-level-value');
+    const xpBar = document.getElementById('stats-xp-bar-fill');
+    const xpText = document.getElementById('stats-xp-text');
+    const totalXpEl = document.getElementById('stats-total-xp');
+    if (popupLevel) popupLevel.textContent = `${playerLevel} / ${MAX_LEVEL}`;
+    if (totalXpEl) totalXpEl.textContent = getTotalXP().toLocaleString();
+    if (playerLevel >= MAX_LEVEL) {
+        if (xpBar) xpBar.style.width = '100%';
+        if (xpText) xpText.textContent = 'MAX LEVEL';
+    } else {
+        const needed = getXPForNextLevel();
+        const pct = Math.min(100, (playerXP / needed) * 100);
+        if (xpBar) xpBar.style.width = pct + '%';
+        if (xpText) xpText.textContent = `${playerXP.toLocaleString()} / ${needed.toLocaleString()} XP`;
+    }
+    // Update computed stats
+    updateStatsPopupData();
+}
+
+// Refresh data-driven rows inside the stats popup
+function updateStatsPopupData() {
+    const totalCaughtEl = document.getElementById('stats-total-caught');
+    const speciesEl = document.getElementById('stats-species');
+    const moneyEl = document.getElementById('stats-money');
+    const timeEl = document.getElementById('stats-time');
+    if (!totalCaughtEl) return;
+    // Total fish caught (sum museum totalCaught across all species)
+    let totalCaught = 0;
+    let speciesDiscovered = 0;
+    Object.values(museum).forEach(m => {
+        if (m.discovered) speciesDiscovered++;
+        totalCaught += m.totalCaught || 0;
+    });
+    const totalSpecies = Object.keys(fishTypes).length + (typeof oceanFishTypes !== 'undefined' ? Object.keys(oceanFishTypes).length : 0);
+    totalCaughtEl.textContent = totalCaught.toLocaleString();
+    speciesEl.textContent = `${speciesDiscovered} / ${totalSpecies}`;
+    moneyEl.textContent = `$${money.toLocaleString()}`;
+    // Time played
+    const currentTimePlayed = timePlayed + Math.floor((Date.now() - lastUpdateTime) / 1000);
+    const hrs = Math.floor(currentTimePlayed / 3600);
+    const mins = Math.floor((currentTimePlayed % 3600) / 60);
+    const secs = currentTimePlayed % 60;
+    timeEl.textContent = `${hrs}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+}
+
 // Fish selling prices (per pound)
 const fishPrices = {
     'Spotted Galaxias': 50,
@@ -2702,6 +2803,22 @@ const trinketTypes = {
         effect: 'weightBonus',
         bonus: 0.40,
         icon: '🪨'
+    },
+    swiftBobber: {
+        name: 'Swift Bobber',
+        price: 60000,
+        description: 'Increases progress rate by 7.5%',
+        effect: 'progressRate',
+        bonus: 0.075,
+        icon: '🎈'
+    },
+    turboReel: {
+        name: 'Turbo Reel',
+        price: 225000,
+        description: 'Increases progress rate by 15%',
+        effect: 'progressRate',
+        bonus: 0.15,
+        icon: '⚡'
     }
 };
 
@@ -2719,16 +2836,16 @@ const boatPrice = 100000;
 
 // Fishing rods
 const fishingRods = [
-    { name: 'Plastic Rod', barSizeBonus: 0, price: 0, owned: true, color: '#808080' },       // 40°
-    { name: 'Bamboo Rod', barSizeBonus: 5, price: 5000, owned: false, color: '#D2691E' },     // 42.5°
-    { name: 'Rubber Rod', barSizeBonus: 10, price: 10000, owned: false, color: '#2F4F4F' },   // 45°
-    { name: 'Iron Rod', barSizeBonus: 15, price: 100000, owned: false, color: '#708090' },    // 47.5°
-    { name: 'Titanium Rod', barSizeBonus: 20, price: 1000000, owned: false, color: '#C0C0C0' }, // 50°
-    { name: 'Diamond Rod', barSizeBonus: 26, price: 5000000, owned: false, color: '#00CED1' }, // 53°
-    { name: 'Fire Rod', barSizeBonus: 32, price: 10000000, owned: false, color: '#FF4500' },  // 56°
-    { name: 'Ice Rod', barSizeBonus: 38, price: 25000000, owned: false, color: '#87CEEB' },   // 59°
-    { name: 'Wind Rod', barSizeBonus: 44, price: 50000000, owned: false, color: '#98FB98' },  // 62°
-    { name: "Wizard's Rod", barSizeBonus: 50, price: 100000000, owned: false, color: '#9370DB' } // 65°
+    { name: 'Plastic Rod', progressBonus: 0, price: 0, owned: true, color: '#808080' },
+    { name: 'Bamboo Rod', progressBonus: 0.05, price: 5000, owned: false, color: '#D2691E' },
+    { name: 'Rubber Rod', progressBonus: 0.10, price: 10000, owned: false, color: '#2F4F4F' },
+    { name: 'Iron Rod', progressBonus: 0.18, price: 100000, owned: false, color: '#708090' },
+    { name: 'Titanium Rod', progressBonus: 0.28, price: 1000000, owned: false, color: '#C0C0C0' },
+    { name: 'Diamond Rod', progressBonus: 0.40, price: 5000000, owned: false, color: '#00CED1' },
+    { name: 'Fire Rod', progressBonus: 0.55, price: 10000000, owned: false, color: '#FF4500' },
+    { name: 'Ice Rod', progressBonus: 0.72, price: 25000000, owned: false, color: '#87CEEB' },
+    { name: 'Wind Rod', progressBonus: 0.90, price: 50000000, owned: false, color: '#98FB98' },
+    { name: "Wizard's Rod", progressBonus: 1.15, price: 100000000, owned: false, color: '#9370DB' }
 ];
 
 let currentRodIndex = 0;
@@ -2744,6 +2861,8 @@ function loadGameData() {
             maxInventorySlots = data.maxInventorySlots || 20;
             currentRodIndex = data.currentRodIndex || 0;
             timePlayed = data.timePlayed || 0;
+            playerLevel = data.playerLevel || 1;
+            playerXP = data.playerXP || 0;
             gameStartTime = Date.now();
             lastUpdateTime = Date.now();
             
@@ -2818,6 +2937,8 @@ function saveGameData() {
         maxTrinketSlots: maxTrinketSlots,
         trinketSlotUpgrades: trinketSlotUpgrades.map(u => u.purchased),
         timePlayed: timePlayed,
+        playerLevel: playerLevel,
+        playerXP: playerXP,
         museum: museum,
         boatOwned: boatOwned,
         currentLocation: currentLocation,
@@ -3688,8 +3809,8 @@ function startMinigame() {
     console.log('Canvas display states - scene:', sceneCanvas.style.display, 'minigame:', minigameCanvas.style.display);
     
     // Reset minigame variables for circular ring design
-    // Use constant bar size for all fish (no difficulty/weight adjustment)
-    let barSizeInDegrees = (80 + (fishingRods[currentRodIndex]?.barSizeBonus || 0)) / 2;
+    // Catch zone size is based on player fishing level (level 1 = 40°, level 10 = 65°)
+    let barSizeInDegrees = (80 + (playerLevel - 1) * 5.56) / 2;
     
     // Apply catch zone bonus from equipped trinkets (flat degree increase)
     const catchZoneBonus = getTrinketBonus('catchZone');
@@ -3705,8 +3826,10 @@ function startMinigame() {
     fishTargetAngle = 0;
     fishChangeTimer = 0;
     progress = 20;
-    // Consistent progress rates for all fish
-    progressGainRate = 0.22;
+    // Progress gain rate boosted by fishing rod and trinkets
+    const rodProgressBonus = fishingRods[currentRodIndex]?.progressBonus || 0;
+    const trinketProgressBonus = getTrinketBonus('progressRate');
+    progressGainRate = 0.22 * (1 + rodProgressBonus + trinketProgressBonus);
     progressDecayRate = 0.22;
     
     isPerfectCatch = true; // Reset perfect catch tracker
@@ -4068,7 +4191,15 @@ function endMinigame(success) {
                 museum[currentFish.name].longestLength = currentFishLength;
             }
             
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText} (${inventory.length}/${maxInventorySlots})`;
+            // Award XP based on fish difficulty
+            const baseXP = xpByDifficulty[currentFish.difficulty] || 5;
+            const xpResult = awardXP(baseXP);
+            let xpMsg = ` (+${xpResult.xpGained} XP)`;
+            if (xpResult.levelsGained > 0) {
+                xpMsg = ` 🎉 LEVEL UP! Now Lv. ${playerLevel}! (+${xpResult.xpGained} XP)`;
+            }
+            
+            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText}${xpMsg} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
         } else {
@@ -4442,7 +4573,7 @@ function updateRodPopup() {
         
         const desc = document.createElement('div');
         desc.className = 'rod-slot-desc';
-        desc.textContent = rod.barSizeBonus > 0 ? `Catch Zone: +${rod.barSizeBonus}` : 'Standard fishing rod';
+        desc.textContent = rod.progressBonus > 0 ? `Progress Rate: +${Math.round(rod.progressBonus * 100)}%` : 'Standard fishing rod';
         
         const status = document.createElement('div');
         status.className = 'rod-slot-status';
@@ -4551,6 +4682,31 @@ function displayFishInMuseum(inventoryIndex) {
             rarityMultiplier: fish.rarityMultiplier || 1
         };
 
+        // Award XP for first-time museum registration (not replacements)
+        if (!existingShowcase) {
+            const registrationXP = 50;
+            const xpResult = awardXP(registrationXP);
+            let xpMsg = ` (+${registrationXP} XP)`;
+            if (xpResult.levelsGained > 0) {
+                xpMsg = ` 🎉 LEVEL UP! Now Lv. ${playerLevel}! (+${registrationXP} XP)`;
+            }
+            // Show confirmation message with XP
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = `🏛️ ${fish.type} is now displayed in the museum!${xpMsg}`;
+            statusDiv.style.opacity = '1';
+            setTimeout(() => {
+                statusDiv.style.opacity = '0';
+            }, 3000);
+        } else {
+            // Show confirmation message without XP for replacements
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = `🏛️ ${fish.type} display has been updated in the museum!`;
+            statusDiv.style.opacity = '1';
+            setTimeout(() => {
+                statusDiv.style.opacity = '0';
+            }, 3000);
+        }
+
         // Remove fish from inventory (if it still exists at the given index)
         // Note: inventory may have changed if we pushed returnedFish earlier, so find by reference
         const idx = inventory.indexOf(fish);
@@ -4567,14 +4723,6 @@ function displayFishInMuseum(inventoryIndex) {
         if (currentPage === 'museum') {
             updateMuseumDisplay();
         }
-
-        // Show confirmation message
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = `🏛️ ${fish.type} is now displayed in the museum!`;
-        statusDiv.style.opacity = '1';
-        setTimeout(() => {
-            statusDiv.style.opacity = '0';
-        }, 3000);
     });
 }
 
@@ -4592,12 +4740,17 @@ function checkMuseumCompletion() {
         if (allFreshwaterHaveDisplay) {
             freshwaterMuseumCompleted = true;
             money += 200000;
+            const fwXpResult = awardXP(5000);
             saveGameData();
             updateMoneyDisplay();
             
             // Show reward message
+            let fwXpMsg = ' (+5,000 XP)';
+            if (fwXpResult.levelsGained > 0) {
+                fwXpMsg = ` 🎉 LEVEL UP! Now Lv. ${playerLevel}! (+5,000 XP)`;
+            }
             const statusDiv = document.getElementById('status');
-            statusDiv.textContent = `🎉 FRESHWATER MUSEUM COMPLETED! You've earned $200,000!`;
+            statusDiv.textContent = `🎉 FRESHWATER MUSEUM COMPLETED! You've earned $200,000!${fwXpMsg}`;
             statusDiv.style.opacity = '1';
             statusDiv.style.fontSize = '24px';
             statusDiv.style.fontWeight = 'bold';
@@ -4619,12 +4772,17 @@ function checkMuseumCompletion() {
         if (allSaltwaterHaveDisplay) {
             saltwaterMuseumCompleted = true;
             money += 1000000;
+            const swXpResult = awardXP(10000);
             saveGameData();
             updateMoneyDisplay();
             
             // Show reward message
+            let swXpMsg = ' (+10,000 XP)';
+            if (swXpResult.levelsGained > 0) {
+                swXpMsg = ` 🎉 LEVEL UP! Now Lv. ${playerLevel}! (+10,000 XP)`;
+            }
             const statusDiv = document.getElementById('status');
-            statusDiv.textContent = `🎉 SALTWATER MUSEUM COMPLETED! You've earned $1,000,000!`;
+            statusDiv.textContent = `🎉 SALTWATER MUSEUM COMPLETED! You've earned $1,000,000!${swXpMsg}`;
             statusDiv.style.opacity = '1';
             statusDiv.style.fontSize = '24px';
             statusDiv.style.fontWeight = 'bold';
@@ -4640,12 +4798,17 @@ function checkMuseumCompletion() {
     if (freshwaterMuseumCompleted && saltwaterMuseumCompleted && !completeMuseumBonusAwarded) {
         completeMuseumBonusAwarded = true;
         money += 2000000;
+        const cmXpResult = awardXP(25000);
         saveGameData();
         updateMoneyDisplay();
         
         // Show ultimate completion message
+        let cmXpMsg = ' (+25,000 XP)';
+        if (cmXpResult.levelsGained > 0) {
+            cmXpMsg = ` 🎉 LEVEL UP! Now Lv. ${playerLevel}! (+25,000 XP)`;
+        }
         const statusDiv = document.getElementById('status');
-        statusDiv.textContent = `🏆 COMPLETE MUSEUM MASTERY! You've earned an additional $2,000,000!`;
+        statusDiv.textContent = `🏆 COMPLETE MUSEUM MASTERY! You've earned an additional $2,000,000!${cmXpMsg}`;
         statusDiv.style.opacity = '1';
         statusDiv.style.fontSize = '26px';
         statusDiv.style.fontWeight = 'bold';
@@ -4812,6 +4975,17 @@ document.getElementById('backpack-icon').addEventListener('click', () => {
 // Close inventory popup
 document.getElementById('close-inventory').addEventListener('click', () => {
     document.getElementById('inventory-popup').style.display = 'none';
+});
+
+// Stats popup
+document.getElementById('stats-button').addEventListener('click', () => {
+    const popup = document.getElementById('stats-popup');
+    popup.style.display = 'block';
+    updateLevelDisplay();
+});
+
+document.getElementById('close-stats-popup').addEventListener('click', () => {
+    document.getElementById('stats-popup').style.display = 'none';
 });
 
 // Bait inventory popup
@@ -5651,7 +5825,7 @@ function updateRodsDisplay() {
         
         const rodDesc = document.createElement('div');
         rodDesc.className = 'shop-item-desc';
-        rodDesc.textContent = `+${rod.barSizeBonus} bar size`;
+        rodDesc.textContent = rod.progressBonus > 0 ? `+${Math.round(rod.progressBonus * 100)}% progress rate` : 'Standard fishing rod';
         
         rodDetails.appendChild(rodName);
         rodDetails.appendChild(rodDesc);
@@ -5997,6 +6171,7 @@ window.addEventListener('resize', () => {
 loadGameData();
 updateInventoryDisplay();
 updateMoneyDisplay();
+updateLevelDisplay();
 updateTimeDisplay();
 drawScene();
 
