@@ -4054,10 +4054,10 @@ function drawMinigame(fishInBar) {
     
     // Draw fish image instead of circle
     if (fishImage.complete && fishImage.naturalWidth > 0) {
-        const imgSize = R.fishSize * 3;
+        const imgSize = R.fishSize * 2.5;
         minigameCtx.save();
         // Flip fish based on movement direction
-        if (fishX < centerX) {
+        if (fishX > centerX) {
             minigameCtx.scale(-1, 1);
             minigameCtx.drawImage(fishImage, -fishX - imgSize / 2, fishY - imgSize / 2, imgSize, imgSize);
         } else {
