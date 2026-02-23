@@ -946,7 +946,7 @@ button {
 .inventory-slot {
     width: 100%;
     min-width: 100px;
-    height: 120px;
+    min-height: 120px;
     border: 3px solid #8B4513;
     border-radius: 8px;
     background: rgba(200, 200, 200, 0.3);
@@ -954,9 +954,11 @@ button {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 6px 4px;
     position: relative;
     user-select: none;
-    overflow: hidden;
+    overflow: visible;
+    box-sizing: border-box;
 }
 
 .inventory-slot.filled {
@@ -2751,7 +2753,8 @@ button {
 
     .inventory-slot {
         padding: 4px;
-        height: 90px;
+        min-height: 90px;
+        height: auto;
         min-width: 0;
         box-sizing: border-box;
     }
@@ -3332,7 +3335,8 @@ button {
     }
 
     .inventory-slot {
-        height: 80px;
+        min-height: 80px;
+        height: auto;
         padding: 3px;
         min-width: 0;
         box-sizing: border-box;

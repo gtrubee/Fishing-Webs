@@ -4654,14 +4654,8 @@ function displayFishInMuseum(inventoryIndex) {
         // If there's an existing showcase fish, attempt to return it to the player's inventory
         const existingShowcase = museum[fish.type].showcaseFish;
         if (existingShowcase) {
-            // Check inventory space
-            if (inventory.length >= maxInventorySlots) {
-                const statusDiv = document.getElementById('status');
-                statusDiv.textContent = `📦 Not enough inventory space to swap out the displayed ${fish.type}. Free up a slot first.`;
-                statusDiv.style.opacity = '1';
-                setTimeout(() => { statusDiv.style.opacity = '0'; }, 3000);
-                return; // Abort operation
-            }
+            // Swap: the new fish leaves inventory and the old one comes back,
+            // so net inventory count stays the same — no space check needed.
 
             // Recreate the fish object from the showcased data and push to inventory
             const returnedFish = {
