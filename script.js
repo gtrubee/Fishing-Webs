@@ -2382,7 +2382,7 @@ let doubleXPActive = false;
 let doubleXPEndTime = 0;
 let doubleXPTimerInterval = null;
 const DOUBLE_XP_DURATION = 60000; // 1 minute in ms
-const PERFECT_STREAK_REQUIRED = 3;
+const PERFECT_STREAK_REQUIRED = 5;
 
 // XP required to advance FROM each level (index 0 = level 1→2, index 8 = level 9→10)
 const xpPerLevel = [250, 750, 2000, 5000, 10000, 17000, 27000, 38000, 50000];
@@ -4285,9 +4285,9 @@ function activateDoubleXP() {
     statusDiv.style.opacity = '1';
     statusDiv.style.transition = 'none';
     if (wasAlreadyActive) {
-        statusDiv.textContent = '🔥 3 MORE PERFECT CATCHES! Double XP timer refilled! 🔥';
+        statusDiv.textContent = '🔥 5 MORE PERFECT CATCHES! Double XP timer refilled! 🔥';
     } else {
-        statusDiv.textContent = '🔥 3 PERFECT CATCHES! DOUBLE XP for 1 minute! 🔥';
+        statusDiv.textContent = '🔥 5 PERFECT CATCHES! DOUBLE XP for 1 minute! 🔥';
     }
     setTimeout(() => {
         statusDiv.style.transition = 'opacity 1s ease-out';
