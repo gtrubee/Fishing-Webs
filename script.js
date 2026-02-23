@@ -4056,6 +4056,19 @@ function drawMinigame(fishInBar) {
     if (fishImage.complete && fishImage.naturalWidth > 0) {
         const imgSize = R.fishSize * 2.5;
         minigameCtx.save();
+        
+        // Apply rarity glow around the fish image
+        if (currentFishRarity === 'shiny') {
+            minigameCtx.shadowColor = '#FFD700';
+            minigameCtx.shadowBlur = 25 * R.s;
+        } else if (currentFishRarity === 'golden') {
+            minigameCtx.shadowColor = '#FFD700';
+            minigameCtx.shadowBlur = 30 * R.s;
+        } else if (currentFishRarity === 'mutated') {
+            minigameCtx.shadowColor = '#E91E63';
+            minigameCtx.shadowBlur = 25 * R.s;
+        }
+        
         // Flip fish based on movement direction
         if (fishX > centerX) {
             minigameCtx.scale(-1, 1);
