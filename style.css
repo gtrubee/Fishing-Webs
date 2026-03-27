@@ -1666,6 +1666,7 @@ button {
     max-width: 500px;
     z-index: 200;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
 }
 
 #museum-confirm-header {
@@ -1713,6 +1714,8 @@ button {
     cursor: pointer;
     transition: all 0.2s;
     min-width: 120px;
+    flex: 1;
+    text-align: center;
 }
 
 .yes-btn {

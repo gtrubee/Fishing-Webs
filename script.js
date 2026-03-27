@@ -113,6 +113,10 @@ window.addEventListener('orientationchange', function() {
 
 let fishing = false;
 let minigameActive = false;
+let waitingForBite = false;
+let biteActive = false;
+let biteTimeout = null;
+let biteReactionTimeout = null;
 
 // Fish types with different difficulties
 const fishTypes = {
@@ -4258,11 +4262,13 @@ function endMinigame(success) {
                 xpMsg = ` 🎉 LEVEL UP! Now Lv. ${playerLevel}! (+${xpResult.xpGained} XP)`;
             }
             
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText}${xpMsg} (${inventory.length}/${maxInventorySlots})`;
+            const catchFishImg = `<img src="${getFishImagePath(currentFish.name)}" style="width:24px;height:24px;vertical-align:middle;image-rendering:pixelated;margin-right:4px">`;
+            statusDiv.innerHTML = `${catchFishImg} You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText}${xpMsg} (${inventory.length}/${maxInventorySlots})`;
             updateInventoryDisplay();
             saveGameData();
         } else {
-            statusDiv.textContent = `🐟 You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText} But your inventory is full!`;
+            const fullInvFishImg = `<img src="${getFishImagePath(currentFish.name)}" style="width:24px;height:24px;vertical-align:middle;image-rendering:pixelated;margin-right:4px">`;
+            statusDiv.innerHTML = `${fullInvFishImg} You caught a ${currentFish.name} weighing ${formatWeight(currentFishWeight)} lbs and ${currentFishLength.toFixed(2)}" long!${perfectCatchBonus}${rarityText} But your inventory is full!`;
         }
         // Track perfect catch streak
         if (isPerfectCatch) {
@@ -4347,6 +4353,59 @@ function deactivateDoubleXP() {
     if (timerEl) timerEl.style.display = 'none';
 }
 
+// Start the bite-waiting phase after casting
+function startBiteWait() {
+    fishing = true;
+    waitingForBite = true;
+    biteActive = false;
+    fishButton.disabled = true;
+    
+    statusDiv.style.opacity = '1';
+    statusDiv.style.transition = 'none';
+    statusDiv.textContent = '🎣 Waiting for a bite...';
+    
+    // Random wait between 2-8 seconds before a fish bites
+    const waitTime = 2000 + Math.random() * 6000;
+    biteTimeout = setTimeout(() => {
+        if (!waitingForBite) return; // cancelled
+        waitingForBite = false;
+        biteActive = true;
+        
+        statusDiv.textContent = '🐟 A fish is biting! Tap now!';
+        statusDiv.style.opacity = '1';
+        statusDiv.style.transition = 'none';
+        
+        // 1 second reaction window
+        biteReactionTimeout = setTimeout(() => {
+            if (!biteActive) return; // already reacted
+            // Missed the bite
+            biteActive = false;
+            fishing = false;
+            fishButton.disabled = false;
+            statusDiv.style.color = '';
+            statusDiv.style.fontWeight = '';
+            statusDiv.textContent = '💨 The fish got away! Too slow...';
+            setTimeout(() => {
+                statusDiv.style.transition = 'opacity 1s ease-out';
+                statusDiv.style.opacity = '0';
+            }, 2000);
+        }, 1000);
+    }, waitTime);
+}
+
+// Handle successful bite reaction
+function handleBiteReaction() {
+    if (!biteActive) return;
+    biteActive = false;
+    if (biteReactionTimeout) {
+        clearTimeout(biteReactionTimeout);
+        biteReactionTimeout = null;
+    }
+    statusDiv.style.color = '';
+    statusDiv.style.fontWeight = '';
+    startMinigame();
+}
+
 // Event listeners
 fishButton.addEventListener('click', () => {
     if (!fishing) {
@@ -4361,12 +4420,17 @@ fishButton.addEventListener('click', () => {
             }, 3000);
             return;
         }
-        startMinigame();
+        startBiteWait();
     }
 });
 
 // Mouse/click controls for the minigame - Circular ring design
 document.addEventListener('mousedown', (e) => {
+    if (biteActive) {
+        handleBiteReaction();
+        e.preventDefault();
+        return;
+    }
     if (minigameActive) {
         if (e.button === 0) { // Left click
             leftMouseDown = true;
@@ -4396,6 +4460,11 @@ document.addEventListener('contextmenu', (e) => {
 
 // Keyboard controls (A/D or Arrow keys for minigame, Space for casting)
 document.addEventListener('keydown', (e) => {
+    if (biteActive && e.code === 'Space') {
+        e.preventDefault();
+        handleBiteReaction();
+        return;
+    }
     if (minigameActive) {
         if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
             leftMouseDown = true;
@@ -4418,7 +4487,7 @@ document.addEventListener('keydown', (e) => {
                 }, 3000);
                 return;
             }
-            startMinigame();
+            startBiteWait();
         }
     }
 });
@@ -4450,6 +4519,11 @@ function updateTouchState(touches) {
 }
 
 document.addEventListener('touchstart', (e) => {
+    if (biteActive) {
+        handleBiteReaction();
+        e.preventDefault();
+        return;
+    }
     if (minigameActive) {
         updateTouchState(e.touches);
         e.preventDefault();
@@ -5239,6 +5313,18 @@ sceneCanvas.addEventListener('mousemove', (e) => {
 });
 
 document.getElementById('shop-button').addEventListener('click', () => {
+    // Cancel any pending bite wait
+    if (waitingForBite || biteActive) {
+        waitingForBite = false;
+        biteActive = false;
+        fishing = false;
+        fishButton.disabled = false;
+        if (biteTimeout) { clearTimeout(biteTimeout); biteTimeout = null; }
+        if (biteReactionTimeout) { clearTimeout(biteReactionTimeout); biteReactionTimeout = null; }
+        statusDiv.style.color = '';
+        statusDiv.style.fontWeight = '';
+        statusDiv.style.opacity = '0';
+    }
     currentPage = 'shop';
     document.getElementById('fishing-page').style.display = 'none';
     document.getElementById('shop-page').style.display = 'block';
@@ -5262,6 +5348,18 @@ const museumCtx = museumCanvas.getContext('2d');
 initBackgroundCanvas(museumCanvas);
 
 document.getElementById('museum-button').addEventListener('click', () => {
+    // Cancel any pending bite wait
+    if (waitingForBite || biteActive) {
+        waitingForBite = false;
+        biteActive = false;
+        fishing = false;
+        fishButton.disabled = false;
+        if (biteTimeout) { clearTimeout(biteTimeout); biteTimeout = null; }
+        if (biteReactionTimeout) { clearTimeout(biteReactionTimeout); biteReactionTimeout = null; }
+        statusDiv.style.color = '';
+        statusDiv.style.fontWeight = '';
+        statusDiv.style.opacity = '0';
+    }
     currentPage = 'museum';
     document.getElementById('fishing-page').style.display = 'none';
     document.getElementById('museum-page').style.display = 'block';
