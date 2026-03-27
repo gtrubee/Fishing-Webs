@@ -8,9 +8,18 @@ const snowCtx = snowCanvas.getContext('2d');
 const fishButton = document.getElementById('fish-button');
 const statusDiv = document.getElementById('status');
 
+// Fish-specific image mapping
+function getFishImagePath(fishName) {
+    const fishImageMap = {
+        'Rainbow Trout': 'Assets/Rainbow_Trout.png',
+        'Largemouth Bass': 'Assets/LargeMouthBass.png',
+    };
+    return fishImageMap[fishName] || 'Assets/Mini-Game-Fish.png';
+}
+
 // Preload fish image
 const fishImage = new Image();
-fishImage.src = 'Assets/fish.png';
+fishImage.src = 'Assets/Mini-Game-Fish.png';
 
 // Fixed internal resolution for background canvases (16:9 ratio)
 // JS manually computes "cover" sizing since object-fit:cover is unreliable on iOS canvas
@@ -4057,8 +4066,11 @@ function drawMinigame(fishInBar) {
     
     // Draw fish image instead of circle
     if (fishImage.complete && fishImage.naturalWidth > 0) {
-        const imgSize = R.fishSize * 2.5;
+        const imgSize = R.fishSize * 4;
         minigameCtx.save();
+        
+        // Disable image smoothing for crisp pixel art
+        minigameCtx.imageSmoothingEnabled = false;
         
         // Apply rarity glow around the fish image
         if (currentFishRarity === 'shiny') {
@@ -5002,7 +5014,7 @@ function updateInventoryDisplay() {
             // Fish icon with color
             const fishIcon = document.createElement('img');
             fishIcon.className = 'fish-icon';
-            fishIcon.src = 'Assets/fish.png';
+            fishIcon.src = getFishImagePath(fish.type);
             fishIcon.alt = fish.type;
             
             // Fish name
@@ -5787,7 +5799,7 @@ function updateSellInventory() {
         
         const fishIcon = document.createElement('img');
         fishIcon.className = 'fish-icon';
-        fishIcon.src = 'Assets/fish.png';
+        fishIcon.src = getFishImagePath(fish.type);
         fishIcon.alt = fish.type;
         
         const fishName = document.createElement('div');
@@ -6518,7 +6530,7 @@ function updateMuseumDisplay() {
         iconDiv.className = 'museum-fish-icon';
         if (discovered) {
             const iconImg = document.createElement('img');
-            iconImg.src = 'Assets/fish.png';
+            iconImg.src = getFishImagePath(fishType.name);
             iconImg.alt = fishType.name;
             iconImg.className = 'museum-fish-img';
             iconDiv.appendChild(iconImg);

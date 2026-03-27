@@ -778,7 +778,7 @@ button {
 
 #inventory-grid, #bait-popup-grid, #trinket-popup-grid, #rod-popup-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 10px;
     max-height: 60vh;
     overflow-y: auto;
@@ -995,16 +995,16 @@ button {
 
 .inventory-slot {
     width: 100%;
-    min-width: 100px;
-    min-height: 120px;
+    min-width: 140px;
+    min-height: 160px;
     border: 3px solid #8B4513;
     border-radius: 8px;
     background: rgba(200, 200, 200, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 6px 4px;
+    justify-content: flex-end;
+    padding: 8px 6px;
     position: relative;
     user-select: none;
     overflow: visible;
@@ -1016,10 +1016,16 @@ button {
 }
 
 .fish-icon {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 5px;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+    margin-bottom: 2px;
     object-fit: contain;
+    flex-shrink: 0;
+    image-rendering: pixelated;
 }
 
 .fish-name {
@@ -1029,6 +1035,10 @@ button {
     text-align: center;
     word-wrap: break-word;
     max-width: 90%;
+    min-height: 2.4em;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 .fish-weight {
@@ -1167,8 +1177,12 @@ button {
 }
 
 .sell-slot .fish-icon {
-    width: 56px;
-    height: 56px;
+    width: 84px;
+    height: 84px;
+    min-width: 84px;
+    min-height: 84px;
+    max-width: 84px;
+    max-height: 84px;
     margin-bottom: 5px;
 }
 
@@ -1539,16 +1553,17 @@ button {
 }
 
 .museum-fish-icon {
-    font-size: 32px;
+    font-size: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .museum-fish-img {
-    width: 32px;
-    height: 32px;
+    width: 64px;
+    height: 64px;
     object-fit: contain;
+    image-rendering: pixelated;
 }
 
 .museum-entry-stats {
@@ -2578,8 +2593,8 @@ button {
     }
 
     .sell-slot .fish-icon, .sell-fish-emoji {
-        width: 24px;
-        height: 24px;
+        width: 36px;
+        height: 36px;
     }
 
     .sell-slot .fish-name, .sell-fish-name {
@@ -2723,13 +2738,13 @@ button {
     }
 
     .museum-fish-emoji, .museum-fish-icon {
-        font-size: 22px;
+        font-size: 44px;
         margin: 2px 0;
     }
 
     .museum-fish-img {
-        width: 22px;
-        height: 22px;
+        width: 44px;
+        height: 44px;
     }
 
     .museum-fish-name {
@@ -2858,8 +2873,12 @@ button {
     }
 
     .inventory-slot .fish-icon {
-        width: 24px;
-        height: 24px;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        max-width: 36px;
+        max-height: 36px;
         margin-bottom: 2px;
     }
 
@@ -3221,8 +3240,8 @@ button {
     }
 
     .sell-slot .fish-icon, .sell-fish-emoji {
-        width: 24px;
-        height: 24px;
+        width: 36px;
+        height: 36px;
     }
 
     .sell-slot .fish-name, .sell-fish-name {
@@ -3355,13 +3374,13 @@ button {
     }
 
     .museum-fish-emoji, .museum-fish-icon {
-        font-size: 20px;
+        font-size: 40px;
         margin: 1px 0;
     }
 
     .museum-fish-img {
-        width: 20px;
-        height: 20px;
+        width: 40px;
+        height: 40px;
     }
 
     .museum-fish-name {
@@ -3457,8 +3476,12 @@ button {
     }
 
     .inventory-slot .fish-icon {
-        width: 22px;
-        height: 22px;
+        width: 33px;
+        height: 33px;
+        min-width: 33px;
+        min-height: 33px;
+        max-width: 33px;
+        max-height: 33px;
         margin-bottom: 1px;
     }
 
@@ -3668,12 +3691,12 @@ button {
     }
 
     .museum-fish-emoji, .museum-fish-icon {
-        font-size: 20px;
+        font-size: 40px;
     }
 
     .museum-fish-img {
-        width: 20px;
-        height: 20px;
+        width: 40px;
+        height: 40px;
     }
 
     .museum-fish-name {
