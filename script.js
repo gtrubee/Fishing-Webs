@@ -2335,6 +2335,7 @@ let maxInventorySlots = 20;
 const absoluteMaxInventorySlots = 100;
 let inventory = [];
 let money = 0;
+let totalMoneyEarned = 0;
 const baseInventorySlotPrice = 100;
 
 // Location system
@@ -2475,7 +2476,7 @@ function updateStatsPopupData() {
     const totalSpecies = Object.keys(fishTypes).length + (typeof oceanFishTypes !== 'undefined' ? Object.keys(oceanFishTypes).length : 0);
     totalCaughtEl.textContent = totalCaught.toLocaleString();
     speciesEl.textContent = `${speciesDiscovered} / ${totalSpecies}`;
-    moneyEl.textContent = `$${money.toLocaleString()}`;
+    moneyEl.textContent = `$${totalMoneyEarned.toLocaleString()}`;
     // Time played
     const currentTimePlayed = timePlayed + Math.floor((Date.now() - lastUpdateTime) / 1000);
     const hrs = Math.floor(currentTimePlayed / 3600);
@@ -2874,6 +2875,7 @@ function loadGameData() {
             const data = JSON.parse(savedData);
             inventory = data.inventory || [];
             money = data.money || 0;
+            totalMoneyEarned = data.totalMoneyEarned || 0;
             maxInventorySlots = data.maxInventorySlots || 20;
             currentRodIndex = data.currentRodIndex || 0;
             timePlayed = data.timePlayed || 0;
@@ -2943,6 +2945,7 @@ function saveGameData() {
     const data = {
         inventory: inventory,
         money: money,
+        totalMoneyEarned: totalMoneyEarned,
         maxInventorySlots: maxInventorySlots,
         currentRodIndex: currentRodIndex,
         ownedRods: fishingRods.map(rod => rod.owned),
@@ -4850,6 +4853,7 @@ function checkMuseumCompletion() {
         if (allFreshwaterHaveDisplay) {
             freshwaterMuseumCompleted = true;
             money += 200000;
+            totalMoneyEarned += 200000;
             const fwXpResult = awardXP(5000);
             saveGameData();
             updateMoneyDisplay();
@@ -4882,6 +4886,7 @@ function checkMuseumCompletion() {
         if (allSaltwaterHaveDisplay) {
             saltwaterMuseumCompleted = true;
             money += 1000000;
+            totalMoneyEarned += 1000000;
             const swXpResult = awardXP(10000);
             saveGameData();
             updateMoneyDisplay();
@@ -4908,6 +4913,7 @@ function checkMuseumCompletion() {
     if (freshwaterMuseumCompleted && saltwaterMuseumCompleted && !completeMuseumBonusAwarded) {
         completeMuseumBonusAwarded = true;
         money += 2000000;
+        totalMoneyEarned += 2000000;
         const cmXpResult = awardXP(25000);
         saveGameData();
         updateMoneyDisplay();
@@ -5839,6 +5845,7 @@ function sellFish(index) {
     }
     
     money += price;
+    totalMoneyEarned += price;
     inventory.splice(index, 1);
     updateShopDisplay();
     updateInventoryDisplay();
@@ -5863,6 +5870,7 @@ function sellAllFish() {
         totalEarned += price;
     });
     money += totalEarned;
+    totalMoneyEarned += totalEarned;
     inventory = [];
     updateShopDisplay();
     updateInventoryDisplay();
