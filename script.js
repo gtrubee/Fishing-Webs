@@ -2447,10 +2447,20 @@ function getTotalXP() {
 
 // Update the level/XP displays wherever they appear
 function updateLevelDisplay() {
-    // Update stats button label
-    const statsBtn = document.getElementById('stats-button');
-    if (statsBtn) {
-        statsBtn.textContent = `📊 Lv. ${playerLevel}`;
+    // Update stats button label and progress bar
+    const statsLabel = document.getElementById('stats-button-label');
+    if (statsLabel) {
+        statsLabel.textContent = `Lv. ${playerLevel}`;
+    }
+    const statsBtnBar = document.getElementById('stats-button-bar-fill');
+    if (statsBtnBar) {
+        if (playerLevel >= MAX_LEVEL) {
+            statsBtnBar.style.width = '100%';
+        } else {
+            const needed = getXPForNextLevel();
+            const pct = Math.min(100, (playerXP / needed) * 100);
+            statsBtnBar.style.width = pct + '%';
+        }
     }
     // Update stats popup content if it exists
     const popupLevel = document.getElementById('stats-level-value');
@@ -5845,8 +5855,10 @@ function formatWeight(weight) {
 
 function updateTimeDisplay() {
     const formattedTime = formatTime(timePlayed);
-    document.getElementById('time-amount').textContent = formattedTime;
-    document.getElementById('shop-time-amount').textContent = formattedTime;
+    const timeEl = document.getElementById('time-amount');
+    const shopTimeEl = document.getElementById('shop-time-amount');
+    if (timeEl) timeEl.textContent = formattedTime;
+    if (shopTimeEl) shopTimeEl.textContent = formattedTime;
 }
 
 function updateSellInventory() {
@@ -6434,19 +6446,11 @@ setInterval(updateSystemTime, 1000);
 // Function to update location display
 function updateLocationDisplay() {
     const locationIcon = document.getElementById('location-icon');
-    const locationName = document.getElementById('location-name');
-    const locationDisplay = document.getElementById('location-display');
     
     if (currentLocation === 'ocean') {
         locationIcon.textContent = '🌊';
-        locationName.textContent = 'Ocean';
-        locationDisplay.style.background = 'linear-gradient(135deg, rgba(33, 150, 243, 0.9), rgba(30, 136, 229, 0.95))';
-        locationDisplay.style.borderColor = '#1976D2';
     } else {
         locationIcon.textContent = '🏞️';
-        locationName.textContent = 'Lake';
-        locationDisplay.style.background = 'linear-gradient(135deg, rgba(76, 175, 80, 0.9), rgba(67, 160, 71, 0.95))';
-        locationDisplay.style.borderColor = '#388E3C';
     }
 }
 
