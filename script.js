@@ -11,8 +11,8 @@ const statusDiv = document.getElementById('status');
 // Fish-specific image mapping
 function getFishImagePath(fishName) {
     const fishImageMap = {
-        'Rainbow Trout': 'Assets/Rainbow_Trout.png',
-        'Largemouth Bass': 'Assets/LargeMouthBass.png',
+        'Rainbow Trout': 'Assets/Fresh-Water-Fish/Rainbow_Trout.png',
+        'Largemouth Bass': 'Assets/Fresh-Water-Fish/LargeMouthBass.png',
     };
     return fishImageMap[fishName] || 'Assets/Mini-Game-Fish.png';
 }
@@ -5178,6 +5178,25 @@ document.getElementById('close-inventory').addEventListener('click', () => {
     document.getElementById('inventory-popup').style.display = 'none';
 });
 
+// Inventory sidebar tab switching
+const tabTitles = { fish: 'Inventory', bait: 'Bait Inventory', trinkets: 'Trinket Collection', rods: 'Fishing Rods' };
+document.querySelectorAll('.sidebar-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.inventory-tab-panel').forEach(p => { p.style.display = 'none'; p.classList.remove('active'); });
+        const panel = document.getElementById('inventory-tab-' + target);
+        panel.style.display = 'block';
+        panel.classList.add('active');
+        document.getElementById('inventory-title').textContent = tabTitles[target];
+        if (target === 'fish') updateInventoryDisplay();
+        else if (target === 'bait') updateBaitPopup();
+        else if (target === 'trinkets') updateTrinketPopup();
+        else if (target === 'rods') updateRodPopup();
+    });
+});
+
 // Stats popup
 document.getElementById('stats-button').addEventListener('click', () => {
     const popup = document.getElementById('stats-popup');
@@ -5187,42 +5206,6 @@ document.getElementById('stats-button').addEventListener('click', () => {
 
 document.getElementById('close-stats-popup').addEventListener('click', () => {
     document.getElementById('stats-popup').style.display = 'none';
-});
-
-// Bait inventory popup
-document.getElementById('bait-button').addEventListener('click', () => {
-    const popup = document.getElementById('bait-popup');
-    popup.style.display = 'block';
-    updateBaitPopup();
-});
-
-// Close bait popup
-document.getElementById('close-bait-popup').addEventListener('click', () => {
-    document.getElementById('bait-popup').style.display = 'none';
-});
-
-// Trinket inventory popup
-document.getElementById('trinket-button').addEventListener('click', () => {
-    const popup = document.getElementById('trinket-popup');
-    popup.style.display = 'block';
-    updateTrinketPopup();
-});
-
-// Close trinket popup
-document.getElementById('close-trinket-popup').addEventListener('click', () => {
-    document.getElementById('trinket-popup').style.display = 'none';
-});
-
-// Rod inventory popup
-document.getElementById('rod-button').addEventListener('click', () => {
-    const popup = document.getElementById('rod-popup');
-    popup.style.display = 'block';
-    updateRodPopup();
-});
-
-// Close rod popup
-document.getElementById('close-rod-popup').addEventListener('click', () => {
-    document.getElementById('rod-popup').style.display = 'none';
 });
 
 // Shop navigation

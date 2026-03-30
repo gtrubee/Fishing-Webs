@@ -39,14 +39,17 @@
                 <div id="location-name">Lake</div>
             </div>
             <div id="backpack-icon">
-                🎒
+                <img src="Assets/Backpack.png" alt="Backpack" id="backpack-img">
                 <span id="fish-count">0/20</span>
             </div>
-            <button id="bait-button">🪱 Bait</button>
-            <button id="trinket-button">💎 Trinkets</button>
-            <button id="rod-button">🎣 Rods</button>
-            <button id="museum-button">🏛️ Museum</button>
-            <button id="shop-button">🏪 Shop</button>
+            <div id="nav-icons">
+                <div id="museum-button" title="Museum">
+                    <img src="Assets/Museum-Icon.png" alt="Museum" class="nav-icon-img">
+                </div>
+                <div id="shop-button" title="Shop">
+                    <img src="Assets/Shop-Icon.png" alt="Shop" class="nav-icon-img">
+                </div>
+            </div>
             <button id="reset-button">🔄 Reset</button>
             <div id="money-display">💰 $<span id="money-amount">0</span></div>
             <div id="time-display">⏱️ <span id="time-amount">0:00:00</span></div>
@@ -158,40 +161,42 @@
             </div>
         </div>
 
-        <!-- Inventory Popup (shared) -->
+        <!-- Inventory Popup (unified) -->
         <div id="inventory-popup" style="display: none;">
             <div id="inventory-header">
-                <h2>Inventory</h2>
+                <h2 id="inventory-title">Inventory</h2>
                 <button id="close-inventory">✕</button>
             </div>
-            <div id="inventory-grid"></div>
-        </div>
-
-        <!-- Bait Inventory Popup -->
-        <div id="bait-popup" style="display: none;">
-            <div id="bait-popup-header">
-                <h2>Bait Inventory</h2>
-                <button id="close-bait-popup">✕</button>
+            <div id="inventory-body">
+                <div id="inventory-sidebar">
+                    <div class="sidebar-tab active" data-tab="fish" title="Fish">
+                        <img src="Assets/Mini-Game-FIsh.png" alt="Fish" class="sidebar-icon">
+                    </div>
+                    <div class="sidebar-tab" data-tab="bait" title="Bait">
+                        <img src="Assets/Worm.png" alt="Bait" class="sidebar-icon">
+                    </div>
+                    <div class="sidebar-tab" data-tab="trinkets" title="Trinkets">
+                        <img src="Assets/Diamond.png" alt="Trinkets" class="sidebar-icon">
+                    </div>
+                    <div class="sidebar-tab" data-tab="rods" title="Rods">
+                        <img src="Assets/Fishing-Rod.png" alt="Rods" class="sidebar-icon">
+                    </div>
+                </div>
+                <div id="inventory-content">
+                    <div id="inventory-tab-fish" class="inventory-tab-panel active">
+                        <div id="inventory-grid"></div>
+                    </div>
+                    <div id="inventory-tab-bait" class="inventory-tab-panel" style="display:none;">
+                        <div id="bait-popup-grid"></div>
+                    </div>
+                    <div id="inventory-tab-trinkets" class="inventory-tab-panel" style="display:none;">
+                        <div id="trinket-popup-grid"></div>
+                    </div>
+                    <div id="inventory-tab-rods" class="inventory-tab-panel" style="display:none;">
+                        <div id="rod-popup-grid"></div>
+                    </div>
+                </div>
             </div>
-            <div id="bait-popup-grid"></div>
-        </div>
-
-        <!-- Trinket Inventory Popup -->
-        <div id="trinket-popup" style="display: none;">
-            <div id="trinket-popup-header">
-                <h2>Trinket Collection</h2>
-                <button id="close-trinket-popup">✕</button>
-            </div>
-            <div id="trinket-popup-grid"></div>
-        </div>
-
-        <!-- Fishing Rod Inventory Popup -->
-        <div id="rod-popup" style="display: none;">
-            <div id="rod-popup-header">
-                <h2>Fishing Rods</h2>
-                <button id="close-rod-popup">✕</button>
-            </div>
-            <div id="rod-popup-grid"></div>
         </div>
 
         <!-- Museum Confirmation Popup -->
