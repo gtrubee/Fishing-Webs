@@ -566,6 +566,17 @@ button {
     image-rendering: auto;
 }
 
+.header-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    vertical-align: middle;
+    image-rendering: auto;
+    margin-right: 4px;
+    position: relative;
+    top: -2px;
+}
+
 #backpack-icon:hover {
     transform: scale(1.1);
 }

@@ -4080,7 +4080,7 @@ function drawMinigame(fishInBar) {
     
     // Draw fish image instead of circle
     if (fishImage.complete && fishImage.naturalWidth > 0) {
-        const imgSize = R.fishSize * 4;
+        const imgSize = R.fishSize * 3;
         minigameCtx.save();
         
         // Disable image smoothing for crisp pixel art
