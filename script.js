@@ -2641,6 +2641,56 @@ const fishPrices = {
     'Giant Grouper': 300, 'Goliath Grouper': 300, 'Atlantic Goliath Grouper': 300, 'Giant Manta Ray': 400, 'Great White Shark': 500, 'Whale Shark': 450, 'Ocean Sunfish': 350, 'Bluefin Tuna': 400, 'Marlin': 450, 'Sailfish': 420, 'Swordfish': 430, 'Orca': 600, 'Humpback Whale': 550, 'Gray Whale': 550, 'Sperm Whale': 550, 'Blue Whale': 600
 };
 
+const fishSellDifficultyMultipliers = {
+    Easy: 1,
+    Average: 1.25,
+    Hard: 1.6
+};
+
+const fishDefinitionsByName = {
+    ...Object.fromEntries(Object.values(fishTypes).map(fish => [fish.name, fish])),
+    ...Object.fromEntries(Object.values(oceanFishTypes).map(fish => [fish.name, fish]))
+};
+
+function getFishDefinitionByName(fishName) {
+    return fishDefinitionsByName[fishName] || null;
+}
+
+function getFishSizeSellMultiplier(fish, fishDefinition) {
+    const minWeight = fish.speciesMinWeight ?? fishDefinition?.minWeight;
+    const maxWeight = fish.speciesMaxWeight ?? fishDefinition?.maxWeight;
+
+    if (typeof minWeight !== 'number' || typeof maxWeight !== 'number' || maxWeight <= minWeight) {
+        return 1;
+    }
+
+    const clampedWeight = Math.max(minWeight, Math.min(fish.weight, maxWeight));
+    const relativeSize = (clampedWeight - minWeight) / (maxWeight - minWeight);
+    return 1 + (relativeSize * 0.65);
+}
+
+function calculateFishSellPrice(fish) {
+    const basePricePerPound = fishPrices[fish.type] || 0;
+    const fishDefinition = getFishDefinitionByName(fish.type);
+    const difficulty = fish.difficulty || fishDefinition?.difficulty || 'Easy';
+    const difficultyMultiplier = fishSellDifficultyMultipliers[difficulty] || 1;
+    const sizeMultiplier = getFishSizeSellMultiplier(fish, fishDefinition);
+
+    let price = basePricePerPound * fish.weight * difficultyMultiplier * sizeMultiplier;
+
+    // Apply rarity multiplier
+    const rarityMultiplier = fish.rarityMultiplier || 1;
+    price = Math.floor(price * rarityMultiplier);
+
+    // Apply sell bonus from equipped trinkets
+    const sellBonus = getTrinketBonus('sellBonus');
+    if (sellBonus > 0) {
+        price = Math.floor(price * (1 + sellBonus));
+    }
+
+    return Math.max(1, Math.floor(price));
+}
+
 // Bait system
 const baitTypes = {
     // Freshwater/Lake Baits
@@ -4239,7 +4289,10 @@ function endMinigame(success) {
                 weight: finalWeight,
                 length: currentFishLength,
                 rarity: rarity,
-                rarityMultiplier: rarityMultiplier
+                rarityMultiplier: rarityMultiplier,
+                difficulty: currentFish.difficulty,
+                speciesMinWeight: currentFish.minWeight,
+                speciesMaxWeight: currentFish.maxWeight
             });
             
             // Update museum records
@@ -4878,7 +4931,10 @@ function displayFishInMuseum(inventoryIndex) {
                 weight: existingShowcase.weight,
                 length: existingShowcase.length || 0,
                 rarity: existingShowcase.rarity || 'normal',
-                rarityMultiplier: existingShowcase.rarityMultiplier || 1
+                rarityMultiplier: existingShowcase.rarityMultiplier || 1,
+                difficulty: existingShowcase.difficulty,
+                speciesMinWeight: existingShowcase.speciesMinWeight,
+                speciesMaxWeight: existingShowcase.speciesMaxWeight
             };
             inventory.push(returnedFish);
         }
@@ -4888,7 +4944,10 @@ function displayFishInMuseum(inventoryIndex) {
             weight: fish.weight,
             length: fish.length || 0,
             rarity: fish.rarity || 'normal',
-            rarityMultiplier: fish.rarityMultiplier || 1
+            rarityMultiplier: fish.rarityMultiplier || 1,
+            difficulty: fish.difficulty,
+            speciesMinWeight: fish.speciesMinWeight,
+            speciesMaxWeight: fish.speciesMaxWeight
         };
 
         // Award XP for first-time museum registration (not replacements)
@@ -5907,17 +5966,7 @@ function updateSellInventory() {
         fishLength.className = 'fish-length';
         fishLength.textContent = `${fish.length || 0}"`;
         
-        let price = fishPrices[fish.type] * fish.weight;
-        
-        // Apply rarity multiplier
-        const rarityMultiplier = fish.rarityMultiplier || 1;
-        price = Math.floor(price * rarityMultiplier);
-        
-        // Apply sell bonus from equipped trinkets
-        const sellBonus = getTrinketBonus('sellBonus');
-        if (sellBonus > 0) {
-            price = Math.floor(price * (1 + sellBonus));
-        }
+        const price = calculateFishSellPrice(fish);
         
         const priceTag = document.createElement('div');
         priceTag.className = 'sell-price';
@@ -5937,17 +5986,7 @@ function updateSellInventory() {
 
 function sellFish(index) {
     const fish = inventory[index];
-    let price = fishPrices[fish.type] * fish.weight;
-    
-    // Apply rarity multiplier
-    const rarityMultiplier = fish.rarityMultiplier || 1;
-    price = Math.floor(price * rarityMultiplier);
-    
-    // Apply sell bonus from equipped trinkets
-    const sellBonus = getTrinketBonus('sellBonus');
-    if (sellBonus > 0) {
-        price = Math.floor(price * (1 + sellBonus));
-    }
+    const price = calculateFishSellPrice(fish);
     
     money += price;
     totalMoneyEarned += price;
@@ -5960,19 +5999,7 @@ function sellFish(index) {
 function sellAllFish() {
     let totalEarned = 0;
     inventory.forEach(fish => {
-        let price = fishPrices[fish.type] * fish.weight;
-        
-        // Apply rarity multiplier
-        const rarityMultiplier = fish.rarityMultiplier || 1;
-        price = Math.floor(price * rarityMultiplier);
-        
-        // Apply sell bonus from equipped trinkets
-        const sellBonus = getTrinketBonus('sellBonus');
-        if (sellBonus > 0) {
-            price = Math.floor(price * (1 + sellBonus));
-        }
-        
-        totalEarned += price;
+        totalEarned += calculateFishSellPrice(fish);
     });
     money += totalEarned;
     totalMoneyEarned += totalEarned;
@@ -6799,7 +6826,10 @@ function retrieveShowcase(fishTypeName) {
             weight: showcased.weight,
             length: showcased.length || 0,
             rarity: showcased.rarity || 'normal',
-            rarityMultiplier: showcased.rarityMultiplier || 1
+            rarityMultiplier: showcased.rarityMultiplier || 1,
+            difficulty: showcased.difficulty,
+            speciesMinWeight: showcased.speciesMinWeight,
+            speciesMaxWeight: showcased.speciesMaxWeight
         };
 
         // Add to inventory and remove from museum showcase
