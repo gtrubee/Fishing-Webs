@@ -3834,6 +3834,23 @@ function startMinigame() {
     
     // Calculate weight factor (0 to 1, where 1 is maximum weight for this species)
     const weightFactor = (currentFishWeight - currentFish.minWeight) / (currentFish.maxWeight - currentFish.minWeight);
+
+    // Trophy fish must be at least this close to the species max weight
+    const TROPHY_WEIGHT_FACTOR_THRESHOLD = 0.75;
+    const isTrophyFish = weightFactor >= TROPHY_WEIGHT_FACTOR_THRESHOLD;
+
+    // Downgrade specimen difficulty for undersized fish.
+    // Example: a very small Florida Gar should not feel like a true Hard catch.
+    let specimenDifficulty = currentFish.difficulty;
+    if (currentFish.difficulty === 'Hard') {
+        if (weightFactor < 0.40) {
+            specimenDifficulty = 'Easy';
+        } else if (!isTrophyFish) {
+            specimenDifficulty = 'Average';
+        }
+    } else if (currentFish.difficulty === 'Average' && weightFactor < 0.45) {
+        specimenDifficulty = 'Easy';
+    }
     
     // Define difficulty-based scaling factors to keep fish in their categories
     let difficultyScaling = {
@@ -3843,14 +3860,14 @@ function startMinigame() {
         barSizeReduction: 0.05     // Easy fish: up to 5% smaller bar (relaxed)
     };
     
-    if (currentFish.difficulty === 'Average') {
+    if (specimenDifficulty === 'Average') {
         difficultyScaling = {
             speedMultiplier: 0.3,     // Average fish: up to 30% speed increase (relaxed)
             randomnessMultiplier: 0.4, // Average fish: up to 40% randomness increase (relaxed)
             intervalMultiplier: 0.25,  // Average fish: up to 25% more frequent changes (relaxed)
             barSizeReduction: 0.1      // Average fish: up to 10% smaller bar (relaxed)
         };
-    } else if (currentFish.difficulty === 'Hard') {
+    } else if (specimenDifficulty === 'Hard') {
         difficultyScaling = {
             speedMultiplier: 0.8,     // Hard fish: up to 80% speed increase
             randomnessMultiplier: 1.0, // Hard fish: up to 100% randomness increase
@@ -3858,6 +3875,13 @@ function startMinigame() {
             barSizeReduction: 0.25     // Hard fish: up to 25% smaller bar
         };
     }
+
+    // Apply baseline specimen-tier multipliers to the fish's native behavior values
+    const specimenBaseTuning = {
+        Easy: { speed: 0.62, randomness: 0.60, interval: 1.28 },
+        Average: { speed: 0.82, randomness: 0.82, interval: 1.12 },
+        Hard: { speed: 1.0, randomness: 1.0, interval: 1.0 }
+    }[specimenDifficulty];
     
     // Calculate absolute size-based bonus (massive multipliers for truly giant creatures)
     let absoluteSizeBonus = 1;
@@ -3889,9 +3913,9 @@ function startMinigame() {
     
     // Adjust difficulty based on weight within the fish's difficulty category
     // Heavier specimens of each species are more challenging, with massive creatures being absolutely brutal
-    const weightAdjustedSpeed = currentFish.fishSpeed * (1 + weightFactor * difficultyScaling.speedMultiplier * absoluteSizeBonus);
-    const weightAdjustedRandomness = currentFish.fishRandomness * (1 + weightFactor * difficultyScaling.randomnessMultiplier * absoluteSizeBonus);
-    const weightAdjustedInterval = currentFish.fishChangeInterval * (1 - weightFactor * difficultyScaling.intervalMultiplier * Math.min(absoluteSizeBonus, 2.0));
+    const weightAdjustedSpeed = (currentFish.fishSpeed * specimenBaseTuning.speed) * (1 + weightFactor * difficultyScaling.speedMultiplier * absoluteSizeBonus);
+    const weightAdjustedRandomness = (currentFish.fishRandomness * specimenBaseTuning.randomness) * (1 + weightFactor * difficultyScaling.randomnessMultiplier * absoluteSizeBonus);
+    const weightAdjustedInterval = (currentFish.fishChangeInterval * specimenBaseTuning.interval) * (1 - weightFactor * difficultyScaling.intervalMultiplier * Math.min(absoluteSizeBonus, 2.0));
     
     statusDiv.textContent = '';
     
