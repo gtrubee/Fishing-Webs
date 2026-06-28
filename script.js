@@ -2691,6 +2691,9 @@ function calculateFishSellPrice(fish) {
     return Math.max(1, Math.floor(price));
 }
 
+const TROPHY_WEIGHT_FACTOR_THRESHOLD = 0.75;
+const TROPHY_BAIT_MISS_CHANCE = 0.02;
+
 // Bait system
 const baitTypes = {
     // Freshwater/Lake Baits
@@ -2756,6 +2759,8 @@ const baitTypes = {
         description: 'For trophy fish',
         boosts: ['sturgeon', 'gar', 'spottedGar', 'shortnoseGar', 'floridaGar', 'muskellunge', 'kingSalmon'],
         multiplier: 8,
+        trophyWeightFloor: TROPHY_WEIGHT_FACTOR_THRESHOLD,
+        trophyMissChance: TROPHY_BAIT_MISS_CHANCE,
         location: 'lake'
     },
     // Ocean/Saltwater Baits
@@ -2821,6 +2826,8 @@ const baitTypes = {
         description: 'For massive ocean giants',
         boosts: ['giantMantaRay', 'whaleshark', 'oceanSunfish', 'orca', 'humpbackWhale', 'grayWhale', 'spermWhale', 'blueWhale'],
         multiplier: 8,
+        trophyWeightFloor: 0.7,
+        trophyMissChance: TROPHY_BAIT_MISS_CHANCE,
         location: 'ocean'
     }
 };
@@ -3798,6 +3805,19 @@ function startMinigame() {
         // Push the random roll toward 1 (higher weight)
         weightRoll = weightRoll + (1 - weightRoll) * trophyOddsBonus;
     }
+
+    // Trophy-focused bait can enforce a minimum trophy-sized roll
+    const activeBait = currentBait ? baitTypes[currentBait] : null;
+    if (activeBait && typeof activeBait.trophyWeightFloor === 'number') {
+        const trophyMissChance = typeof activeBait.trophyMissChance === 'number'
+            ? activeBait.trophyMissChance
+            : TROPHY_BAIT_MISS_CHANCE;
+
+        const baitFailedTrophyHook = Math.random() < trophyMissChance;
+        if (!baitFailedTrophyHook) {
+            weightRoll = Math.max(weightRoll, activeBait.trophyWeightFloor);
+        }
+    }
     
     currentFishWeight = Math.round((weightRoll * (currentFish.maxWeight - currentFish.minWeight) + currentFish.minWeight) * 1000) / 1000;
     
@@ -3836,7 +3856,6 @@ function startMinigame() {
     const weightFactor = (currentFishWeight - currentFish.minWeight) / (currentFish.maxWeight - currentFish.minWeight);
 
     // Trophy fish must be at least this close to the species max weight
-    const TROPHY_WEIGHT_FACTOR_THRESHOLD = 0.75;
     const isTrophyFish = weightFactor >= TROPHY_WEIGHT_FACTOR_THRESHOLD;
 
     // Downgrade specimen difficulty for undersized fish.
