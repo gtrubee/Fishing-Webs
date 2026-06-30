@@ -77,28 +77,24 @@ function resizeMinigameCanvas() {
     const h = window.innerHeight;
     // Aspect ratio 3:5
     const aspect = 0.6;
-    // Max canvas size
-    const maxW = 320;
-    const maxH = 530;
     // Calculate available space with padding
-    const padX = 24; // 12px each side
-    const padY = 24;
+    const padX = Math.max(24, Math.round(w * 0.04));
+    const padY = Math.max(24, Math.round(h * 0.04));
     const availW = w - padX;
     const availH = h - padY;
+    // Use a large responsive area on desktop while keeping enough margin for UI
+    const maxW = Math.min(Math.round(availW * 0.72), 1000);
+    const maxH = Math.min(Math.round(availH * 0.8), 1100);
     // Fit to available space while maintaining 3:5 aspect
-    let cW, cH;
-    if (availW / availH < aspect) {
-        // Width-constrained
-        cW = Math.min(maxW, availW);
-        cH = Math.round(cW / aspect);
-    } else {
-        // Height-constrained
-        cH = Math.min(maxH, availH);
+    let cW = Math.min(maxW, Math.round(maxH * aspect));
+    let cH = Math.round(cW / aspect);
+    if (cH > maxH) {
+        cH = maxH;
         cW = Math.round(cH * aspect);
     }
     // Ensure minimum playable size
-    cW = Math.max(150, cW);
-    cH = Math.max(250, cH);
+    cW = Math.max(240, cW);
+    cH = Math.max(360, cH);
     minigameCanvas.width = cW;
     minigameCanvas.height = cH;
     // Explicitly set CSS display size to match buffer — prevents CSS from
