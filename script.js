@@ -4513,23 +4513,41 @@ function handleBiteReaction() {
     startMinigame();
 }
 
+function startFishingIfPossible() {
+    if (fishing) return;
+
+    // Check if inventory is full
+    if (inventory.length >= maxInventorySlots) {
+        statusDiv.style.opacity = '1';
+        statusDiv.style.transition = 'none';
+        statusDiv.textContent = '❌ Your inventory is full! Sell some fish at the shop.';
+        setTimeout(() => {
+            statusDiv.style.transition = 'opacity 1s ease-out';
+            statusDiv.style.opacity = '0';
+        }, 3000);
+        return;
+    }
+
+    startBiteWait();
+}
+
 // Event listeners
-fishButton.addEventListener('click', () => {
-    if (!fishing) {
-        // Check if inventory is full
-        if (inventory.length >= maxInventorySlots) {
-            statusDiv.style.opacity = '1';
-            statusDiv.style.transition = 'none';
-            statusDiv.textContent = '❌ Your inventory is full! Sell some fish at the shop.';
-            setTimeout(() => {
-                statusDiv.style.transition = 'opacity 1s ease-out';
-                statusDiv.style.opacity = '0';
-            }, 3000);
-            return;
-        }
-        startBiteWait();
+fishButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    startFishingIfPossible();
+});
+
+fishButton.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+        e.preventDefault();
+        startFishingIfPossible();
     }
 });
+
+fishButton.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startFishingIfPossible();
+}, { passive: false });
 
 // Mouse/click controls for the minigame - Circular ring design
 document.addEventListener('mousedown', (e) => {
@@ -4582,20 +4600,7 @@ document.addEventListener('keydown', (e) => {
         }
     } else if (!minigameActive && currentPage === 'fishing' && e.code === 'Space') {
         e.preventDefault(); // Prevent page scrolling
-        if (!fishing) {
-            // Check if inventory is full
-            if (inventory.length >= maxInventorySlots) {
-                statusDiv.style.opacity = '1';
-                statusDiv.style.transition = 'none';
-                statusDiv.textContent = '❌ Your inventory is full! Sell some fish at the shop.';
-                setTimeout(() => {
-                    statusDiv.style.transition = 'opacity 1s ease-out';
-                    statusDiv.style.opacity = '0';
-                }, 3000);
-                return;
-            }
-            startBiteWait();
-        }
+        startFishingIfPossible();
     }
 });
 
