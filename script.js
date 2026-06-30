@@ -65,11 +65,28 @@ function resizeBackgroundCanvases() {
 initBackgroundCanvas(sceneCanvas);
 initBackgroundCanvas(snowCanvas);
 resizeBackgroundCanvases();
+updateViewportHeight();
 
-window.addEventListener('resize', resizeBackgroundCanvases);
-window.addEventListener('orientationchange', function() {
-    setTimeout(resizeBackgroundCanvases, 150);
+window.addEventListener('resize', function() {
+    resizeBackgroundCanvases();
+    updateViewportHeight();
 });
+window.addEventListener('orientationchange', function() {
+    setTimeout(function() {
+        resizeBackgroundCanvases();
+        updateViewportHeight();
+    }, 150);
+});
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function() {
+        updateViewportHeight();
+    });
+}
+
+function updateViewportHeight() {
+    const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    document.documentElement.style.setProperty('--vh', `${viewportHeight * 0.01}px`);
+}
 
 // Resize minigame canvas (this one must match screen, it's interactive)
 function resizeMinigameCanvas() {
