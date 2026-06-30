@@ -13,6 +13,7 @@ function getFishImagePath(fishName) {
     const fishImageMap = {
         'Rainbow Trout': 'Assets/Fresh-Water-Fish/Rainbow_Trout.png',
         'Largemouth Bass': 'Assets/Fresh-Water-Fish/LargeMouthBass.png',
+        'Bluegill': 'Assets/Fresh-Water-Fish/Bluegill.png',
     };
     return fishImageMap[fishName] || 'Assets/Mini-Game-Fish.png';
 }
