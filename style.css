@@ -36,6 +36,7 @@
 html, body, #game-container {
     min-height: calc(var(--vh, 1vh) * 100);
     height: calc(var(--vh, 1vh) * 100);
+    box-sizing: border-box;
 }
 
 body {
@@ -57,9 +58,14 @@ body {
 #game-container {
     text-align: center;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     height: calc(var(--vh, 1vh) * 100);
+    box-sizing: border-box;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 /* Page wrappers — each fills the container so canvases position correctly */
