@@ -39,6 +39,13 @@ html, body, #game-container {
     box-sizing: border-box;
 }
 
+:root {
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-right: env(safe-area-inset-right, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-left: env(safe-area-inset-left, 0px);
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #0B1026;
@@ -150,7 +157,7 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
 #fish-button {
     position: absolute;
-    bottom: 30px;
+    bottom: calc(30px + var(--safe-area-bottom));
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -195,8 +202,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
 #money-display {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: calc(20px + var(--safe-area-top));
+    left: calc(20px + var(--safe-area-left));
     background: rgba(255, 215, 0, 0.9);
     color: #8B4513;
     font-size: 24px;
@@ -215,8 +222,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 /* Stats Button */
 #stats-button {
     position: absolute;
-    top: 20px;
-    right: 10px;
+    top: calc(20px + var(--safe-area-top));
+    right: calc(10px + var(--safe-area-right));
     font-size: 14px;
     padding: 6px 12px 8px;
     z-index: 10;
@@ -259,8 +266,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 /* Double XP Circular Timer */
 #double-xp-timer {
     position: absolute;
-    top: 260px;
-    left: 20px;
+    top: calc(260px + var(--safe-area-top));
+    left: calc(20px + var(--safe-area-left));
     width: 56px;
     height: 56px;
     z-index: 10;
@@ -1283,8 +1290,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
 #nav-icons {
     position: absolute;
-    bottom: 30px;
-    left: 30px;
+    bottom: calc(30px + var(--safe-area-bottom));
+    left: calc(30px + var(--safe-area-left));
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -1301,8 +1308,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
 #reset-button {
     position: absolute;
-    bottom: 30px;
-    right: 30px;
+    bottom: calc(30px + var(--safe-area-bottom));
+    right: calc(30px + var(--safe-area-right));
     font-size: 18px;
     padding: 12px 24px;
     z-index: 10;
@@ -2259,7 +2266,7 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
     /* Cast button — bottom center, clear of other buttons */
     #fish-button {
-        bottom: 14px;
+        bottom: calc(14px + var(--safe-area-bottom));
         left: 50%;
         top: auto;
         transform: translateX(-50%);
@@ -2282,8 +2289,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
     /* Bottom-left: shop + museum icons */
     #nav-icons {
-        left: 6px;
-        bottom: 66px;
+        left: calc(6px + var(--safe-area-left));
+        bottom: calc(66px + var(--safe-area-bottom));
         gap: 8px;
     }
 
@@ -2294,8 +2301,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
     /* Bottom-right: reset */
     #reset-button {
-        right: 6px;
-        bottom: 66px;
+        right: calc(6px + var(--safe-area-right));
+        bottom: calc(66px + var(--safe-area-bottom));
         font-size: 11px;
         padding: 6px 10px;
         min-height: 36px;
@@ -2303,8 +2310,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
     /* === TOP-LEFT: money + time + location — tighter stacking === */
     #money-display {
-        top: 6px;
-        left: 6px;
+        top: calc(6px + var(--safe-area-top));
+        left: calc(6px + var(--safe-area-left));
         font-size: 13px;
         padding: 4px 8px;
         border-width: 2px;
@@ -2316,8 +2323,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
     }
 
     #location-display {
-        top: 50px;
-        left: 6px;
+        top: calc(50px + var(--safe-area-top));
+        left: calc(6px + var(--safe-area-left));
     }
 
     #location-icon {
@@ -2325,8 +2332,8 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
     }
 
     #double-xp-timer {
-        top: 90px;
-        left: 6px;
+        top: calc(90px + var(--safe-area-top));
+        left: calc(6px + var(--safe-area-left));
         width: 40px;
         height: 40px;
     }
@@ -2338,9 +2345,9 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
     #double-xp-seconds { font-size: 8px; bottom: 5px; }
 
     #stats-button {
-        top: 6px;
+        top: calc(6px + var(--safe-area-top));
         left: auto;
-        right: 8px;
+        right: calc(8px + var(--safe-area-right));
         font-size: 11px;
         padding: 3px 8px 5px;
         border-width: 2px;
@@ -2356,7 +2363,7 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
     /* === TOP-CENTER: system clock — smaller on mobile === */
     #system-time-display {
-        top: 6px;
+        top: calc(6px + var(--safe-area-top));
         padding: 4px 10px;
         border-radius: 8px;
         border-width: 2px;
@@ -2374,9 +2381,9 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
 
     /* === TOP-RIGHT: backpack + toolbar buttons — compact column === */
     #backpack-icon {
-        top: 52px;
+        top: calc(52px + var(--safe-area-top));
         bottom: auto;
-        right: 16px;
+        right: calc(16px + var(--safe-area-right));
         padding: 0;
     }
 
@@ -2396,7 +2403,7 @@ button, #fish-button, #back-to-fishing, #shop-scroll-top, #museum-scroll-top, #s
         font-size: 12px;
         padding: 6px 12px;
         max-width: 75%;
-        bottom: 150px;
+        bottom: calc(150px + var(--safe-area-bottom));
         border-radius: 8px;
     }
 
